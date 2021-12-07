@@ -10,20 +10,23 @@ from torch.utils.data import Dataset, DataLoader, RandomSampler, SequentialSampl
 from transformers import GPT2Tokenizer, GPT2Model, GPT2LMHeadModel
 
 from kogito.core.utils import find_nth
+from kogito.models.base import KnowledgeModel
+from kogito.core.knowledge import Knowledge
+
+device = 'cuda' if cuda.is_available() else 'cpu'
 
 class GPT2Zeroshot(KnowledgeModel):
     def __init__(self, gpt2_model: str = 'gpt2', save_model_path: Optional[str] = None):
         self.tokenizer = GPT2Tokenizer.from_pretrained(gpt2_model)
         self.model = GPT2LMHeadModel.from_pretrained(gpt2_model)
-        device = 'cuda' if cuda.is_available() else 'cpu'
         self.model.to(device)
         if save_model_path:
-            model.save_pretrained(save_model_path)
+            self.model.save_pretrained(save_model_path)
     
     def train(self):
         raise ValueError('GPT-2 Zeroshot model is not trainable')
     
-    def generate(self, inputs: List[Knowledge], seed: int = 42, top_k: = 1, top_p: float = 0.9,
+    def generate(self, inputs: List[Knowledge], seed: int = 42, top_k: int = 1, top_p: float = 0.9,
                  num_sequences: int = 10, num_beams: int = 10, stop_token: str = '.'):
         torch.manual_seed(seed)
         np.random.seed(seed)
@@ -51,7 +54,7 @@ class GPT2Zeroshot(KnowledgeModel):
             text_generations = []
             for gen in generations:
                 gen = gen.tolist()
-                text = tokenizer.decode(gen, clean_up_tokenization_spaces=True)
+                text = self.tokenizer.decode(gen, clean_up_tokenization_spaces=True)
                 text = text[:find_nth(text, stop_token, 1)] if stop_token not in prompt else text[:find_nth(text, stop_token, 2)]
                 text_generations.append(text)
 
