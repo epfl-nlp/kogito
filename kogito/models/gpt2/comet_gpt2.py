@@ -23,16 +23,16 @@ from kogito.core.callbacks import Callback
 device = 'cuda' if cuda.is_available() else 'cpu'
 
 
-class COMET_GPT2(KnowledgeModel):
+class COMETGPT2(KnowledgeModel):
     def __init__(self, gpt2_model: str = 'gpt2'):
         self.model = GPT2LMHeadModel.from_pretrained(gpt2_model)
-        self.model = self.model.to(device)
     
     def train(self, train_dataset: KnowledgeDataset, val_dataset: KnowledgeDataset,
               batch_size: int = 2, epochs: int = 3, lr_rate: float = 1e-5, seed: int = 42, callbacks: List[Callback] = None):
         torch.manual_seed(seed)
         np.random.seed(seed)
         torch.backends.cudnn.deterministic = True
+        self.model = self.model.to(device)
         self.tokenizer = train_dataset.tokenizer
         self.model.resize_token_embeddings(len(self.tokenizer))
 

@@ -10,9 +10,9 @@ class KnowledgeModel(ABC):
         raise NotImplementedError
     
     @abstractmethod
-    def save(self, filepath: str):
+    def save(self, save_dir: str):
         raise NotImplementedError
     
     @abstractclassmethod
-    def load(self, filepath: str):
+    def from_pretrained(self, model_name_or_path: str):
         raise NotImplementedError

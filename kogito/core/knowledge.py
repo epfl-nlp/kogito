@@ -1,10 +1,10 @@
 
-from typing import Literal
+from typing import List
 from enum import Enum
 
-from comet.core.utils import vp_present_participle
+from kogito.core.utils import vp_present_participle, article, posessive
 
-KG_RELATIONS = [
+ATOMIC_RELATIONS = [
     "AtLocation",
     "CapableOf",
     "Causes",
@@ -62,6 +62,9 @@ EOS_TOKEN = '[EOS]'
 GEN_TOKEN = '[GEN]'
 PAD_TOKEN = '[PAD]'
 
+DECODE_METHODS = ['greedy', 'beam']
+
+
 class KnowledgeBase(Enum):
     TRANSOMCS  = 'transomcs'
     ATOMIC     = 'atomic'
@@ -74,7 +77,7 @@ class UnknownRelationError(Exception):
 
 
 class Knowledge:
-    def __init__(self, head: str, relation: Literal[*KG_RELATIONS], tails: List[str] = None, base: KnowledgeBase = KnowledgeBase.ATOMIC2020):
+    def __init__(self, head: str, relation: str, tails: List[str] = None, base: KnowledgeBase = KnowledgeBase.ATOMIC2020):
         self.head = head
         self.relation = relation
         self.tails = tails
@@ -196,4 +199,10 @@ class Knowledge:
         self.prompt = prompt
         return prompt.strip()
 
-
+    def to_query(self, decode_method: str = 'greedy'):
+        if decode_method == 'greedy':
+            return "{} {}".format(self.head, self.relation)
+        elif decode_method == 'beam':
+            return "{} {} [GEN]".format(self.head, self.relation)
+        else:
+            raise ValueError

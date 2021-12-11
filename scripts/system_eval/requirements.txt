@@ -1,4 +1,0 @@
-bert-score
-tabulate
-nltk
-numpy

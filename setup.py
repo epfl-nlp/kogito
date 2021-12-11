@@ -5,8 +5,8 @@ here = pathlib.Path(__file__).parent.resolve()
 
 requirements = ['tensorboard', 'scikit-learn', 'seqeval', 'psutil', 'sacrebleu', 'rouge-score',
                 'tensorflow_datasets', 'pytorch-lightning==0.8.5', 'matplotlib', 'git-python==1.0.3',
-                'streamlit', 'elasticsearch', 'pandas', 'conllu', 'spacy<3.0.0', 'inflect', 'transformers',
-                'wandb']
+                'streamlit', 'elasticsearch', 'pandas', 'nlp', 'conllu', 'spacy<3.0.0', 'inflect', 'transformers',
+                'wandb', 'torch', 'torchtext']
 
 long_description = (here / 'README.md').read_text(encoding='utf-8')
 
@@ -24,7 +24,7 @@ setup(
     keywords='natural-language-processing nlp natural-language-understanding commonsense-reasoning',
     packages=find_packages(exclude=['scripts']),
     install_requires=requirements,
-    python_requires='>=3.6',
+    python_requires='>=3.7',
 
     # $ pip install -e .[dev,test]
     extras_require={
