@@ -286,29 +286,30 @@ class COMETBART(KnowledgeModel):
 
         trainer.test(self.model)
     
-    def generate(self, inputs: List[Knowledge], decode_method=DECODE_METHODS, num_generate=5, batch_size):
-        queries = []
-
-        for kg_input in inputs:
-            queries.append(kg_input.to_query(decode_method=decode_method))
-
+    def generate(self, inputs: List[Knowledge], decode_method=DECODE_METHODS, num_generate=5, batch_size=1):
         with torch.no_grad():
             outputs = []
-            for batch in list(chunks(queries, batch_size)):
-
-                batch = self.tokenizer(batch, return_tensors="pt", truncation=True, padding="max_length").to(self.device)
+            for kg_batch in list(chunks(inputs, batch_size)):
+                queries = []
+                for kg_input in kg_batch:
+                    queries.append(kg_input.to_query(decode_method=decode_method))
+                batch = self.tokenizer(queries, return_tensors="pt", truncation=True, padding="max_length").to(self.device)
                 input_ids, attention_mask = trim_batch(**batch, pad_token_id=self.tokenizer.pad_token_id)
 
                 summaries = self.model.generate(
                     input_ids=input_ids,
                     attention_mask=attention_mask,
-                    decoder_start_token_id=self.decoder_start_token_id,
+                    decoder_start_token_id=self.config.decoder_start_token_id,
                     num_beams=num_generate,
                     num_return_sequences=num_generate,
                 )
 
                 output = self.tokenizer.batch_decode(summaries, skip_special_tokens=True, clean_up_tokenization_spaces=False)
-                outputs.append(output)
+
+                for kg_input, generations in zip(kg_batch, output):
+                    output_kg = kg_input.copy()
+                    output_kg.tails = generations
+                    outputs.append(output_kg)
 
             return outputs
     
@@ -321,3 +322,4 @@ class COMETBART(KnowledgeModel):
         use_task_specific_params(model, task)
         comet_bart.model = model
         comet_bart.tokenizer = tokenizer
+        return comet_bart

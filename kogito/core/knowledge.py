@@ -206,3 +206,6 @@ class Knowledge:
             return "{} {} [GEN]".format(self.head, self.relation)
         else:
             raise ValueError
+    
+    def copy(self):
+        return Knowledge(base=self.base, head=self.head, relation=self.relation, tails=self.tails, prompt=self.prompt)
