@@ -1,4 +1,3 @@
-
 from typing import List
 from enum import Enum
 
@@ -58,18 +57,18 @@ ATOMIC_RELATIONS = [
     "xWant",
 ]
 
-EOS_TOKEN = '[EOS]'
-GEN_TOKEN = '[GEN]'
-PAD_TOKEN = '[PAD]'
+EOS_TOKEN = "[EOS]"
+GEN_TOKEN = "[GEN]"
+PAD_TOKEN = "[PAD]"
 
-DECODE_METHODS = ['greedy', 'beam']
+DECODE_METHODS = ["greedy", "beam"]
 
 
 class KnowledgeBase(Enum):
-    TRANSOMCS  = 'transomcs'
-    ATOMIC     = 'atomic'
-    CONCEPTNET = 'conceptnet'
-    ATOMIC2020 = 'atomic2020'
+    TRANSOMCS = "transomcs"
+    ATOMIC = "atomic"
+    CONCEPTNET = "conceptnet"
+    ATOMIC2020 = "atomic2020"
 
 
 class UnknownRelationError(Exception):
@@ -77,19 +76,28 @@ class UnknownRelationError(Exception):
 
 
 class Knowledge:
-    def __init__(self, head: str, relation: str, tails: List[str] = None, base: KnowledgeBase = KnowledgeBase.ATOMIC2020):
+    def __init__(
+        self,
+        head: str,
+        relation: str,
+        tails: List[str] = None,
+        base: KnowledgeBase = KnowledgeBase.ATOMIC2020,
+    ):
         self.head = head
         self.relation = relation
         self.tails = tails
         self.base = base
         self.prompt = None
-    
+
     def to_prompt(self):
         head = self.head
         relation = self.relation
-        tail = self.tails[0] if self.tails else ''
+        tail = self.tails[0] if self.tails else ""
 
-        if self.base == KnowledgeBase.CONCEPTNET or self.base == KnowledgeBase.TRANSOMCS:
+        if (
+            self.base == KnowledgeBase.CONCEPTNET
+            or self.base == KnowledgeBase.TRANSOMCS
+        ):
             if relation == "AtLocation":
                 prompt = "You are likely to find {} {} in {} ".format(
                     article(head), head, article(tail)
@@ -116,12 +124,18 @@ class Knowledge:
                 prompt = "{} can be ".format(head)
             elif relation == "UsedFor":
                 prompt = "{} {} is for ".format(article(head).upper(), head)
-            elif relation == "HasFirstSubevent" or relation == "HasSubevent" or relation == "HasLastSubevent":
+            elif (
+                relation == "HasFirstSubevent"
+                or relation == "HasSubevent"
+                or relation == "HasLastSubevent"
+            ):
                 prompt = "While {}, you would ".format(vp_present_participle(head))
             elif relation == "InheritsFrom":
                 prompt = "{} inherits from".format(head)
             elif relation == "PartOf":
-                prompt = "{} {} is a part of {} ".format(article(head).upper(), head, article(tail))
+                prompt = "{} {} is a part of {} ".format(
+                    article(head).upper(), head, article(tail)
+                )
             elif relation == "IsA":
                 prompt = "{} is {} ".format(head, article(tail))
             elif relation == "InstanceOf":
@@ -172,7 +186,7 @@ class Knowledge:
             elif relation == "isBefore":
                 prompt = "{}. After that, ".format(head)
             elif relation == "isFilledBy":
-                prompt = "{} is filled by".format(head) #TODO
+                prompt = "{} is filled by".format(head)  # TODO
             elif relation == "oEffect":
                 prompt = "{}. The effect on others will be".format(head)
             elif relation == "oReact":
@@ -199,13 +213,19 @@ class Knowledge:
         self.prompt = prompt
         return prompt.strip()
 
-    def to_query(self, decode_method: str = 'greedy'):
-        if decode_method == 'greedy':
+    def to_query(self, decode_method: str = "greedy"):
+        if decode_method == "greedy":
             return "{} {}".format(self.head, self.relation)
-        elif decode_method == 'beam':
+        elif decode_method == "beam":
             return "{} {} [GEN]".format(self.head, self.relation)
         else:
             raise ValueError
-    
+
     def copy(self):
-        return Knowledge(base=self.base, head=self.head, relation=self.relation, tails=self.tails, prompt=self.prompt)
+        return Knowledge(
+            base=self.base,
+            head=self.head,
+            relation=self.relation,
+            tails=self.tails,
+            prompt=self.prompt,
+        )

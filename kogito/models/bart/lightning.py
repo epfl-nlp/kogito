@@ -1,11 +1,10 @@
-import argparse
 import logging
 import os
 from pathlib import Path
 from dataclasses import asdict
 from typing import Any, Dict
 from kogito.models.bart.config import COMETBARTConfig
-from kogito.models.bart.callbacks import LoggingCallback
+from kogito.core.callbacks import LoggingCallback
 
 import pytorch_lightning as pl
 
@@ -61,7 +60,9 @@ class BaseTransformer(pl.LightningModule):
         cache_dir = self.base_config.cache_dir if self.base_config.cache_dir else None
         if pretrained_config is None:
             self.pretrained_config = AutoConfig.from_pretrained(
-                self.base_config.pretrained_config if self.base_config.pretrained_config else self.base_config.pretrained_model,
+                self.base_config.pretrained_config
+                if self.base_config.pretrained_config
+                else self.base_config.pretrained_model,
                 **({"num_labels": num_labels} if num_labels is not None else {}),
                 cache_dir=cache_dir,
                 **config_kwargs,
@@ -70,7 +71,9 @@ class BaseTransformer(pl.LightningModule):
             self.pretrained_config: PretrainedConfig = pretrained_config
         if tokenizer is None:
             self.tokenizer = AutoTokenizer.from_pretrained(
-                self.base_config.tokenizer_name if self.base_config.tokenizer_name else self.base_config.pretrained_model,
+                self.base_config.pretrained_tokenizer
+                if self.base_config.pretrained_tokenizer
+                else self.base_config.pretrained_model,
                 cache_dir=cache_dir,
             )
         else:
@@ -95,19 +98,33 @@ class BaseTransformer(pl.LightningModule):
         no_decay = ["bias", "LayerNorm.weight"]
         optimizer_grouped_parameters = [
             {
-                "params": [p for n, p in model.named_parameters() if not any(nd in n for nd in no_decay)],
+                "params": [
+                    p
+                    for n, p in model.named_parameters()
+                    if not any(nd in n for nd in no_decay)
+                ],
                 "weight_decay": self.base_config.weight_decay,
             },
             {
-                "params": [p for n, p in model.named_parameters() if any(nd in n for nd in no_decay)],
+                "params": [
+                    p
+                    for n, p in model.named_parameters()
+                    if any(nd in n for nd in no_decay)
+                ],
                 "weight_decay": 0.0,
             },
         ]
-        optimizer = AdamW(optimizer_grouped_parameters, lr=self.base_config.learning_rate, eps=self.base_config.adam_epsilon)
+        optimizer = AdamW(
+            optimizer_grouped_parameters,
+            lr=self.base_config.learning_rate,
+            eps=self.base_config.adam_epsilon,
+        )
         self.opt = optimizer
 
         scheduler = get_linear_schedule_with_warmup(
-            self.opt, num_warmup_steps=self.base_config.warmup_steps, num_training_steps=self.total_steps
+            self.opt,
+            num_warmup_steps=self.base_config.warmup_steps,
+            num_training_steps=self.total_steps,
         )
         scheduler = {"scheduler": scheduler, "interval": "step", "frequency": 1}
         return [optimizer], [scheduler]
@@ -123,7 +140,10 @@ class BaseTransformer(pl.LightningModule):
         dataloader = self.get_dataloader("train", train_batch_size)
         self.train_loader = dataloader
         self.total_steps = (
-            (len(dataloader.dataset) // (train_batch_size * max(1, self.base_config.gpus)))
+            (
+                len(dataloader.dataset)
+                // (train_batch_size * max(1, self.base_config.gpus))
+            )
             // self.base_config.accumulate_grad_batches
             * float(self.base_config.num_train_epochs)
         )
@@ -176,7 +196,11 @@ def generic_train(
     # add custom checkpoints
     if checkpoint_callback is None:
         checkpoint_callback = pl.callbacks.ModelCheckpoint(
-            filepath=config.output_dir, prefix="checkpoint", monitor="val_loss", mode="min", save_top_k=1
+            filepath=config.output_dir,
+            prefix="checkpoint",
+            monitor="val_loss",
+            mode="min",
+            save_top_k=1,
         )
     if logging_callback is None:
         logging_callback = LoggingCallback()

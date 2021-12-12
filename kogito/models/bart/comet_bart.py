@@ -1,4 +1,3 @@
-import argparse
 import glob
 import logging
 import os
@@ -13,34 +12,32 @@ import pytorch_lightning as pl
 import torch
 from torch.utils.data import DataLoader
 
-from lightning_base import BaseTransformer, add_generic_args, generic_train
 from transformers import MBartTokenizer, get_linear_schedule_with_warmup
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 from kogito.core.knowledge import DECODE_METHODS, ATOMIC_RELATIONS, Knowledge
 from kogito.core.utils import (
-        assert_all_frozen,
-        use_task_specific_params,
-        lmap,
-        flatten_list,
-        pickle_save,
-        save_git_info,
-        save_json,
-        freeze_params,
-        calculate_rouge,
-        get_git_info,
-        ROUGE_KEYS,
-        calculate_bleu_score,
-        Seq2SeqDataset,
-        MBartDataset,
-        chunks,
-        trim_batch
-    )
-from kogito.models.bart.callbacks import Seq2SeqLoggingCallback, get_checkpoint_callback
+    assert_all_frozen,
+    use_task_specific_params,
+    lmap,
+    flatten_list,
+    pickle_save,
+    save_json,
+    freeze_params,
+    calculate_rouge,
+    ROUGE_KEYS,
+    calculate_bleu_score,
+    chunks,
+    trim_batch,
+)
+from kogito.core.dataset import Seq2SeqDataset, MBartDataset
+from kogito.core.callbacks import Seq2SeqLoggingCallback, get_checkpoint_callback
 from kogito.models.base import KnowledgeModel
 from kogito.models.bart.config import COMETBARTConfig
+from kogito.models.bart.lightning import BaseTransformer, generic_train
 
 logger = logging.getLogger(__name__)
+device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 class SummarizationModule(BaseTransformer):
@@ -67,15 +64,21 @@ class SummarizationModule(BaseTransformer):
             "val": self.config.n_val,
             "test": self.config.n_test,
         }
-        self.n_obs = {k: v if v >= 0 else None for k, v in n_observations_per_split.items()}
+        self.n_obs = {
+            k: v if v >= 0 else None for k, v in n_observations_per_split.items()
+        }
 
         self.target_lens = {
             "train": self.config.max_target_length,
             "val": self.config.val_max_target_length,
             "test": self.config.test_max_target_length,
         }
-        assert self.target_lens["train"] <= self.target_lens["val"], f"target_lens: {self.target_lens}"
-        assert self.target_lens["train"] <= self.target_lens["test"], f"target_lens: {self.target_lens}"
+        assert (
+            self.target_lens["train"] <= self.target_lens["val"]
+        ), f"target_lens: {self.target_lens}"
+        assert (
+            self.target_lens["train"] <= self.target_lens["test"]
+        ), f"target_lens: {self.target_lens}"
 
         if self.config.freeze_embeds:
             self.freeze_embeds()
@@ -114,11 +117,20 @@ class SummarizationModule(BaseTransformer):
 
     def _step(self, batch: dict) -> Tuple:
         pad_token_id = self.tokenizer.pad_token_id
-        source_ids, source_mask, y = batch["input_ids"], batch["attention_mask"], batch["decoder_input_ids"]
+        source_ids, source_mask, y = (
+            batch["input_ids"],
+            batch["attention_mask"],
+            batch["decoder_input_ids"],
+        )
         y_ids = y[:, :-1].contiguous()
         lm_labels = y[:, 1:].clone()
         lm_labels[y[:, 1:] == pad_token_id] = -100
-        outputs = self(source_ids, attention_mask=source_mask, decoder_input_ids=y_ids, labels=lm_labels,)
+        outputs = self(
+            source_ids,
+            attention_mask=source_mask,
+            decoder_input_ids=y_ids,
+            labels=lm_labels,
+        )
         loss = outputs[0]
         return (loss,)
 
@@ -132,18 +144,30 @@ class SummarizationModule(BaseTransformer):
 
     def validation_epoch_end(self, outputs, prefix="val") -> Dict:
         self.step_count += 1
-        losses = {k: torch.stack([x[k] for x in outputs]).mean() for k in self.loss_names}
+        losses = {
+            k: torch.stack([x[k] for x in outputs]).mean() for k in self.loss_names
+        }
         loss = losses["loss"]
-        rouges = {k: np.array([x[k] for x in outputs]).mean() for k in self.metric_names + ["gen_time", "summ_len"]}
-        rouge_tensor: torch.FloatTensor = torch.tensor(rouges[self.val_metric]).type_as(loss)
+        rouges = {
+            k: np.array([x[k] for x in outputs]).mean()
+            for k in self.metric_names + ["gen_time", "summ_len"]
+        }
+        rouge_tensor: torch.FloatTensor = torch.tensor(rouges[self.val_metric]).type_as(
+            loss
+        )
         rouges.update({k: v.item() for k, v in losses.items()})
         losses.update(rouges)
         metrics = {f"{prefix}_avg_{k}": x for k, x in losses.items()}
-        metrics["avg_rouge1"] = losses['rouge1']
+        metrics["avg_rouge1"] = losses["rouge1"]
         metrics["step_count"] = self.step_count
         self.save_metrics(metrics, prefix)  # writes to self.metrics_save_path
         preds = flatten_list([x["preds"] for x in outputs])
-        return {"log": metrics, "preds": preds, f"{prefix}_loss": loss, f"{prefix}_{self.val_metric}": rouge_tensor}
+        return {
+            "log": metrics,
+            "preds": preds,
+            f"{prefix}_loss": loss,
+            f"{prefix}_{self.val_metric}": rouge_tensor,
+        }
 
     def save_metrics(self, latest_metrics, type_path) -> None:
         self.metrics[type_path].append(latest_metrics)
@@ -154,7 +178,9 @@ class SummarizationModule(BaseTransformer):
 
     def _generative_step(self, batch: dict) -> dict:
         pad_token_id = self.tokenizer.pad_token_id
-        source_ids, source_mask, y = Seq2SeqDataset.trim_seq2seq_batch(batch, pad_token_id)
+        source_ids, source_mask, y = Seq2SeqDataset.trim_seq2seq_batch(
+            batch, pad_token_id
+        )
         t0 = time.time()
         generated_ids = self.model.generate(
             input_ids=source_ids,
@@ -169,7 +195,9 @@ class SummarizationModule(BaseTransformer):
         base_metrics = {name: loss for name, loss in zip(self.loss_names, loss_tensors)}
         rouge: Dict = self.calc_generative_metrics(preds, target)
         summ_len = np.mean(lmap(len, generated_ids))
-        base_metrics.update(gen_time=gen_time, summ_len=summ_len, preds=preds, target=target, **rouge)
+        base_metrics.update(
+            gen_time=gen_time, summ_len=summ_len, preds=preds, target=target, **rouge
+        )
         return base_metrics
 
     def test_step(self, batch, batch_idx):
@@ -190,7 +218,9 @@ class SummarizationModule(BaseTransformer):
         )
         return dataset
 
-    def get_dataloader(self, type_path: str, batch_size: int, shuffle: bool = False) -> DataLoader:
+    def get_dataloader(
+        self, type_path: str, batch_size: int, shuffle: bool = False
+    ) -> DataLoader:
         dataset = self.get_dataset(type_path)
         sampler = None
         if self.config.sortish_sampler and type_path == "train":
@@ -209,14 +239,21 @@ class SummarizationModule(BaseTransformer):
         return dataloader
 
     def train_dataloader(self) -> DataLoader:
-        dataloader = self.get_dataloader("train", batch_size=self.config.train_batch_size, shuffle=True)
+        dataloader = self.get_dataloader(
+            "train", batch_size=self.config.train_batch_size, shuffle=True
+        )
         t_total = (
-            (len(dataloader.dataset) // (self.config.train_batch_size * max(1, self.config.gpus)))
+            (
+                len(dataloader.dataset)
+                // (self.config.train_batch_size * max(1, self.config.gpus))
+            )
             // self.config.accumulate_grad_batches
             * float(self.config.num_train_epochs)
         )
         scheduler = get_linear_schedule_with_warmup(
-            self.opt, num_warmup_steps=self.config.warmup_steps, num_training_steps=t_total
+            self.opt,
+            num_warmup_steps=self.config.warmup_steps,
+            num_training_steps=t_total,
         )
         if max(scheduler.get_last_lr()) > 0:
             warnings.warn("All learning rates are 0")
@@ -240,8 +277,12 @@ class TranslationModule(SummarizationModule):
         super().__init__(config, **kwargs)
         self.dataset_kwargs["src_lang"] = config.src_lang
         self.dataset_kwargs["tgt_lang"] = config.tgt_lang
-        if self.model.config.decoder_start_token_id is None and isinstance(self.tokenizer, MBartTokenizer):
-            self.decoder_start_token_id = self.tokenizer.lang_code_to_id[config.tgt_lang]
+        if self.model.config.decoder_start_token_id is None and isinstance(
+            self.tokenizer, MBartTokenizer
+        ):
+            self.decoder_start_token_id = self.tokenizer.lang_code_to_id[
+                config.tgt_lang
+            ]
         if isinstance(self.tokenizer, MBartTokenizer):
             self.dataset_class = MBartDataset
 
@@ -252,19 +293,24 @@ class TranslationModule(SummarizationModule):
 class COMETBART(KnowledgeModel):
     def __init__(self, config, **kwargs) -> None:
         self.model = None
+        self.tokenizer = None
         self.config = config
         self.kwargs = kwargs
-    
+
     def train(self):
         if self.config.task == "summarization":
-            self.model: SummarizationModule = SummarizationModule(self.config, self.kwargs)
-        elif self.config.task == 'translation':
-            self.model: SummarizationModule = TranslationModule(self.config, self.kwargs)
+            self.model: SummarizationModule = SummarizationModule(
+                self.config, self.kwargs
+            )
+        elif self.config.task == "translation":
+            self.model: SummarizationModule = TranslationModule(
+                self.config, self.kwargs
+            )
         else:
             raise ValueError
-        
+
         if self.config.atomic:
-            num_added_toks = self.model.tokenizer.add_tokens(ATOMIC_RELATIONS)
+            self.model.tokenizer.add_tokens(ATOMIC_RELATIONS)
             self.model.model.resize_token_embeddings(len(self.model.tokenizer))
 
         Path(self.config.output_dir).mkdir(exist_ok=True)
@@ -272,29 +318,47 @@ class COMETBART(KnowledgeModel):
             self.model,
             self.config,
             logging_callback=Seq2SeqLoggingCallback(),
-            checkpoint_callback=get_checkpoint_callback(self.config.output_dir, self.model.val_metric),
-            logger=logger
+            checkpoint_callback=get_checkpoint_callback(
+                self.config.output_dir, self.model.val_metric
+            ),
+            logger=logger,
         )
         pickle_save(self.model.config, self.config.output_dir / "config.pkl")
 
         self.model.config.test_checkpoint = ""
-        checkpoints = list(sorted(glob.glob(os.path.join(self.config.output_dir, "*.ckpt"), recursive=True)))
+        checkpoints = list(
+            sorted(
+                glob.glob(
+                    os.path.join(self.config.output_dir, "*.ckpt"), recursive=True
+                )
+            )
+        )
         if checkpoints:
             self.model.config.test_checkpoint = checkpoints[-1]
             trainer.resume_from_checkpoint = checkpoints[-1]
         trainer.logger.log_hyperparams(self.model.config)
 
         trainer.test(self.model)
-    
-    def generate(self, inputs: List[Knowledge], decode_method=DECODE_METHODS, num_generate=5, batch_size=1):
+
+    def generate(
+        self,
+        inputs: List[Knowledge],
+        decode_method=DECODE_METHODS,
+        num_generate=5,
+        batch_size=1,
+    ):
         with torch.no_grad():
             outputs = []
             for kg_batch in list(chunks(inputs, batch_size)):
                 queries = []
                 for kg_input in kg_batch:
                     queries.append(kg_input.to_query(decode_method=decode_method))
-                batch = self.tokenizer(queries, return_tensors="pt", truncation=True, padding="max_length").to(self.device)
-                input_ids, attention_mask = trim_batch(**batch, pad_token_id=self.tokenizer.pad_token_id)
+                batch = self.tokenizer(
+                    queries, return_tensors="pt", truncation=True, padding="max_length"
+                ).to(device)
+                input_ids, attention_mask = trim_batch(
+                    **batch, pad_token_id=self.tokenizer.pad_token_id
+                )
 
                 summaries = self.model.generate(
                     input_ids=input_ids,
@@ -304,7 +368,11 @@ class COMETBART(KnowledgeModel):
                     num_return_sequences=num_generate,
                 )
 
-                output = self.tokenizer.batch_decode(summaries, skip_special_tokens=True, clean_up_tokenization_spaces=False)
+                output = self.tokenizer.batch_decode(
+                    summaries,
+                    skip_special_tokens=True,
+                    clean_up_tokenization_spaces=False,
+                )
 
                 for kg_input, generations in zip(kg_batch, output):
                     output_kg = kg_input.copy()
@@ -312,9 +380,9 @@ class COMETBART(KnowledgeModel):
                     outputs.append(output_kg)
 
             return outputs
-    
+
     @classmethod
-    def from_pretrained(cls, model_name_or_path: str, task: str = 'summarization'):
+    def from_pretrained(cls, model_name_or_path: str, task: str = "summarization"):
         config = COMETBARTConfig(task=task, decoder_start_token_id=None)
         comet_bart = cls(config)
         model = AutoModelForSeq2SeqLM.from_pretrained(model_name_or_path)
