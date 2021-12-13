@@ -1,5 +1,5 @@
 # Importing stock libraries
-from typing import List, Optional
+from typing import List
 
 import numpy as np
 import torch
@@ -8,25 +8,31 @@ from transformers import GPT2Tokenizer, GPT2LMHeadModel
 
 from kogito.core.utils import find_nth
 from kogito.models.base import KnowledgeModel
-from kogito.core.knowledge import Knowledge
+from kogito.core.knowledge import Knowledge, KnowledgeGraph
 
 device = "cuda" if cuda.is_available() else "cpu"
 
 
 class GPT2Zeroshot(KnowledgeModel):
-    def __init__(self, gpt2_model: str = "gpt2", save_model_path: Optional[str] = None):
+    def __init__(self, gpt2_model: str = "gpt2"):
         self.tokenizer = GPT2Tokenizer.from_pretrained(gpt2_model)
         self.model = GPT2LMHeadModel.from_pretrained(gpt2_model)
         self.model.to(device)
-        if save_model_path:
-            self.model.save_pretrained(save_model_path)
 
     def train(self):
         raise ValueError("GPT-2 Zeroshot model is not trainable")
 
+    def save(self, save_model_path):
+        if save_model_path:
+            self.model.save_pretrained(save_model_path)
+
+    @classmethod
+    def from_pretrained(cls, model_name_or_path):
+        return cls(model_name_or_path)
+
     def generate(
         self,
-        inputs: List[Knowledge],
+        input_graph: KnowledgeGraph,
         seed: int = 42,
         top_k: int = 1,
         top_p: float = 0.9,
@@ -39,8 +45,8 @@ class GPT2Zeroshot(KnowledgeModel):
         torch.backends.cudnn.deterministic = True
 
         outputs = []
-        for kg_input in inputs:
-            prompt = kg_input.to_prompt()
+        for input_kg in input_graph.graph:
+            prompt = input_kg.to_prompt()
             input_ids = self.tokenizer.encode(
                 prompt, add_special_tokens=False, return_tensors="pt"
             )
@@ -70,13 +76,8 @@ class GPT2Zeroshot(KnowledgeModel):
                 )
                 text_generations.append(text)
 
-            outputs.append(
-                Knowledge(
-                    base=kg_input.base,
-                    head=kg_input.head,
-                    relation=kg_input.relation,
-                    tails=text_generations,
-                )
-            )
+            output_kg = input_kg.copy()
+            output_kg.tails = text_generations
+            outputs.append(output_kg)
 
-        return outputs
+        return KnowledgeGraph(outputs)

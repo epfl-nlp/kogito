@@ -1,5 +1,7 @@
 from typing import List
 from enum import Enum
+import pandas as pd
+import json
 
 from kogito.core.utils import vp_present_participle, article, posessive
 
@@ -70,6 +72,9 @@ class KnowledgeBase(Enum):
     CONCEPTNET = "conceptnet"
     ATOMIC2020 = "atomic2020"
 
+    def __repr__(self):
+        return str(self.value)
+
 
 class UnknownRelationError(Exception):
     pass
@@ -78,16 +83,19 @@ class UnknownRelationError(Exception):
 class Knowledge:
     def __init__(
         self,
-        head: str,
-        relation: str,
+        head: str = None,
+        relation: str = None,
         tails: List[str] = None,
         base: KnowledgeBase = KnowledgeBase.ATOMIC2020,
     ):
         self.head = head
         self.relation = relation
-        self.tails = tails
+        self.tails = tails or []
         self.base = base
         self.prompt = None
+
+    def __repr__(self):
+        return f'(head="{self.head}", relation="{self.relation}", tails={self.tails}, base={self.base})'
 
     def to_prompt(self):
         head = self.head
@@ -223,9 +231,46 @@ class Knowledge:
 
     def copy(self):
         return Knowledge(
-            base=self.base,
-            head=self.head,
-            relation=self.relation,
-            tails=self.tails,
-            prompt=self.prompt,
+            base=self.base, head=self.head, relation=self.relation, tails=self.tails
         )
+
+    def to_json(self, only_one_tail=False):
+        return {"head": self.head, "relation": self.relation, "tails": self.tails[0] if self.tails and only_one_tail else self.tails}
+
+
+class KnowledgeGraph:
+    def __init__(self, graph: List[Knowledge]):
+        self.graph = graph
+
+    @classmethod
+    def from_jsonl(
+        cls,
+        filepath: str,
+        base: KnowledgeBase = KnowledgeBase.ATOMIC2020,
+        head_attr: str = "head",
+        relation_attr: str = "relation",
+        tails_attr: str = "tails",
+    ):
+        kg_list = []
+
+        with open(filepath) as file:
+            for line in file:
+                kg_json = json.loads(line)
+                head = kg_json.get(head_attr)
+                relation = kg_json.get(relation_attr)
+                tails = kg_json.get(tails_attr)
+                kg_list.append(
+                    Knowledge(base=base, head=head, relation=relation, tails=tails)
+                )
+
+        return cls(kg_list)
+
+    def to_jsonl(self, filepath):
+        with open(filepath, "w") as file:
+            lines = []
+            for kg in self.graph:
+                lines.append(json.dumps(kg.to_json()))
+            file.writelines("\n".join(lines))
+
+    def to_dataframe(self):
+        return pd.DataFrame([kg.to_json(only_one_tail=True) for kg in self.graph])

@@ -1,0 +1,10 @@
+{"relation": "xNeed", "head": "PersonX takes things for granted", "tails": ["to have been lazy at work", "to have wasted resources", "none", "to have used their money on unnecessary things"]}
+{"relation": "xNeed", "head": "PersonX calls PersonY ambulance", "tails": ["get the phone", "recognize the person needs an ambulance", "to see Person Y is hurt.", "to get a phone.", "none"]}
+{"relation": "xWant", "head": "PersonX pleases ___ to make", "tails": ["to say thanks for making it", "to eat it", "to produce something", "to be in their good graces"]}
+{"relation": "xEffect", "head": "PersonX shoves PersonY back", "tails": ["is physical", "none", "is violent"]}
+{"relation": "xWant", "head": "PersonX dates for years", "tails": ["to keep in contact for 2nd dates", "to propose", "to go to the movies", "to go to dinner", "to get married"]}
+{"relation": "isAfter", "head": "PersonX covers every aspect", "tails": ["PersonX researches an article about current events"]}
+{"relation": "isAfter", "head": "PersonX wants to go", "tails": ["PersonX sees a flyer for a festival"]}
+{"relation": "xEffect", "head": "PersonX hits by lightning", "tails": ["Has heart attack", "goes to the hospital", "Has hair burned", "gets hurt"]}
+{"relation": "xNeed", "head": "PersonX finally meet PersonY", "tails": ["ask friend to be introduced to PersonY", "Get dressed", "Find person", "to search for person Y", "travels to meet PersonY", "to be away from person Y for sometime"]}
+{"relation": "ObjectUse", "head": "chain", "tails": ["hold the swing", "put around it", "lock up a vicious pet.", "make spooky noises in a haunted house", "attach the mooring", "lock the bike", "lock up the bike while they look around", "hold something on the wall", "to chain bicycle to the bicycle rack", "take with them", "decorate the house", "hold down a garage door without locks.", "take off", "keep pick-pockets from stealing their wallet", "pull the car", "hold their spectacles on their neck", "hold the key", "catch pants on", "connect the truck and the car", "lock it up", "hook it up too", "tug on a truck"]}

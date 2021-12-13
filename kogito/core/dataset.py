@@ -6,8 +6,9 @@ import torch
 import linecache
 import logging
 from torch.utils.data import Dataset
+import pandas as pd
 
-from kogito.core.knowledge import GEN_TOKEN, EOS_TOKEN, PAD_TOKEN, ATOMIC_RELATIONS
+from kogito.core.knowledge import Knowledge, GEN_TOKEN, EOS_TOKEN, PAD_TOKEN, ATOMIC_RELATIONS
 from kogito.core.utils import encode_line, trim_batch, SortishSampler
 
 logger = logging.getLogger("gpt2-comet")
@@ -16,30 +17,17 @@ logging.basicConfig(level=logging.DEBUG)
 
 class KnowledgeDataset(Dataset):
     def __init__(
-        self,
-        dataframe,
-        tokenizer,
-        source_len,
-        summ_len,
-        model="t5",
-        is_eval=False,
-        head_col: str = "head_event",
-        relation_col: str = "relation",
-        tail_col: str = "tail_event",
+        self, kg_graph, tokenizer, source_len, summ_len, model="t5", is_eval=False
     ):
         self.tokenizer = tokenizer
-        self.data = dataframe
+        self.data = kg_graph.to_dataframe()
         self.source_len = source_len
         self.summ_len = summ_len
-        self.data.head_event = (
-            self.data[head_col] + " " + self.data[relation_col] + f" {GEN_TOKEN}"
-        )
-        self.data.tail_event = self.data[tail_col] + f" {EOS_TOKEN}"
-        self.text = self.data.head_event
-        self.ctext = self.data.tail_event
+        self.text = self.data["head"] + " " + self.data["relation"] + f" {GEN_TOKEN}"
+        self.ctext = self.data["tails"] + f" {EOS_TOKEN}"
         self.model = model
         self.is_eval = is_eval
-        tokenizer.add_special_tokens(
+        self.tokenizer.add_special_tokens(
             {
                 "eos_token": EOS_TOKEN,
                 "pad_token": PAD_TOKEN,

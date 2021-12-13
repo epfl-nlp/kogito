@@ -15,7 +15,7 @@ from torch.utils.data import DataLoader
 from transformers import MBartTokenizer, get_linear_schedule_with_warmup
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
-from kogito.core.knowledge import DECODE_METHODS, ATOMIC_RELATIONS, Knowledge
+from kogito.core.knowledge import DECODE_METHODS, ATOMIC_RELATIONS, Knowledge, KnowledgeGraph
 from kogito.core.utils import (
     assert_all_frozen,
     use_task_specific_params,
@@ -342,14 +342,14 @@ class COMETBART(KnowledgeModel):
 
     def generate(
         self,
-        inputs: List[Knowledge],
-        decode_method=DECODE_METHODS,
+        input_graph: KnowledgeGraph,
+        decode_method="beam",
         num_generate=5,
         batch_size=1,
     ):
         with torch.no_grad():
             outputs = []
-            for kg_batch in list(chunks(inputs, batch_size)):
+            for kg_batch in list(chunks(input_graph.graph, batch_size)):
                 queries = []
                 for kg_input in kg_batch:
                     queries.append(kg_input.to_query(decode_method=decode_method))
@@ -379,7 +379,7 @@ class COMETBART(KnowledgeModel):
                     output_kg.tails = generations
                     outputs.append(output_kg)
 
-            return outputs
+            return KnowledgeGraph(outputs)
 
     @classmethod
     def from_pretrained(cls, model_name_or_path: str, task: str = "summarization"):
@@ -390,4 +390,9 @@ class COMETBART(KnowledgeModel):
         use_task_specific_params(model, task)
         comet_bart.model = model
         comet_bart.tokenizer = tokenizer
+        model.to(device)
+        # tokenizer.to(device)
         return comet_bart
+
+    def save(self, filepath):
+        pass

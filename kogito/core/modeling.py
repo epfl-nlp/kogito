@@ -127,7 +127,7 @@ def validate(epoch, tokenizer, model, device, loader):
     return sources, predictions, actuals
 
 
-def beam_generations(tokenizer, model, device, loader, top_k=40):
+def beam_generations(tokenizer, model, device, loader, max_length=34, top_k=40):
     # This method assumes batch size of 1
     model.eval()
     records = []
@@ -142,7 +142,7 @@ def beam_generations(tokenizer, model, device, loader, top_k=40):
                 attention_mask=mask,
                 temperature=1.0,
                 do_sample=False,
-                max_length=int(os.environ.get("OUT_LEN", 34)),
+                max_length=max_length,
                 top_p=0.9,
                 top_k=top_k,
                 repetition_penalty=1.0,
@@ -172,49 +172,3 @@ def beam_generations(tokenizer, model, device, loader, top_k=40):
                 logger.info(f"Completed {_}")
 
     return records
-
-
-#
-# def batch_greedy_generate(tokenizer, model, dataloader, device, max_num_tokens_to_produce=20):
-#
-#     model.eval()
-#     with torch.no_grad():
-#         for _, data in enumerate(dataloader, 0):
-#             input_ids = data['source_ids'].to(device, dtype = torch.long)
-#             attn_mask = data['source_mask'].to(device, dtype = torch.long)
-#
-#             pad_token_id = tokenizer.pad_token_id
-#             eos_token_id = tokenizer.eos_token_id
-#             eos_not_in_sents = torch.ones(input_ids.shape[0]).long()
-#
-#             last_non_masked_idx = torch.sum(attn_mask, dim=1) - 1
-#
-#             start_idx = inp_idx = (last_non_masked_idx).view(-1, 1).repeat(1, tokenizer.vocab_size).unsqueeze(1)
-#             past = None
-#             seq_len = input_ids.size(1)
-#             position_ids = torch.tensor([list(range(seq_len)) for i in range(input_ids.shape[0])])
-#             for i, position_ids_slice in enumerate(position_ids):
-#                 position_ids_slice[last_non_masked_idx[i]:] = position_ids_slice[last_non_masked_idx[i]]
-#
-#             for step in range(max_num_tokens_to_produce):
-#                 outputs = model(input_ids, attention_mask=attn_mask, position_ids=position_ids)
-#
-#                 if step == 0:
-#                     next_token_logits = outputs[0].gather(1, start_idx).squeeze(1)
-#                 else:
-#                     next_token_logits = outputs[0][:, -1, :]
-#
-#                 next_tokens = torch.argmax(next_token_logits, dim=-1)
-#
-#                 # this updates which sentences have not seen an <EOS> token so far
-#                 # if one <EOS> token was seen the sentence is finished
-#                 eos_not_in_sents.mul_(next_tokens.ne(eos_token_id).long())
-#
-#                 # either append a padding token here if <EOS> has been seen or append next token
-#                 tokens_to_add = next_tokens * (eos_not_in_sents) + pad_token_id * (1 - eos_not_in_sents)
-#
-#                 # Update input_ids, attn_mask and position_ids
-#                 input_ids = torch.cat([input_ids, tokens_to_add.unsqueeze(-1)], dim=-1)
-#                 attn_mask = torch.cat([attn_mask, torch.ones((attn_mask.shape[0], 1)).long()], dim=1)
-#                 position_ids = torch.cat([position_ids, (position_ids[:, -1] + 1).unsqueeze(-1)], dim=1)
-#

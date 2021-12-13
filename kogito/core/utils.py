@@ -16,12 +16,11 @@ from torch.utils.data import Sampler
 
 from transformers import BartTokenizer
 
-inflection_engine = inflect.engine()
-nlp = spacy.load("en")
-
 
 def vp_present_participle(phrase):
+    nlp = spacy.load("en")
     doc = nlp(phrase)
+    inflection_engine = inflect.engine()
     return " ".join(
         [
             inflection_engine.present_participle(token.text)

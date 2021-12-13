@@ -2,13 +2,15 @@ import numpy as np
 import torch
 from torch import cuda
 from torch.utils.data import DataLoader
-from transformers import GPT2LMHeadModel
+from transformers import GPT2LMHeadModel, GPT2Tokenizer
+from typing import List
 
 import logging
 
 from kogito.core.modeling import train, beam_generations
 from kogito.core.dataset import KnowledgeDataset
 from kogito.models.base import KnowledgeModel
+from kogito.core.knowledge import Knowledge, KnowledgeGraph
 
 logger = logging.getLogger("gpt2-comet")
 logging.basicConfig(level=logging.DEBUG)
@@ -17,14 +19,19 @@ device = "cuda" if cuda.is_available() else "cpu"
 
 
 class COMETGPT2(KnowledgeModel):
-    def __init__(self, gpt2_model: str = "gpt2"):
-        self.model = GPT2LMHeadModel.from_pretrained(gpt2_model)
+    def __init__(self, model_name_or_path: str = "gpt2"):
+        self.model = GPT2LMHeadModel.from_pretrained(model_name_or_path)
+        self.tokenizer = GPT2Tokenizer.from_pretrained(model_name_or_path)
+        self.model.to(device)
 
     def train(
         self,
-        train_dataset: KnowledgeDataset,
-        val_dataset: KnowledgeDataset,
+        train_graph: KnowledgeGraph,
+        val_graph: KnowledgeGraph,
         batch_size: int = 2,
+        in_len: int = 16,
+        out_len: int = 34,
+        summary_len: int = 0,
         epochs: int = 3,
         lr_rate: float = 1e-5,
         seed: int = 42,
@@ -33,12 +40,25 @@ class COMETGPT2(KnowledgeModel):
         torch.manual_seed(seed)
         np.random.seed(seed)
         torch.backends.cudnn.deterministic = True
-        self.model = self.model.to(device)
-        self.tokenizer = train_dataset.tokenizer
         self.model.resize_token_embeddings(len(self.tokenizer))
 
+        train_dataset = KnowledgeDataset(
+            train_graph,
+            tokenizer=self.tokenizer,
+            source_len=out_len,
+            summ_len=summary_len,
+            model="gpt2",
+            is_eval=True,
+        )
+        val_dataset = KnowledgeDataset(
+            val_graph,
+            tokenizer=self.tokenizer,
+            source_len=in_len,
+            summ_len=out_len - in_len,
+            model="gpt2",
+            is_eval=True,
+        )
         train_params = {"batch_size": batch_size, "shuffle": True, "num_workers": 0}
-
         val_params = {"batch_size": 1, "shuffle": False, "num_workers": 0}
 
         train_loader = DataLoader(train_dataset, **train_params, drop_last=True)
@@ -57,15 +77,44 @@ class COMETGPT2(KnowledgeModel):
                 val_loader,
                 model_class="gpt2",
             )
-            for callback in callbacks:
-                callback(self)
+            if callbacks:
+                for callback in callbacks:
+                    callback(self)
 
         return self.model
 
-    def generate(self, dataset: KnowledgeDataset, top_k: int = 1):
+    def generate(
+        self,
+        input_graph: KnowledgeGraph,
+        in_len: int = 16,
+        out_len: int = 34,
+        top_k: int = 1,
+    ):
         params = {"batch_size": 1, "shuffle": False, "num_workers": 0}
+        dataset = KnowledgeDataset(
+            input_graph,
+            tokenizer=self.tokenizer,
+            source_len=in_len,
+            summ_len=out_len - in_len,
+            model="gpt2",
+            is_eval=True,
+        )
         loader = DataLoader(dataset, **params, drop_last=False)
         generations = beam_generations(
             self.tokenizer, self.model, device, loader, top_k=top_k
         )
-        return generations
+        outputs = []
+        for input_kg, gen in zip(input_graph.graph, generations):
+            output_kg = input_kg.copy()
+            output_kg.tails = gen["generations"]
+            outputs.append(output_kg)
+
+        return KnowledgeGraph(outputs)
+
+    def save(self, filepath):
+        self.model.save_pretrained(filepath)
+        self.tokenizer.save_pretrained(filepath)
+
+    @classmethod
+    def from_pretrained(cls, model_name_or_path: str):
+        return cls(model_name_or_path)
