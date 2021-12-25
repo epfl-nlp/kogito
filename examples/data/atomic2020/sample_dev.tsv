@@ -1,0 +1,32 @@
+PersonX 'd better go	oEffect	none
+PersonX 'd better go	oEffect	none
+PersonX 'd better go	oReact	none
+PersonX 'd better go	oReact	none
+PersonX 'd better go	oWant	none
+PersonX 'd better go	oWant	none
+PersonX 'd better go	oWant	none
+PersonX 'd better go	xAttr	avoidant
+PersonX 'd better go	xAttr	weak
+PersonX 'd better go	xAttr	hurried
+PersonX 'd better go	xAttr	late
+PersonX 'd better go	xAttr	Tardy
+PersonX 'd better go	xAttr	busy
+PersonX 'd better go	xEffect	She ran to the bathroom
+PersonX 'd better go	xEffect	She finally made it
+PersonX 'd better go	xEffect	leaves
+PersonX 'd better go	xEffect	runs away
+PersonX 'd better go	xIntent	to go somewhere else more important.
+PersonX 'd better go	xIntent	none
+PersonX 'd better go	xNeed	none
+PersonX 'd better go	xNeed	none
+PersonX 'd better go	xNeed	none
+PersonX 'd better go	xReact	the person feels happy since he arrived at his destination.
+PersonX 'd better go	xReact	rushed, in a hurry
+PersonX 'd better go	xWant	to escape from him
+PersonX 'd better go	xWant	to resign his job
+PersonX 'd better go	xWant	to leave on time
+PersonX 'd better go	xWant	to arrive home
+PersonX 'd better go	xWant	to relax and unwind
+PersonX 'd better go	xWant	to walk away
+PersonX 'd better go	xWant	not speak to anyone
+PersonX accepts PersonX's diploma	oEffect	none
