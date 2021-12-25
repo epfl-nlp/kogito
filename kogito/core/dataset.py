@@ -103,7 +103,7 @@ class Seq2SeqDataset(Dataset):
     def __init__(
         self,
         tokenizer,
-        input_graph,
+        train_graph,
         max_source_length,
         max_target_length,
         type_path="train",
@@ -111,9 +111,21 @@ class Seq2SeqDataset(Dataset):
         src_lang=None,
         tgt_lang=None,
         prefix="",
+        val_graph=None,
+        test_graph=None
     ):
         super().__init__()
-        self.input_graph = input_graph
+        self.train_graph = train_graph
+        self.val_graph = val_graph
+        self.test_graph = test_graph
+        self.input_graph = self.train_graph
+        
+        if type_path == "val":
+            self.input_graph = self.val_graph
+
+        if type_path == "test":
+            self.input_graph = self.test_graph
+
         self.src_lens = [len(f"{kg.head} {kg.relation} {GEN_TOKEN}") for kg in self.input_graph]
         self.max_source_length = max_source_length
         self.max_target_length = max_target_length

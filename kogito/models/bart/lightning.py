@@ -5,6 +5,7 @@ from dataclasses import asdict
 from typing import Any, Dict
 from kogito.models.bart.config import COMETBARTConfig
 from kogito.core.callbacks import LoggingCallback
+import inspect
 
 import pytorch_lightning as pl
 
@@ -171,7 +172,7 @@ class BaseTransformer(pl.LightningModule):
     def on_save_checkpoint(self, checkpoint: Dict[str, Any]) -> None:
         save_path = self.output_dir.joinpath("best_tfmr")
         save_path.mkdir(exist_ok=True)
-        self.model.pretrained_config.save_step = self.step_count
+        self.model.config.save_step = self.step_count
         self.model.save_pretrained(save_path)
         self.tokenizer.save_pretrained(save_path)
         self.tfmr_ckpts[self.step_count] = save_path
@@ -215,8 +216,10 @@ def generic_train(
     if config.gpus > 1:
         train_params["distributed_backend"] = "ddp"
 
-    trainer = pl.Trainer.from_argparse_args(
-        config,
+    trainer_param_keys = inspect.signature(pl.Trainer).parameters.keys()
+
+    trainer = pl.Trainer(
+        **{ckey: cval for ckey, cval in asdict(config).items() if ckey in trainer_param_keys},
         weights_summary=None,
         callbacks=[logging_callback] + extra_callbacks,
         logger=logger,

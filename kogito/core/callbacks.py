@@ -40,7 +40,7 @@ class Seq2SeqLoggingCallback(pl.Callback):
             }
         )
         # Log results
-        od = Path(pl_module.hparams.output_dir)
+        od = Path(pl_module.config.output_dir)
         if type_path == "test":
             results_file = od / "test_results.txt"
             generations_file = od / "test_generations.txt"

@@ -6,6 +6,7 @@ import warnings
 from collections import defaultdict
 from pathlib import Path
 from typing import Dict, List, Tuple
+from dataclasses import asdict
 
 import numpy as np
 import pytorch_lightning as pl
@@ -46,8 +47,11 @@ class SummarizationModule(BaseTransformer):
     metric_names = ROUGE_KEYS
     val_metric = "rouge2"
 
-    def __init__(self, config, input_graph, **kwargs):
+    def __init__(self, config, train_graph, val_graph, test_graph, **kwargs):
         super().__init__(config, num_labels=None, mode=self.mode, **kwargs)
+        self.train_graph = train_graph
+        self.val_graph = val_graph
+        self.test_graph = test_graph
         self.metrics_save_path = Path(self.output_dir) / "metrics.json"
         self.config_save_path = Path(self.output_dir) / "config.pkl"
         pickle_save(self.config, self.config_save_path)
@@ -55,7 +59,9 @@ class SummarizationModule(BaseTransformer):
         self.metrics = defaultdict(list)
 
         self.dataset_kwargs: dict = dict(
-            input_grah=input_graph,
+            train_graph=train_graph,
+            val_graph=val_graph,
+            test_graph=test_graph,
             max_source_length=self.config.max_source_length,
             prefix=self.model.config.prefix or "",
         )
@@ -273,8 +279,8 @@ class TranslationModule(SummarizationModule):
     metric_names = ["bleu"]
     val_metric = "bleu"
 
-    def __init__(self, config, input_graph, **kwargs):
-        super().__init__(config, input_graph, **kwargs)
+    def __init__(self, config, train_graph, val_graph, test_graph, **kwargs):
+        super().__init__(config, train_graph, val_graph, test_graph, **kwargs)
         self.dataset_kwargs["src_lang"] = config.src_lang
         self.dataset_kwargs["tgt_lang"] = config.tgt_lang
         if self.model.config.decoder_start_token_id is None and isinstance(
@@ -297,16 +303,16 @@ class COMETBART(KnowledgeModel):
         self.config = config
         self.kwargs = kwargs
 
-    def train(self, input_graph: KnowledgeGraph):
+    def train(self, train_graph: KnowledgeGraph, val_graph: KnowledgeGraph, test_graph: KnowledgeGraph, logger_name: str = "default"):
         Path(self.config.output_dir).mkdir(exist_ok=True)
 
         if self.config.task == "summarization":
             self.model: SummarizationModule = SummarizationModule(
-                self.config, input_graph, **self.kwargs
+                self.config, train_graph, val_graph, test_graph, **self.kwargs
             )
         elif self.config.task == "translation":
             self.model: SummarizationModule = TranslationModule(
-                self.config, input_graph, **self.kwargs
+                self.config, train_graph, val_graph, test_graph, **self.kwargs
             )
         else:
             raise ValueError
@@ -315,6 +321,21 @@ class COMETBART(KnowledgeModel):
             self.model.tokenizer.add_tokens(ATOMIC_RELATIONS)
             self.model.model.resize_token_embeddings(len(self.model.tokenizer))
 
+        if (
+            logger_name == "default"
+            or str(self.config.output_dir).startswith("/tmp")
+            or str(self.config.output_dir).startswith("/var")
+        ):
+            logger = True  # don't pollute wandb logs unnecessarily
+
+        elif logger_name == "wandb":
+            from pytorch_lightning.loggers import WandbLogger
+            logger = WandbLogger(name=self.model.output_dir.name, project=dataset)
+
+        elif logger_name == "wandb_shared":
+            from pytorch_lightning.loggers import WandbLogger
+            logger = WandbLogger(name=self.model.output_dir.name, project=f"hf_{dataset}")
+    
         trainer: pl.Trainer = generic_train(
             self.model,
             self.config,
@@ -324,7 +345,7 @@ class COMETBART(KnowledgeModel):
             ),
             logger=logger,
         )
-        pickle_save(self.model.config, self.config.output_dir / "config.pkl")
+        pickle_save(self.model.config, self.model.output_dir / "config.pkl")
 
         self.model.config.test_checkpoint = ""
         checkpoints = list(
@@ -337,7 +358,7 @@ class COMETBART(KnowledgeModel):
         if checkpoints:
             self.model.config.test_checkpoint = checkpoints[-1]
             trainer.resume_from_checkpoint = checkpoints[-1]
-        trainer.logger.log_hyperparams(self.model.config)
+        trainer.logger.log_hyperparams(asdict(self.model.config))
 
         trainer.test(self.model)
 
@@ -392,7 +413,6 @@ class COMETBART(KnowledgeModel):
         comet_bart.model = model
         comet_bart.tokenizer = tokenizer
         model.to(device)
-        # tokenizer.to(device)
         return comet_bart
 
     def save(self, filepath):

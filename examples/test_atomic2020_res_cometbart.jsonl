@@ -1,10 +1,10 @@
-{"head": "PersonX takes things for granted", "relation": "xNeed", "tails": " to have a lot of things to take for granted."}
-{"head": "PersonX calls PersonY ambulance", "relation": "xNeed", "tails": " to find the phone number of the ambulance company's phone number"}
-{"head": "PersonX pleases ___ to make", "relation": "xWant", "tails": " to have a good time with the people who made it"}
-{"head": "PersonX shoves PersonY back", "relation": "xEffect", "tails": " PersonX is yelled at by PersonY for shoving."}
-{"head": "PersonX dates for years", "relation": "xWant", "tails": " to go on a honeymoon with the person they are dating"}
-{"head": "PersonX covers every aspect", "relation": "isAfter", "tails": " PersonX writes a book about the subject matter of the book"}
-{"head": "PersonX wants to go", "relation": "isAfter", "tails": " PersonX wants to go on a date with PersonY"}
-{"head": "PersonX hits by lightning", "relation": "xEffect", "tails": " PersonX screams in pain from the lightning strike and falls down."}
-{"head": "PersonX finally meet PersonY", "relation": "xNeed", "tails": " to drive to PersonY's house.Y is not home"}
-{"head": "chain", "relation": "ObjectUse", "tails": " attach to the car to keep it from rolling down the hill"}
+{"head": "PersonX takes things for granted", "relation": "xNeed", "tails": "PersonPersonX [GEN]PersonX takes things for granted "}
+{"head": "PersonX calls PersonY ambulance", "relation": "xNeed", "tails": "PersonXPersonYPersonY [GEN]PersonX calls PersonY "}
+{"head": "PersonX pleases ___ to make", "relation": "xWant", "tails": "PersonPersonX pleases ___ to make    [GEN]"}
+{"head": "PersonX shoves PersonY back", "relation": "xEffect", "tails": "PersonPersonXPersonYPersonY PersonY PersonXPersonX PersonY [GEN]"}
+{"head": "PersonX dates for years", "relation": "xWant", "tails": "Person [1] [2] [3] [4] [5]"}
+{"head": "PersonX covers every aspect", "relation": "isAfter", "tails": "PersonPersonX covers every aspect of the game [GEN]"}
+{"head": "PersonX wants to go", "relation": "isAfter", "tails": "PersonPersonX wants to go back to school [GEN]"}
+{"head": "PersonX hits by lightning", "relation": "xEffect", "tails": "Person [GEN] [GEN][GEN][GEN]"}
+{"head": "PersonX finally meet PersonY", "relation": "xNeed", "tails": "PersonPersonXPersonYPersonPPersonY PersonY PersonXPersonX PersonYPersonY [GEN]"}
+{"head": "chain", "relation": "ObjectUse", "tails": "chain[1] [2] [3] [4] [5]"}

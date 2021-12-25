@@ -1,3 +1,4 @@
+from typing import Optional
 from dataclasses import dataclass, asdict
 
 BART_TASKS = ["summarization", "translation"]
@@ -9,7 +10,7 @@ class COMETBARTConfig:
     output_dir: str = None
     fp16: bool = False
     fp16_opt_level: str = "O2"
-    tpu_cores: int = 0
+    tpu_cores: Optional[int] = None
     gradient_clip_val: float = 1.0
     accumulate_grad_batches: int = 1
     seed: int = 42
@@ -40,7 +41,7 @@ class COMETBARTConfig:
     train_batch_size: int = 32
     eval_batch_size: int = 32
     gpus: int = 1
-    decoder_start_token_id: int = None
+    decoder_start_token_id: Optional[int] = None
     num_train_epochs: int = 1
 
     def __dict__(self):
