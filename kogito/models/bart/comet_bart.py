@@ -46,7 +46,7 @@ class SummarizationModule(BaseTransformer):
     metric_names = ROUGE_KEYS
     val_metric = "rouge2"
 
-    def __init__(self, config, **kwargs):
+    def __init__(self, config, input_graph, **kwargs):
         super().__init__(config, num_labels=None, mode=self.mode, **kwargs)
         self.metrics_save_path = Path(self.output_dir) / "metrics.json"
         self.config_save_path = Path(self.output_dir) / "config.pkl"
@@ -55,7 +55,7 @@ class SummarizationModule(BaseTransformer):
         self.metrics = defaultdict(list)
 
         self.dataset_kwargs: dict = dict(
-            data_dir=self.config.data_dir,
+            input_grah=input_graph,
             max_source_length=self.config.max_source_length,
             prefix=self.model.config.prefix or "",
         )
@@ -273,8 +273,8 @@ class TranslationModule(SummarizationModule):
     metric_names = ["bleu"]
     val_metric = "bleu"
 
-    def __init__(self, config, **kwargs):
-        super().__init__(config, **kwargs)
+    def __init__(self, config, input_graph, **kwargs):
+        super().__init__(config, input_graph, **kwargs)
         self.dataset_kwargs["src_lang"] = config.src_lang
         self.dataset_kwargs["tgt_lang"] = config.tgt_lang
         if self.model.config.decoder_start_token_id is None and isinstance(
@@ -297,14 +297,16 @@ class COMETBART(KnowledgeModel):
         self.config = config
         self.kwargs = kwargs
 
-    def train(self):
+    def train(self, input_graph: KnowledgeGraph):
+        Path(self.config.output_dir).mkdir(exist_ok=True)
+
         if self.config.task == "summarization":
             self.model: SummarizationModule = SummarizationModule(
-                self.config, self.kwargs
+                self.config, input_graph, **self.kwargs
             )
         elif self.config.task == "translation":
             self.model: SummarizationModule = TranslationModule(
-                self.config, self.kwargs
+                self.config, input_graph, **self.kwargs
             )
         else:
             raise ValueError
@@ -313,7 +315,6 @@ class COMETBART(KnowledgeModel):
             self.model.tokenizer.add_tokens(ATOMIC_RELATIONS)
             self.model.model.resize_token_embeddings(len(self.model.tokenizer))
 
-        Path(self.config.output_dir).mkdir(exist_ok=True)
         trainer: pl.Trainer = generic_train(
             self.model,
             self.config,
@@ -349,7 +350,7 @@ class COMETBART(KnowledgeModel):
     ):
         with torch.no_grad():
             outputs = []
-            for kg_batch in list(chunks(input_graph.graph, batch_size)):
+            for kg_batch in list(chunks(input_graph, batch_size)):
                 queries = []
                 for kg_input in kg_batch:
                     queries.append(kg_input.to_query(decode_method=decode_method))

@@ -95,7 +95,7 @@ class Knowledge:
         self.prompt = None
 
     def __repr__(self):
-        return f'(head="{self.head}", relation="{self.relation}", tails={self.tails}, base={self.base})'
+        return f'Knowledge(head="{self.head}", relation="{self.relation}", tails={self.tails}, base={self.base})'
 
     def to_prompt(self):
         head = self.head
@@ -241,6 +241,20 @@ class Knowledge:
 class KnowledgeGraph:
     def __init__(self, graph: List[Knowledge]):
         self.graph = graph
+        self._graph_iter = None
+
+    def __iter__(self):
+        self._graph_iter = iter(self.graph)
+        return self
+
+    def __next__(self):
+        return next(self._graph_iter)
+    
+    def __len__(self):
+        return len(self.graph)
+
+    def __getitem__(self, idx):
+        return self.graph[idx]
 
     @classmethod
     def from_jsonl(
@@ -274,3 +288,4 @@ class KnowledgeGraph:
 
     def to_dataframe(self):
         return pd.DataFrame([kg.to_json(only_one_tail=True) for kg in self.graph])
+    

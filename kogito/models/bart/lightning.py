@@ -43,7 +43,7 @@ MODEL_MODES = {
 class BaseTransformer(pl.LightningModule):
     def __init__(
         self,
-        base_config: COMETBARTConfig,
+        config: COMETBARTConfig,
         num_labels=None,
         mode="base",
         pretrained_config=None,
@@ -53,16 +53,16 @@ class BaseTransformer(pl.LightningModule):
     ):
         """Initialize a model, tokenizer and pretrained_config."""
         super().__init__()
-        self.base_config = base_config
+        self.config = config
         self.step_count = 0
         self.tfmr_ckpts = {}
-        self.output_dir = Path(self.base_config.output_dir)
-        cache_dir = self.base_config.cache_dir if self.base_config.cache_dir else None
+        self.output_dir = Path(self.config.output_dir)
+        cache_dir = self.config.cache_dir if self.config.cache_dir else None
         if pretrained_config is None:
             self.pretrained_config = AutoConfig.from_pretrained(
-                self.base_config.pretrained_config
-                if self.base_config.pretrained_config
-                else self.base_config.pretrained_model,
+                self.config.pretrained_config
+                if self.config.pretrained_config
+                else self.config.pretrained_model,
                 **({"num_labels": num_labels} if num_labels is not None else {}),
                 cache_dir=cache_dir,
                 **config_kwargs,
@@ -71,9 +71,9 @@ class BaseTransformer(pl.LightningModule):
             self.pretrained_config: PretrainedConfig = pretrained_config
         if tokenizer is None:
             self.tokenizer = AutoTokenizer.from_pretrained(
-                self.base_config.pretrained_tokenizer
-                if self.base_config.pretrained_tokenizer
-                else self.base_config.pretrained_model,
+                self.config.pretrained_tokenizer
+                if self.config.pretrained_tokenizer
+                else self.config.pretrained_model,
                 cache_dir=cache_dir,
             )
         else:
@@ -81,9 +81,9 @@ class BaseTransformer(pl.LightningModule):
         self.model_type = MODEL_MODES[mode]
         if model is None:
             self.model = self.model_type.from_pretrained(
-                self.base_config.pretrained_model,
-                from_tf=bool(".ckpt" in self.base_config.pretrained_model),
-                pretrained_config=self.pretrained_config,
+                self.config.pretrained_model,
+                from_tf=bool(".ckpt" in self.config.pretrained_model),
+                config=self.pretrained_config,
                 cache_dir=cache_dir,
             )
         else:
@@ -103,7 +103,7 @@ class BaseTransformer(pl.LightningModule):
                     for n, p in model.named_parameters()
                     if not any(nd in n for nd in no_decay)
                 ],
-                "weight_decay": self.base_config.weight_decay,
+                "weight_decay": self.config.weight_decay,
             },
             {
                 "params": [
@@ -116,14 +116,14 @@ class BaseTransformer(pl.LightningModule):
         ]
         optimizer = AdamW(
             optimizer_grouped_parameters,
-            lr=self.base_config.learning_rate,
-            eps=self.base_config.adam_epsilon,
+            lr=self.config.learning_rate,
+            eps=self.config.adam_epsilon,
         )
         self.opt = optimizer
 
         scheduler = get_linear_schedule_with_warmup(
             self.opt,
-            num_warmup_steps=self.base_config.warmup_steps,
+            num_warmup_steps=self.config.warmup_steps,
             num_training_steps=self.total_steps,
         )
         scheduler = {"scheduler": scheduler, "interval": "step", "frequency": 1}
@@ -136,34 +136,34 @@ class BaseTransformer(pl.LightningModule):
         return self.validation_end(outputs)
 
     def setup(self, step):
-        train_batch_size = self.base_config.train_batch_size
+        train_batch_size = self.config.train_batch_size
         dataloader = self.get_dataloader("train", train_batch_size)
         self.train_loader = dataloader
         self.total_steps = (
             (
                 len(dataloader.dataset)
-                // (train_batch_size * max(1, self.base_config.gpus))
+                // (train_batch_size * max(1, self.config.gpus))
             )
-            // self.base_config.accumulate_grad_batches
-            * float(self.base_config.num_train_epochs)
+            // self.config.accumulate_grad_batches
+            * float(self.config.num_train_epochs)
         )
 
     def train_dataloader(self):
         return self.train_loader
 
     def val_dataloader(self):
-        return self.get_dataloader("dev", self.base_config.eval_batch_size)
+        return self.get_dataloader("dev", self.config.eval_batch_size)
 
     def test_dataloader(self):
-        return self.get_dataloader("test", self.base_config.eval_batch_size)
+        return self.get_dataloader("test", self.config.eval_batch_size)
 
     def _feature_file(self, mode):
         return os.path.join(
-            self.base_config.data_dir,
+            self.config.data_dir,
             "cached_{}_{}_{}".format(
                 mode,
-                list(filter(None, self.base_config.pretrained_model.split("/"))).pop(),
-                str(self.base_config.max_seq_length),
+                list(filter(None, self.config.pretrained_model.split("/"))).pop(),
+                str(self.config.max_seq_length),
             ),
         )
 
@@ -190,7 +190,7 @@ def generic_train(
     pl.seed_everything(config.seed)
 
     # init model
-    odir = Path(model.base_config.output_dir)
+    odir = Path(model.config.output_dir)
     odir.mkdir(exist_ok=True)
 
     # add custom checkpoints
@@ -216,7 +216,7 @@ def generic_train(
         train_params["distributed_backend"] = "ddp"
 
     trainer = pl.Trainer.from_argparse_args(
-        **asdict(config),
+        config,
         weights_summary=None,
         callbacks=[logging_callback] + extra_callbacks,
         logger=logger,

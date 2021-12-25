@@ -27,13 +27,6 @@ class KnowledgeDataset(Dataset):
         self.ctext = self.data["tails"] + f" {EOS_TOKEN}"
         self.model = model
         self.is_eval = is_eval
-        self.tokenizer.add_special_tokens(
-            {
-                "eos_token": EOS_TOKEN,
-                "pad_token": PAD_TOKEN,
-                "additional_special_tokens": ATOMIC_RELATIONS + [GEN_TOKEN],
-            }
-        )
 
     def __len__(self):
         return len(self.text)
@@ -110,7 +103,7 @@ class Seq2SeqDataset(Dataset):
     def __init__(
         self,
         tokenizer,
-        data_dir,
+        input_graph,
         max_source_length,
         max_target_length,
         type_path="train",
@@ -120,12 +113,10 @@ class Seq2SeqDataset(Dataset):
         prefix="",
     ):
         super().__init__()
-        self.src_file = Path(data_dir).joinpath(type_path + ".source")
-        self.tgt_file = Path(data_dir).joinpath(type_path + ".target")
-        self.src_lens = self.get_char_lens(self.src_file)
+        self.input_graph = input_graph
+        self.src_lens = [len(f"{kg.head} {kg.relation} {GEN_TOKEN}") for kg in self.input_graph]
         self.max_source_length = max_source_length
         self.max_target_length = max_target_length
-        assert min(self.src_lens) > 0, f"found empty line in {self.src_file}"
         self.tokenizer = tokenizer
         self.prefix = prefix
         if n_obs is not None:
@@ -138,11 +129,9 @@ class Seq2SeqDataset(Dataset):
         return len(self.src_lens)
 
     def __getitem__(self, index) -> Dict[str, torch.Tensor]:
-        index = index + 1  # linecache starts at 1
-        source_line = self.prefix + linecache.getline(str(self.src_file), index).rstrip(
-            "\n"
-        )
-        tgt_line = linecache.getline(str(self.tgt_file), index).rstrip("\n")
+        kg = self.input_graph[index]
+        source_line = self.prefix + f"{kg.head} {kg.relation} {GEN_TOKEN}"
+        tgt_line = kg.tails[0] if kg.tails else None
         assert source_line, f"empty source line for index {index}"
         assert tgt_line, f"empty tgt line for index {index}"
         source_inputs = encode_line(self.tokenizer, source_line, self.max_source_length)
@@ -199,11 +188,9 @@ class MBartDataset(Seq2SeqDataset):
             )
 
     def __getitem__(self, index) -> Dict[str, str]:
-        index = index + 1  # linecache starts at 1
-        source_line = self.prefix + linecache.getline(str(self.src_file), index).rstrip(
-            "\n"
-        )
-        tgt_line = linecache.getline(str(self.tgt_file), index).rstrip("\n")
+        kg = self.input_graph[index]
+        source_line = self.prefix + f"{kg.head} {kg.relation} {GEN_TOKEN}"
+        tgt_line = kg.tails[0] if kg.tails else None
         assert source_line, f"empty source line for index {index}"
         assert tgt_line, f"empty tgt line for index {index}"
         return {

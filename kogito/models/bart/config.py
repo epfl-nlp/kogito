@@ -1,4 +1,4 @@
-from dataclasses import dataclass
+from dataclasses import dataclass, asdict
 
 BART_TASKS = ["summarization", "translation"]
 FP16_OPT_LEVELS = ["O0", "O1", "O2", "O3"]
@@ -41,3 +41,7 @@ class COMETBARTConfig:
     eval_batch_size: int = 32
     gpus: int = 1
     decoder_start_token_id: int = None
+    num_train_epochs: int = 1
+
+    def __dict__(self):
+        return asdict(self)

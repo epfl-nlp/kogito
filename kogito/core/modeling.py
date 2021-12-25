@@ -1,14 +1,8 @@
 import torch
-
-# Import os for env varibles via Beaker
 import os
-
-# WandB – Import the wandb library
 import wandb
 import logging
 from tqdm import tqdm
-
-from kogito.core.logging import log_eval
 
 logger = logging.getLogger("modeling")
 
@@ -22,10 +16,12 @@ def train(
     optimizer,
     val_loader=None,
     model_class="t5",
-    save_dir="/models",
+    output_dir=None,
+    log_wandb=False
 ):
     model.train()
     batch_count = len(loader)
+
     for iteration, data in tqdm(enumerate(loader, 0)):
         y = data["target_ids"].to(device, dtype=torch.long)
         y_ids = y[:, :-1].contiguous()
@@ -46,13 +42,14 @@ def train(
         loss = outputs[0]
 
         if iteration % 100 == 0:
-            wandb.log(
-                {
-                    "Training Loss": loss.item(),
-                    "Epoch": epoch,
-                    "Batches left": batch_count - iteration,
-                }
-            )
+            if log_wandb:
+                wandb.log(
+                    {
+                        "Training Loss": loss.item(),
+                        "Epoch": epoch,
+                        "Batches left": batch_count - iteration,
+                    }
+                )
             batches_left = batch_count - iteration
             logger.info(
                 f"\nEpoch: {epoch}, Iteration: {iteration}, Loss:  {loss.item()}, Batches left: {batches_left}"
@@ -63,9 +60,9 @@ def train(
                 f"\nEpoch: {epoch}, Loss:  {loss.item()}, BatchesLeft: {batches_left}"
             )
 
-        if iteration % 5000 == 0:
-            model.save_pretrained(save_dir + "/iter_{}_model".format(iteration))
-            tokenizer.save_pretrained(save_dir + "/iter_{}_tokenizer".format(iteration))
+        if iteration % 5000 == 0 and output_dir:
+            model.save_pretrained(output_dir + "/iter_{}_model".format(iteration))
+            tokenizer.save_pretrained(output_dir + "/iter_{}_tokenizer".format(iteration))
 
         optimizer.zero_grad()
         loss.backward()
@@ -73,9 +70,42 @@ def train(
 
         if iteration % 100 == 0 and val_loader is not None:
             log_eval(
-                epoch, tokenizer, model, device, val_loader, model_class=model_class
+                epoch, tokenizer, model, device, val_loader, model_class=model_class, log_wandb=log_wandb
             )
             model.train()
+
+
+def log_eval(
+    epoch, tokenizer, model, device, loader, sample_limit=5000, model_class="t5", log_wandb=False
+):
+    model.eval()
+    total_loss = 0
+    loss_count = 0
+
+    with torch.no_grad():
+        for _, data in enumerate(loader, 0):
+            y = data["target_ids"].to(device, dtype=torch.long)
+            y_ids = y[:, :-1].contiguous()
+            lm_labels = y[:, 1:].clone().detach()
+            lm_labels[y[:, 1:] == tokenizer.pad_token_id] = -100
+            ids = data["source_ids"].to(device, dtype=torch.long)
+            mask = data["source_mask"].to(device, dtype=torch.long)
+            if model_class == "t5":
+                outputs = model(
+                    input_ids=ids,
+                    attention_mask=mask,
+                    decoder_input_ids=y_ids,
+                    lm_labels=lm_labels,
+                )
+            else:
+                outputs = model(input_ids=ids, attention_mask=mask, labels=ids)
+
+            loss = outputs[0]
+            total_loss += loss.item()
+            loss_count += 1
+    if log_wandb:
+        wandb.log({"Eval Loss": total_loss / loss_count})
+    logger.info("Eval Loss: {}".format(total_loss / loss_count))
 
 
 def validate(epoch, tokenizer, model, device, loader):

@@ -45,7 +45,7 @@ class GPT2Zeroshot(KnowledgeModel):
         torch.backends.cudnn.deterministic = True
 
         outputs = []
-        for input_kg in input_graph.graph:
+        for input_kg in input_graph:
             prompt = input_kg.to_prompt()
             input_ids = self.tokenizer.encode(
                 prompt, add_special_tokens=False, return_tensors="pt"
