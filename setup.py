@@ -24,7 +24,7 @@ setup(
     description="A Python NLP Commonsense Reasoning library",
     long_description=long_description,
     long_description_content_type="text/markdown",
-    url="https://github.com/mismayil/comet-atomic-2020",
+    url="https://github.com/mismayil/kogito",
     classifiers=[],
     author="EPFL NLP Lab",
     author_email="mahammad.ismayilzada@epfl.ch",

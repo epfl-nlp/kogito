@@ -4,7 +4,7 @@ from torch import cuda
 from torch.utils.data import DataLoader
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from typing import List
-
+import wandb
 import logging
 
 from kogito.core.modeling import train, beam_generations

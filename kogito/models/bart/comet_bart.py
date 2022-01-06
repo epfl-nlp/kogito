@@ -330,11 +330,11 @@ class COMETBART(KnowledgeModel):
 
         elif logger_name == "wandb":
             from pytorch_lightning.loggers import WandbLogger
-            logger = WandbLogger(name=self.model.output_dir.name, project=dataset)
+            logger = WandbLogger(name=self.model.output_dir.name, project=self.model.output_dir.name)
 
         elif logger_name == "wandb_shared":
             from pytorch_lightning.loggers import WandbLogger
-            logger = WandbLogger(name=self.model.output_dir.name, project=f"hf_{dataset}")
+            logger = WandbLogger(name=self.model.output_dir.name, project=f"hf_{self.model.output_dir.name}")
     
         trainer: pl.Trainer = generic_train(
             self.model,
