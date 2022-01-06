@@ -141,10 +141,7 @@ class BaseTransformer(pl.LightningModule):
         dataloader = self.get_dataloader("train", train_batch_size)
         self.train_loader = dataloader
         self.total_steps = (
-            (
-                len(dataloader.dataset)
-                // (train_batch_size * max(1, self.config.gpus))
-            )
+            (len(dataloader.dataset) // (train_batch_size * max(1, self.config.gpus)))
             // self.config.accumulate_grad_batches
             * float(self.config.num_train_epochs)
         )
@@ -219,7 +216,11 @@ def generic_train(
     trainer_param_keys = inspect.signature(pl.Trainer).parameters.keys()
 
     trainer = pl.Trainer(
-        **{ckey: cval for ckey, cval in asdict(config).items() if ckey in trainer_param_keys},
+        **{
+            ckey: cval
+            for ckey, cval in asdict(config).items()
+            if ckey in trainer_param_keys
+        },
         weights_summary=None,
         callbacks=[logging_callback] + extra_callbacks,
         logger=logger,

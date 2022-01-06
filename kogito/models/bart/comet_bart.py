@@ -16,7 +16,10 @@ from torch.utils.data import DataLoader
 from transformers import MBartTokenizer, get_linear_schedule_with_warmup
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
-from kogito.core.knowledge import DECODE_METHODS, ATOMIC_RELATIONS, Knowledge, KnowledgeGraph
+from kogito.core.knowledge import (
+    ATOMIC_RELATIONS,
+    KnowledgeGraph,
+)
 from kogito.core.utils import (
     assert_all_frozen,
     use_task_specific_params,
@@ -303,7 +306,13 @@ class COMETBART(KnowledgeModel):
         self.config = config
         self.kwargs = kwargs
 
-    def train(self, train_graph: KnowledgeGraph, val_graph: KnowledgeGraph, test_graph: KnowledgeGraph, logger_name: str = "default"):
+    def train(
+        self,
+        train_graph: KnowledgeGraph,
+        val_graph: KnowledgeGraph,
+        test_graph: KnowledgeGraph,
+        logger_name: str = "default",
+    ):
         Path(self.config.output_dir).mkdir(exist_ok=True)
 
         if self.config.task == "summarization":
@@ -330,12 +339,19 @@ class COMETBART(KnowledgeModel):
 
         elif logger_name == "wandb":
             from pytorch_lightning.loggers import WandbLogger
-            logger = WandbLogger(name=self.model.output_dir.name, project=self.model.output_dir.name)
+
+            logger = WandbLogger(
+                name=self.model.output_dir.name, project=self.model.output_dir.name
+            )
 
         elif logger_name == "wandb_shared":
             from pytorch_lightning.loggers import WandbLogger
-            logger = WandbLogger(name=self.model.output_dir.name, project=f"hf_{self.model.output_dir.name}")
-    
+
+            logger = WandbLogger(
+                name=self.model.output_dir.name,
+                project=f"hf_{self.model.output_dir.name}",
+            )
+
         trainer: pl.Trainer = generic_train(
             self.model,
             self.config,

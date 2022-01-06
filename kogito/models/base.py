@@ -15,5 +15,5 @@ class KnowledgeModel(ABC):
         raise NotImplementedError
 
     @abstractclassmethod
-    def from_pretrained(self, model_name_or_path: str):
+    def from_pretrained(cls, model_name_or_path: str):
         raise NotImplementedError

@@ -17,7 +17,7 @@ def train(
     val_loader=None,
     model_class="t5",
     output_dir=None,
-    log_wandb=False
+    log_wandb=False,
 ):
     model.train()
     batch_count = len(loader)
@@ -62,7 +62,9 @@ def train(
 
         if iteration % 5000 == 0 and output_dir:
             model.save_pretrained(output_dir + "/iter_{}_model".format(iteration))
-            tokenizer.save_pretrained(output_dir + "/iter_{}_tokenizer".format(iteration))
+            tokenizer.save_pretrained(
+                output_dir + "/iter_{}_tokenizer".format(iteration)
+            )
 
         optimizer.zero_grad()
         loss.backward()
@@ -70,13 +72,26 @@ def train(
 
         if iteration % 100 == 0 and val_loader is not None:
             log_eval(
-                epoch, tokenizer, model, device, val_loader, model_class=model_class, log_wandb=log_wandb
+                epoch,
+                tokenizer,
+                model,
+                device,
+                val_loader,
+                model_class=model_class,
+                log_wandb=log_wandb,
             )
             model.train()
 
 
 def log_eval(
-    epoch, tokenizer, model, device, loader, sample_limit=5000, model_class="t5", log_wandb=False
+    epoch,
+    tokenizer,
+    model,
+    device,
+    loader,
+    sample_limit=5000,
+    model_class="t5",
+    log_wandb=False,
 ):
     model.eval()
     total_loss = 0

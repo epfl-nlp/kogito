@@ -235,7 +235,11 @@ class Knowledge:
         )
 
     def to_json(self, only_one_tail=False):
-        return {"head": self.head, "relation": self.relation, "tails": self.tails[0] if self.tails and only_one_tail else self.tails}
+        return {
+            "head": self.head,
+            "relation": self.relation,
+            "tails": self.tails[0] if self.tails and only_one_tail else self.tails,
+        }
 
 
 class KnowledgeGraph:
@@ -249,7 +253,7 @@ class KnowledgeGraph:
 
     def __next__(self):
         return next(self._graph_iter)
-    
+
     def __len__(self):
         return len(self.graph)
 
@@ -288,4 +292,3 @@ class KnowledgeGraph:
 
     def to_dataframe(self):
         return pd.DataFrame([kg.to_json(only_one_tail=True) for kg in self.graph])
-    

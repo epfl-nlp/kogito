@@ -3,12 +3,10 @@ from pathlib import Path
 from typing import Dict
 import warnings
 import torch
-import linecache
 import logging
 from torch.utils.data import Dataset
-import pandas as pd
 
-from kogito.core.knowledge import Knowledge, GEN_TOKEN, EOS_TOKEN, PAD_TOKEN, ATOMIC_RELATIONS
+from kogito.core.knowledge import GEN_TOKEN, EOS_TOKEN
 from kogito.core.utils import encode_line, trim_batch, SortishSampler
 
 logger = logging.getLogger("gpt2-comet")
@@ -112,21 +110,23 @@ class Seq2SeqDataset(Dataset):
         tgt_lang=None,
         prefix="",
         val_graph=None,
-        test_graph=None
+        test_graph=None,
     ):
         super().__init__()
         self.train_graph = train_graph
         self.val_graph = val_graph
         self.test_graph = test_graph
         self.input_graph = self.train_graph
-        
+
         if type_path == "val":
             self.input_graph = self.val_graph
 
         if type_path == "test":
             self.input_graph = self.test_graph
 
-        self.src_lens = [len(f"{kg.head} {kg.relation} {GEN_TOKEN}") for kg in self.input_graph]
+        self.src_lens = [
+            len(f"{kg.head} {kg.relation} {GEN_TOKEN}") for kg in self.input_graph
+        ]
         self.max_source_length = max_source_length
         self.max_target_length = max_target_length
         self.tokenizer = tokenizer

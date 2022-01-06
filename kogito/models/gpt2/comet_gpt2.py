@@ -3,19 +3,25 @@ import torch
 from torch import cuda
 from torch.utils.data import DataLoader
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
-from typing import List
 import wandb
 import logging
 
 from kogito.core.modeling import train, beam_generations
 from kogito.core.dataset import KnowledgeDataset
 from kogito.models.base import KnowledgeModel
-from kogito.core.knowledge import Knowledge, KnowledgeGraph, GEN_TOKEN, EOS_TOKEN, PAD_TOKEN, ATOMIC_RELATIONS
+from kogito.core.knowledge import (
+    KnowledgeGraph,
+    GEN_TOKEN,
+    EOS_TOKEN,
+    PAD_TOKEN,
+    ATOMIC_RELATIONS,
+)
 
 logger = logging.getLogger("gpt2-comet")
 logging.basicConfig(level=logging.DEBUG)
 
 device = "cuda" if cuda.is_available() else "cpu"
+
 
 class COMETGPT2(KnowledgeModel):
     def __init__(self, model_name_or_path: str = "gpt2"):
@@ -53,7 +59,7 @@ class COMETGPT2(KnowledgeModel):
             tokenizer=self.tokenizer,
             source_len=out_len,
             summ_len=summary_len,
-            model="gpt2"
+            model="gpt2",
         )
         val_dataset = KnowledgeDataset(
             val_graph,
@@ -61,7 +67,7 @@ class COMETGPT2(KnowledgeModel):
             source_len=in_len,
             summ_len=out_len - in_len,
             model="gpt2",
-            is_eval=True
+            is_eval=True,
         )
         train_params = {"batch_size": batch_size, "shuffle": True, "num_workers": 0}
         val_params = {"batch_size": 1, "shuffle": False, "num_workers": 0}
@@ -81,7 +87,7 @@ class COMETGPT2(KnowledgeModel):
                 "seed": seed,
                 "in_len": in_len,
                 "summary_len": summary_len,
-                "out_len": out_len
+                "out_len": out_len,
             }
             wandb.init(project="kogito_comet_gpt2", config=config)
 
@@ -96,11 +102,13 @@ class COMETGPT2(KnowledgeModel):
                 val_loader,
                 model_class="gpt2",
                 log_wandb=log_wandb,
-                output_dir=output_dir
+                output_dir=output_dir,
             )
             if output_dir:
-                self.model.save_pretrained('{}/checkpoint_{}'.format(output_dir, epoch))
-                self.tokenizer.save_pretrained('{}/checkpoint_{}'.format(output_dir, epoch))
+                self.model.save_pretrained("{}/checkpoint_{}".format(output_dir, epoch))
+                self.tokenizer.save_pretrained(
+                    "{}/checkpoint_{}".format(output_dir, epoch)
+                )
 
         return self.model
 
