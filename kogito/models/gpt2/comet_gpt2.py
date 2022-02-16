@@ -14,7 +14,7 @@ from kogito.core.knowledge import (
     GEN_TOKEN,
     EOS_TOKEN,
     PAD_TOKEN,
-    ATOMIC_RELATIONS,
+    KG_RELATIONS,
 )
 
 logger = logging.getLogger("gpt2-comet")
@@ -50,7 +50,7 @@ class COMETGPT2(KnowledgeModel):
             {
                 "eos_token": EOS_TOKEN,
                 "pad_token": PAD_TOKEN,
-                "additional_special_tokens": ATOMIC_RELATIONS + [GEN_TOKEN],
+                "additional_special_tokens": KG_RELATIONS + [GEN_TOKEN],
             }
         )
 

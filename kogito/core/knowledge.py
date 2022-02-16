@@ -5,7 +5,7 @@ import json
 
 from kogito.core.utils import vp_present_participle, article, posessive
 
-ATOMIC_RELATIONS = [
+KG_RELATIONS = [
     "AtLocation",
     "CapableOf",
     "Causes",

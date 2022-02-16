@@ -17,7 +17,7 @@ from transformers import MBartTokenizer, get_linear_schedule_with_warmup
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
 from kogito.core.knowledge import (
-    ATOMIC_RELATIONS,
+    KG_RELATIONS,
     KnowledgeGraph,
 )
 from kogito.core.utils import (
@@ -327,7 +327,7 @@ class COMETBART(KnowledgeModel):
             raise ValueError
 
         if self.config.atomic:
-            self.model.tokenizer.add_tokens(ATOMIC_RELATIONS)
+            self.model.tokenizer.add_tokens(KG_RELATIONS)
             self.model.model.resize_token_embeddings(len(self.model.tokenizer))
 
         if (
