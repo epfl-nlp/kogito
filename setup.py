@@ -9,11 +9,12 @@ requirements = [
     "pytorch-lightning==0.8.5",
     "git-python==1.0.3",
     "pandas",
-    "spacy<3.0.0",
+    "spacy",
     "inflect",
     "transformers",
     "wandb",
     "torch",
+    "pytextrank"
 ]
 
 long_description = (here / "README.md").read_text(encoding="utf-8")

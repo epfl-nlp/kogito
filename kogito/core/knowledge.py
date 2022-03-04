@@ -59,6 +59,62 @@ KG_RELATIONS = [
     "xWant",
 ]
 
+CONCEPTNET_RELATIONS = [
+    "AtLocation",
+    "CapableOf",
+    "Causes",
+    "CausesDesire",
+    "CreatedBy",
+    "DefinedAs",
+    "Desires",
+    "HasA",
+    "HasFirstSubevent",
+    "HasLastSubevent",
+    "HasPrerequisite",
+    "HasProperty",
+    "HasSubevent",
+    "InheritsFrom",
+    "InstanceOf",
+    "IsA",
+    "MadeOf",
+    "MotivatedByGoal",
+    "NotCapableOf",
+    "NotDesires",
+    "NotHasA",
+    "NotHasProperty",
+    "NotIsA",
+    "NotMadeOf",
+    "PartOf",
+    "ReceivesAction",
+    "SymbolOf",
+    "UsedFor"
+]
+
+ATOMIC_RELATIONS = [
+    "AtLocation",
+    "CapableOf",
+    "Causes",
+    "Desires",
+    "HasProperty",
+    "HasSubEvent",
+    "HinderedBy",
+    "MadeUpOf",
+    "NotDesires",
+    "isAfter",
+    "isBefore",
+    "isFilledBy",
+    "oEffect",
+    "oReact",
+    "oWant",
+    "xAttr",
+    "xEffect",
+    "xIntent",
+    "xNeed",
+    "xReact",
+    "xReason",
+    "xWant",
+]
+
 EOS_TOKEN = "[EOS]"
 GEN_TOKEN = "[GEN]"
 PAD_TOKEN = "[PAD]"

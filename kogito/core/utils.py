@@ -18,7 +18,7 @@ from transformers import BartTokenizer
 
 
 def vp_present_participle(phrase):
-    nlp = spacy.load("en")
+    nlp = spacy.load("en_core_web_sm")
     doc = nlp(phrase)
     inflection_engine = inflect.engine()
     return " ".join(
