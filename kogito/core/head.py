@@ -6,6 +6,7 @@ import pytextrank
 
 from spacy.tokens import Doc
 from spacy.language import Language
+from spacy.lang.en.stop_words import STOP_WORDS
 
 class KnowledgeHeadType(Enum):
     SENTENCE = "sentence"
@@ -38,7 +39,8 @@ class SentenceHeadExtractor(KnowledgeHeadExtractor):
         heads = []
 
         for sentence in doc.sents:
-            heads.append(KnowledgeHead(text=sentence.text, type=KnowledgeHeadType.SENTENCE, entity=sentence))
+            if sentence.text.strip():
+                heads.append(KnowledgeHead(text=sentence.text, type=KnowledgeHeadType.SENTENCE, entity=sentence))
         
         return heads
 
@@ -56,9 +58,12 @@ class PhraseHeadExtractor(KnowledgeHeadExtractor):
         doc = textrank(doc)
 
         heads = []
+        tokenizer = self.lang.tokenizer
 
         for phrase in doc._.phrases:
-            if phrase.rank >= self.min_phrase_rank:
+            if phrase.rank >= self.min_phrase_rank and phrase.text.strip():
+                tokens = tokenizer(phrase.text)
+                phrase.text = " ".join([token.text for token in tokens if token.text not in STOP_WORDS])
                 heads.append(KnowledgeHead(text=phrase.text, type=KnowledgeHeadType.PHRASE, entity=phrase))
         
         return heads
@@ -72,7 +77,7 @@ class NounHeadExtractor(KnowledgeHeadExtractor):
         heads = []
 
         for token in doc:
-            if token.pos_ == "NOUN" or token.pos_ == "PROPN":
+            if token.pos_ == "NOUN":
                 heads.append(KnowledgeHead(text=token.text, type=KnowledgeHeadType.NOUN, entity=token))
         
         return heads

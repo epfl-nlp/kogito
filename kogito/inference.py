@@ -24,10 +24,18 @@ class CommonsenseInference:
     def infer(self, text: str, model: KnowledgeModel) -> KnowledgeGraph:
         heads = []
         head_relations = []
+        head_texts = set()
 
+        print("Extracting heads...")
         for head_proc in self._head_processors.values():
-            heads.extend(head_proc.extract(text))
-        
+            extracted_heads = head_proc.extract(text)
+            for head in extracted_heads:
+                head_text = head.text.strip().lower()
+                if head_text not in head_texts:
+                    heads.append(head)
+                    head_texts.add(head_text)
+
+        print("Matching relations...")
         for relation_proc in self._relation_processors.values():
             head_relations.extend(relation_proc.match(heads))
         
@@ -39,8 +47,7 @@ class CommonsenseInference:
             kg_list.append(Knowledge(head=head.text, relation=relation, base=kg_base))
 
         input_graph = KnowledgeGraph(kg_list)
-        for kg in input_graph:
-            print(kg)
+        print("Generating commonsense graph...")
         output_graph = model.generate(input_graph)
 
         return output_graph
