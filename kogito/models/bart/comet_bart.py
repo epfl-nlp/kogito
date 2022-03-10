@@ -382,8 +382,8 @@ class COMETBART(KnowledgeModel):
         self,
         input_graph: KnowledgeGraph,
         decode_method="beam",
-        num_generate=5,
-        batch_size=1,
+        num_generate=3,
+        batch_size=64,
     ):
         with torch.no_grad():
             outputs = []
@@ -412,7 +412,7 @@ class COMETBART(KnowledgeModel):
                     clean_up_tokenization_spaces=False,
                 )
 
-                for kg_input, generations in zip(kg_batch, output):
+                for kg_input, generations in zip(kg_batch, list(chunks(output, num_generate))):
                     output_kg = kg_input.copy()
                     output_kg.tails = generations
                     outputs.append(output_kg)

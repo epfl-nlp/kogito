@@ -21,6 +21,10 @@ class CommonsenseInference:
             "simple_matcher": SimpleRelationMatcher("simple_matcher")
         }
 
+    @property
+    def processors(self):
+        return {"head": list(self._head_processors.keys()), "relation": list(self._relation_processors.keys())}
+
     def infer(self, text: str, model: KnowledgeModel) -> KnowledgeGraph:
         heads = []
         head_relations = []
@@ -53,9 +57,9 @@ class CommonsenseInference:
         return output_graph
 
     def add_processor(self, processor: Union[KnowledgeHeadExtractor, KnowledgeRelationMatcher]) -> None:
-        if issubclass(processor, KnowledgeHeadExtractor):
+        if isinstance(processor, KnowledgeHeadExtractor):
             self._head_processors[processor.name] = processor
-        elif issubclass(processor, KnowledgeRelationMatcher):
+        elif isinstance(processor, KnowledgeRelationMatcher):
             self._relation_processors[processor.name] = processor
         else:
             raise ValueError("Unknown processor")
