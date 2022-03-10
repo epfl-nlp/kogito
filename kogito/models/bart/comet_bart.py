@@ -412,7 +412,9 @@ class COMETBART(KnowledgeModel):
                     clean_up_tokenization_spaces=False,
                 )
 
-                for kg_input, generations in zip(kg_batch, list(chunks(output, num_generate))):
+                for kg_input, generations in zip(
+                    kg_batch, list(chunks(output, num_generate))
+                ):
                     output_kg = kg_input.copy()
                     output_kg.tails = generations
                     outputs.append(output_kg)

@@ -71,14 +71,15 @@ PHRASE_NOUN_RELATIONS = [
     "UsedFor",
     "isAfter",
     "isBefore",
-    "isFilledBy"
+    "isFilledBy",
 ]
 
 HEAD_TO_RELATION_MAP = {
     KnowledgeHeadType.SENTENCE: SENTENCE_RELATIONS,
     KnowledgeHeadType.PHRASE: PHRASE_NOUN_RELATIONS,
-    KnowledgeHeadType.NOUN: PHRASE_NOUN_RELATIONS
+    KnowledgeHeadType.NOUN: PHRASE_NOUN_RELATIONS,
 }
+
 
 class KnowledgeRelationMatcher(ABC):
     def __init__(self, name: str) -> None:
@@ -97,6 +98,5 @@ class SimpleRelationMatcher(KnowledgeRelationMatcher):
             relations = HEAD_TO_RELATION_MAP[head.type]
             for relation in relations:
                 head_relations.append((head, relation))
-        
+
         return head_relations
-                

@@ -87,7 +87,7 @@ CONCEPTNET_RELATIONS = [
     "PartOf",
     "ReceivesAction",
     "SymbolOf",
-    "UsedFor"
+    "UsedFor",
 ]
 
 ATOMIC_RELATIONS = [

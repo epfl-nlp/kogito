@@ -2,8 +2,20 @@
 name = "kogito"
 version = "0.1.0"
 description = "A Python NLP Commonsense Reasoning library"
-authors = ["Mete Ismayil <mahammad.ismayilzada@epfl.ch>"]
+authors = ["Mete Ismayil <mahammad.ismayilzada@epfl.ch>", "Antoine Bosselut <antoine.bosselut@epfl.ch>"]
 license = "Apache License 2.0"
+readme = "README.md"
+homepage = "https://github.com/mismayil/kogito"
+repository = "https://github.com/mismayil/kogito"
+documentation = "https://github.com/mismayil/kogito"
+keywords = [
+    "natural language processing",
+    "nlp", 
+    "natural language understanding", 
+    "commonsense reasoning", 
+    "commonsense inference"
+]
+classifiers = []
 
 [tool.poetry.dependencies]
 python = ">=3.8,<3.11"
