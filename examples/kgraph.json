@@ -1,0 +1,227 @@
+{"head": "Student gets a library card", "relation": "Causes", "tails": [" student gets library card", " the library is open", " student"]}
+{"head": "Student gets a library card", "relation": "CausesDesire", "tails": [" satisfied", " student", " students"]}
+{"head": "Student gets a library card", "relation": "Desires", "tails": [" to borrow books", " to read books", " to read"]}
+{"head": "Student gets a library card", "relation": "HasFirstSubevent", "tails": [" student goes to library", " student borrows book", " student borrows books"]}
+{"head": "Student gets a library card", "relation": "HasLastSubevent", "tails": [" student goes to library", " student borrows books", " student borrows book"]}
+{"head": "Student gets a library card", "relation": "HasPrerequisite", "tails": [" student goes to library", " student gets library card", " library card"]}
+{"head": "Student gets a library card", "relation": "HasSubEvent", "tails": [" student borrows books", " student borrows book", " get a book"]}
+{"head": "Student gets a library card", "relation": "HasSubevent", "tails": [" student to borrow books", " a library card", " student to borrow book"]}
+{"head": "Student gets a library card", "relation": "HinderedBy", "tails": [" The library is closed.", " The library is closed today.", " The library is closed"]}
+{"head": "Student gets a library card", "relation": "InheritsFrom", "tails": [" student gets library card", " student borrows books", " student borrows book"]}
+{"head": "Student gets a library card", "relation": "InstanceOf", "tails": [" student gets library card", " student learns new things", " library card"]}
+{"head": "Student gets a library card", "relation": "MotivatedByGoal", "tails": [" student goes to library", " student borrows books", " student borrows book"]}
+{"head": "Student gets a library card", "relation": "NotCapableOf", "tails": [" get a book", " borrow books", " borrow book"]}
+{"head": "Student gets a library card", "relation": "NotDesires", "tails": [" to borrow books", " none", " to borrow something"]}
+{"head": "Student gets a library card", "relation": "ReceivesAction", "tails": [" student borrows books", " student borrows book", " student gets library card"]}
+{"head": "Student gets a library card", "relation": "SymbolOf", "tails": [" student goes to library", " student gets library card", " student borrows book"]}
+{"head": "Student gets a library card", "relation": "isAfter", "tails": [" PersonX borrows a book from the library", " PersonX borrows the library card", " PersonX goes to the library"]}
+{"head": "Student gets a library card", "relation": "isBefore", "tails": [" PersonX borrows the book from the library", " PersonX borrows book from the library.", " PersonX borrows book from the library"]}
+{"head": "Student gets a library card", "relation": "isFilledBy", "tails": [" library book", " library books", " library card"]}
+{"head": "Student gets a library card", "relation": "oEffect", "tails": [" none", " learns new things", " learns something new"]}
+{"head": "Student gets a library card", "relation": "oReact", "tails": [" none", " happy", " grateful"]}
+{"head": "Student gets a library card", "relation": "oWant", "tails": [" to read the book", " to read a book", " to read the books"]}
+{"head": "Student gets a library card", "relation": "xAttr", "tails": [" studious", " smart", " curious"]}
+{"head": "Student gets a library card", "relation": "xEffect", "tails": [" learns new things", " learns something new", " gets a receipt"]}
+{"head": "Student gets a library card", "relation": "xIntent", "tails": [" to borrow books", " to borrow a book", " to borrow books."]}
+{"head": "Student gets a library card", "relation": "xNeed", "tails": [" to go to the library", " to apply for a library card", " to go to the library."]}
+{"head": "Student gets a library card", "relation": "xReact", "tails": [" happy", " excited", " satisfied"]}
+{"head": "Student gets a library card", "relation": "xReason", "tails": [" student gets library card", " student gets a book", "   "]}
+{"head": "Student gets a library card", "relation": "xWant", "tails": [" to check out books", " to borrow a book", " to borrow books"]}
+{"head": "Student", "relation": "AtLocation", "tails": [" classroom", " school", " college"]}
+{"head": "Student", "relation": "CapableOf", "tails": [" take test", " study hard", " study"]}
+{"head": "Student", "relation": "Causes", "tails": [" enrolled in class", " enrolled in college", " enrolled in school"]}
+{"head": "Student", "relation": "CausesDesire", "tails": [" student", " students", " none"]}
+{"head": "Student", "relation": "CreatedBy", "tails": [" get good grades", " learn new things", " learn new skills"]}
+{"head": "Student", "relation": "DefinedAs", "tails": [" students to learn", " student", " students"]}
+{"head": "Student", "relation": "Desires", "tails": [" to learn", " learn", " student"]}
+{"head": "Student", "relation": "HasA", "tails": [" students to learn", " student", " students"]}
+{"head": "Student", "relation": "HasFirstSubevent", "tails": [" students to learn", " students", " student"]}
+{"head": "Student", "relation": "HasLastSubevent", "tails": [" students to learn", " student's parents", " student"]}
+{"head": "Student", "relation": "HasPrerequisite", "tails": [" get good grades", " students to learn", " get good grade"]}
+{"head": "Student", "relation": "HasProperty", "tails": [" found in school", " found at school", " found in classroom"]}
+{"head": "Student", "relation": "HasSubEvent", "tails": [" get good grades", " learn new things", " learn new skills"]}
+{"head": "Student", "relation": "HasSubevent", "tails": [" students to learn", " student's parents", " student"]}
+{"head": "Student", "relation": "HinderedBy", "tails": [" The teacher won't allow it.", " The teacher won't let them.", " The teacher won't teach them."]}
+{"head": "Student", "relation": "InheritsFrom", "tails": [" student", " students", " class"]}
+{"head": "Student", "relation": "InstanceOf", "tails": [" students to learn", " student", " students"]}
+{"head": "Student", "relation": "IsA", "tails": [" get good grades", " students to learn", " students"]}
+{"head": "Student", "relation": "MadeOf", "tails": [" enrolled in school", " enrolled in class", " enrolled in college"]}
+{"head": "Student", "relation": "MadeUpOf", "tails": [" student body", " student", " students"]}
+{"head": "Student", "relation": "MotivatedByGoal", "tails": [" students to learn", " student's parents", " students"]}
+{"head": "Student", "relation": "NotCapableOf", "tails": [" learn new things", " learn new skills", " learn to do"]}
+{"head": "Student", "relation": "NotDesires", "tails": [" not good enough", " none", " student to be"]}
+{"head": "Student", "relation": "NotHasA", "tails": [" student not to be", " student to not be", " student not"]}
+{"head": "Student", "relation": "NotHasProperty", "tails": [" found guilty", " found out", " student"]}
+{"head": "Student", "relation": "NotIsA", "tails": [" student not to be", " student to not be", " student not"]}
+{"head": "Student", "relation": "NotMadeOf", "tails": [" none", " student", " students"]}
+{"head": "Student", "relation": "ObjectUse", "tails": [" learn a new skill", " get a good grade", " get a good job"]}
+{"head": "Student", "relation": "PartOf", "tails": [" students to learn", " students", " student"]}
+{"head": "Student", "relation": "ReceivesAction", "tails": [" students to learn", " students", " student"]}
+{"head": "Student", "relation": "SymbolOf", "tails": [" students to learn from", " students to learn", " student"]}
+{"head": "Student", "relation": "UsedFor", "tails": [" students to learn", " students", " student"]}
+{"head": "Student", "relation": "isAfter", "tails": [" PersonY", " student", " teacher"]}
+{"head": "Student", "relation": "isBefore", "tails": [" student gets a diploma", " student gets a job", " PersonY"]}
+{"head": "Student", "relation": "isFilledBy", "tails": [" bookbag", " book bag", " classroom"]}
+{"head": "library", "relation": "AtLocation", "tails": [" library", " city", " town"]}
+{"head": "library", "relation": "CapableOf", "tails": [" find books", " read books", " find book"]}
+{"head": "library", "relation": "Causes", "tails": [" found in", " library card", " library"]}
+{"head": "library", "relation": "CausesDesire", "tails": [" found in", " library card", " found at"]}
+{"head": "library", "relation": "CreatedBy", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "DefinedAs", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "Desires", "tails": [" find books to read", " find books", " learning"]}
+{"head": "library", "relation": "HasA", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "HasFirstSubevent", "tails": [" library", " library building", " book store"]}
+{"head": "library", "relation": "HasLastSubevent", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "HasPrerequisite", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "HasProperty", "tails": [" found in library", " found in", " library"]}
+{"head": "library", "relation": "HasSubEvent", "tails": [" find books", " find book", " get books"]}
+{"head": "library", "relation": "HasSubevent", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "HinderedBy", "tails": [" library", " library book", " library books"]}
+{"head": "library", "relation": "InheritsFrom", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "InstanceOf", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "IsA", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "MadeOf", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "MadeUpOf", "tails": [" library", " book", " books"]}
+{"head": "library", "relation": "MotivatedByGoal", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "NotCapableOf", "tails": [" find books", " read books", " find book"]}
+{"head": "library", "relation": "NotDesires", "tails": [" read books", " find books", " read book"]}
+{"head": "library", "relation": "NotHasA", "tails": [" books", " library", " book"]}
+{"head": "library", "relation": "NotHasProperty", "tails": [" found in library", " found at library", " found in"]}
+{"head": "library", "relation": "NotIsA", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "NotMadeOf", "tails": [" library books", " library card", " library book"]}
+{"head": "library", "relation": "ObjectUse", "tails": [" reading books", " study in", " reading"]}
+{"head": "library", "relation": "PartOf", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "ReceivesAction", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "SymbolOf", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "UsedFor", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "isAfter", "tails": [" library", " bookstore", " book"]}
+{"head": "library", "relation": "isBefore", "tails": [" library", " books", " book"]}
+{"head": "library", "relation": "isFilledBy", "tails": [" library", " book store", " bookshop"]}
+{"head": "card", "relation": "AtLocation", "tails": [" card game", " mail box", " wallet"]}
+{"head": "card", "relation": "CapableOf", "tails": [" pay for the meal", " pay for the item", " pay for the ticket"]}
+{"head": "card", "relation": "Causes", "tails": [" cards", " card", " received"]}
+{"head": "card", "relation": "CausesDesire", "tails": [" cards", " money", " card"]}
+{"head": "card", "relation": "CreatedBy", "tails": [" cards", " card", " received"]}
+{"head": "card", "relation": "DefinedAs", "tails": [" wallet", " card", " cards"]}
+{"head": "card", "relation": "Desires", "tails": [" use as a bookmark", " pay for the service", " pay for the meal"]}
+{"head": "card", "relation": "HasA", "tails": [" wallet", " cards", " card"]}
+{"head": "card", "relation": "HasFirstSubevent", "tails": [" wallet", " cards", " card"]}
+{"head": "card", "relation": "HasLastSubevent", "tails": [" wallet", " cards", " card"]}
+{"head": "card", "relation": "HasPrerequisite", "tails": [" card reader", " cardstock", " cards"]}
+{"head": "card", "relation": "HasProperty", "tails": [" found in bank", " found in wallet", " printed on card"]}
+{"head": "card", "relation": "HasSubEvent", "tails": [" put in envelope", " put in slot", " pay"]}
+{"head": "card", "relation": "HasSubevent", "tails": [" wallet", " cards", " card"]}
+{"head": "card", "relation": "HinderedBy", "tails": ["  ", "  card", " card"]}
+{"head": "card", "relation": "InheritsFrom", "tails": [" cards", " wallet", " card"]}
+{"head": "card", "relation": "InstanceOf", "tails": [" wallet", " cards", " card"]}
+{"head": "card", "relation": "IsA", "tails": [" cards", " wallet", " card"]}
+{"head": "card", "relation": "MadeOf", "tails": [" cards", " card", " wallet"]}
+{"head": "card", "relation": "MadeUpOf", "tails": [" cardstock", " card stock", " card case"]}
+{"head": "card", "relation": "MotivatedByGoal", "tails": [" wallet", " cards", " card"]}
+{"head": "card", "relation": "NotCapableOf", "tails": [" write name on", " pay for item", " write on"]}
+{"head": "card", "relation": "NotDesires", "tails": [" get a receipt", " not accepted", " none"]}
+{"head": "card", "relation": "NotHasA", "tails": [" none", " cards", " card"]}
+{"head": "card", "relation": "NotHasProperty", "tails": [" found in wallet", " found in bank", " found in mail"]}
+{"head": "card", "relation": "NotIsA", "tails": [" card not accepted", " cards", " card"]}
+{"head": "card", "relation": "NotMadeOf", "tails": [" none", " cards", " card"]}
+{"head": "card", "relation": "ObjectUse", "tails": [" give to PersonY", " give to PersonX", " pay for the meal"]}
+{"head": "card", "relation": "PartOf", "tails": [" cards", " wallet", " card"]}
+{"head": "card", "relation": "ReceivesAction", "tails": [" wallet", " cards", " card"]}
+{"head": "card", "relation": "SymbolOf", "tails": [" pay for item", " pay for service", " card"]}
+{"head": "card", "relation": "UsedFor", "tails": [" wallet", " cards", " card"]}
+{"head": "card", "relation": "isAfter", "tails": [" wallet", " card", " book"]}
+{"head": "card", "relation": "isBefore", "tails": [" wallet", " card", " payment"]}
+{"head": "card", "relation": "isFilledBy", "tails": [" wallet", " mail", " card"]}
+{"head": "library card", "relation": "AtLocation", "tails": [" library", " library book", " library card"]}
+{"head": "library card", "relation": "CapableOf", "tails": [" get into library", " check out books", " get library card"]}
+{"head": "library card", "relation": "Causes", "tails": [" library card", " library cards", " library book"]}
+{"head": "library card", "relation": "CausesDesire", "tails": [" library card", " library cards", " read books"]}
+{"head": "library card", "relation": "CreatedBy", "tails": [" access to library", " get into library", " library card"]}
+{"head": "library card", "relation": "DefinedAs", "tails": [" library card", " library book", " library books"]}
+{"head": "library card", "relation": "Desires", "tails": [" get into the library", " get a library card", " get into library"]}
+{"head": "library card", "relation": "HasA", "tails": [" library card", " library book", " library cards"]}
+{"head": "library card", "relation": "HasFirstSubevent", "tails": [" library card", " library book", " library books"]}
+{"head": "library card", "relation": "HasLastSubevent", "tails": [" library card", " library book", " library books"]}
+{"head": "library card", "relation": "HasPrerequisite", "tails": [" library card", " library book", " library cards"]}
+{"head": "library card", "relation": "HasProperty", "tails": [" found in library", " found at library", " used in library"]}
+{"head": "library card", "relation": "HasSubEvent", "tails": [" get into library", " check out books", " check out book"]}
+{"head": "library card", "relation": "HasSubevent", "tails": [" library card", " library book", " library books"]}
+{"head": "library card", "relation": "HinderedBy", "tails": [" the library is closed", " library card is expired", " library card"]}
+{"head": "library card", "relation": "InheritsFrom", "tails": [" library card", " library book", " library books"]}
+{"head": "library card", "relation": "InstanceOf", "tails": [" library card", " library book", " library books"]}
+{"head": "library card", "relation": "IsA", "tails": [" library card", " library book", " library books"]}
+{"head": "library card", "relation": "MadeOf", "tails": [" library card", " library book", " library cards"]}
+{"head": "library card", "relation": "MadeUpOf", "tails": [" library card", " library book", " library cards"]}
+{"head": "library card", "relation": "MotivatedByGoal", "tails": [" library card", " library book", " library cards"]}
+{"head": "library card", "relation": "NotCapableOf", "tails": [" check out books", " get into library", " get library card"]}
+{"head": "library card", "relation": "NotDesires", "tails": [" get into library", " none", " not allowed"]}
+{"head": "library card", "relation": "NotHasA", "tails": [" library card", " library book", " not allowed"]}
+{"head": "library card", "relation": "NotHasProperty", "tails": [" found in library", " found at library", " used in library"]}
+{"head": "library card", "relation": "NotIsA", "tails": [" library card", " library books", " library cards"]}
+{"head": "library card", "relation": "NotMadeOf", "tails": [" library card", " library cards", " not allowed"]}
+{"head": "library card", "relation": "ObjectUse", "tails": [" get into the library", " get into a library", " access the library"]}
+{"head": "library card", "relation": "PartOf", "tails": [" library card", " library book", " library cards"]}
+{"head": "library card", "relation": "ReceivesAction", "tails": [" library card", " library book", " library books"]}
+{"head": "library card", "relation": "SymbolOf", "tails": [" library card", " library book", " library books"]}
+{"head": "library card", "relation": "UsedFor", "tails": [" library card", " library book", " library cards"]}
+{"head": "library card", "relation": "isAfter", "tails": [" library card", " library book", " library books"]}
+{"head": "library card", "relation": "isBefore", "tails": [" library card", " library book", " library books"]}
+{"head": "library card", "relation": "isFilledBy", "tails": [" library card", " library book", " library books"]}
+{"head": "to get", "relation": "Causes", "tails": [" to get something", " to get ", " to get"]}
+{"head": "to get", "relation": "CausesDesire", "tails": [" to get", " desire", " want"]}
+{"head": "to get", "relation": "Desires", "tails": [" to get something", " to have something", " to get"]}
+{"head": "to get", "relation": "HasFirstSubevent", "tails": [" to get ", " to get", " buy"]}
+{"head": "to get", "relation": "HasLastSubevent", "tails": [" to get ", " to get something", " to get"]}
+{"head": "to get", "relation": "HasPrerequisite", "tails": [" to get ", " to get something", " to get"]}
+{"head": "to get", "relation": "HasSubEvent", "tails": [" to get ", " to get", " buy"]}
+{"head": "to get", "relation": "HasSubevent", "tails": [" to get something", " to get ", " to get"]}
+{"head": "to get", "relation": "HinderedBy", "tails": [" to get  to get", " to get ", " to get"]}
+{"head": "to get", "relation": "InheritsFrom", "tails": [" to get ", " to get something", " to get"]}
+{"head": "to get", "relation": "InstanceOf", "tails": [" to get ", " to get something", " to get"]}
+{"head": "to get", "relation": "MotivatedByGoal", "tails": [" to get something", " to get ", " to get"]}
+{"head": "to get", "relation": "NotCapableOf", "tails": [" to get not", " to get something", " to get"]}
+{"head": "to get", "relation": "NotDesires", "tails": [" to get", " to have", " none"]}
+{"head": "to get", "relation": "ReceivesAction", "tails": [" to get ", " to get", " buy"]}
+{"head": "to get", "relation": "SymbolOf", "tails": [" to get something", " to get ", " to get"]}
+{"head": "to get", "relation": "isAfter", "tails": [" to get something", " to get", " money"]}
+{"head": "to get", "relation": "isBefore", "tails": [" to get  to get", " to get something", " to get"]}
+{"head": "to get", "relation": "isFilledBy", "tails": [" food", " car", " money"]}
+{"head": "to get", "relation": "oEffect", "tails": [" to get ", " none", " to get"]}
+{"head": "to get", "relation": "oReact", "tails": [" none", " happy", " good"]}
+{"head": "to get", "relation": "oWant", "tails": [" to get something", " to get", " none"]}
+{"head": "to get", "relation": "xAttr", "tails": [" hardworking", " hard working", " determined"]}
+{"head": "to get", "relation": "xEffect", "tails": [" to get  get", " to get ", " to get"]}
+{"head": "to get", "relation": "xIntent", "tails": [" to get something", " to have something", " to have"]}
+{"head": "to get", "relation": "xNeed", "tails": [" to go to the store", " to know what they want", " to know what to get"]}
+{"head": "to get", "relation": "xReact", "tails": [" happy", " satisfied", " good"]}
+{"head": "to get", "relation": "xReason", "tails": [" to get something", " to get ", " to get"]}
+{"head": "to get", "relation": "xWant", "tails": [" to go to the store", " to get a new car", " to go to the movies"]}
+{"head": "get card", "relation": "Causes", "tails": [" get in the door", " get into a movie", " get into the store"]}
+{"head": "get card", "relation": "CausesDesire", "tails": [" want to buy", " want to do", " get a gift"]}
+{"head": "get card", "relation": "Desires", "tails": [" get in the door", " get into a movie", " get into a club"]}
+{"head": "get card", "relation": "HasFirstSubevent", "tails": [" pay for the item", " get money from ATM", " get money out"]}
+{"head": "get card", "relation": "HasLastSubevent", "tails": [" pay for the meal", " pay for the item", " pay for the food"]}
+{"head": "get card", "relation": "HasPrerequisite", "tails": [" get money from ATM", " get money out", " get money"]}
+{"head": "get card", "relation": "HasSubEvent", "tails": [" use card", " pay", " use"]}
+{"head": "get card", "relation": "HasSubevent", "tails": [" get in the door", " get into the store", " get in the car"]}
+{"head": "get card", "relation": "HinderedBy", "tails": [" get in the door", " get into a movie", " get into the store"]}
+{"head": "get card", "relation": "InheritsFrom", "tails": [" get in the door", " get into the store", " get in the car"]}
+{"head": "get card", "relation": "InstanceOf", "tails": [" get in the door", " get into the store", " get in the car"]}
+{"head": "get card", "relation": "MotivatedByGoal", "tails": [" get into the store", " pay for the item", " pay for the meal"]}
+{"head": "get card", "relation": "NotCapableOf", "tails": [" use card", " pay", " use"]}
+{"head": "get card", "relation": "NotDesires", "tails": [" get a new card", " get in the door", " get into a movie"]}
+{"head": "get card", "relation": "ReceivesAction", "tails": [" pay for the item", " pay for the meal", " get into the store"]}
+{"head": "get card", "relation": "SymbolOf", "tails": [" get in the door", " pay for the item", " pay for the meal"]}
+{"head": "get card", "relation": "isAfter", "tails": [" get in the door", " get into the store", " get in the car"]}
+{"head": "get card", "relation": "isBefore", "tails": [" get in the door", " pay for the meal", " pay for the item"]}
+{"head": "get card", "relation": "isFilledBy", "tails": [" wallet", " purse", " card"]}
+{"head": "get card", "relation": "oEffect", "tails": [" have to pay", " get a receipt", " none"]}
+{"head": "get card", "relation": "oReact", "tails": [" none", " happy", " grateful"]}
+{"head": "get card", "relation": "oWant", "tails": [" to buy something", " to get a ride", " to get a gift"]}
+{"head": "get card", "relation": "xAttr", "tails": [" generous", " lucky", " greedy"]}
+{"head": "get card", "relation": "xEffect", "tails": [" get a receipt", " get money out", " get money"]}
+{"head": "get card", "relation": "xIntent", "tails": [" get a gift card", " to buy something", " get into the event"]}
+{"head": "get card", "relation": "xNeed", "tails": [" get in line", " get out wallet", " buy card"]}
+{"head": "get card", "relation": "xReact", "tails": [" happy", " satisfied", " good"]}
+{"head": "get card", "relation": "xReason", "tails": [" pay for the item", " pay for the meal", " get into the store"]}
+{"head": "get card", "relation": "xWant", "tails": [" to pay for it", " to buy a drink", " to buy something"]}

@@ -6,7 +6,8 @@ from kogito.core.knowledge import Knowledge, KnowledgeBase, KnowledgeGraph
 from kogito.core.processors.head import (
     KnowledgeHeadExtractor,
     SentenceHeadExtractor,
-    NounPhraseHeadExtractor
+    NounPhraseHeadExtractor,
+    VerbPhraseHeadExtractor
 )
 from kogito.core.relation import ATOMIC_RELATIONS
 from kogito.core.processors.relation import (
@@ -19,11 +20,12 @@ from kogito.models.base import KnowledgeModel
 class CommonsenseInference:
     def __init__(self, language: str = "en_core_web_sm") -> None:
         self.language = language
-        self.nlp = spacy.load(language, exclude=["tok2vec", "ner"])
+        self.nlp = spacy.load(language, exclude=["ner"])
 
         self._head_processors = {
             "sentence_extractor": SentenceHeadExtractor("sentence_extractor", self.nlp),
-            "phrase_extractor": NounPhraseHeadExtractor("phrase_extractor", self.nlp)
+            "noun_phrase_extractor": NounPhraseHeadExtractor("noun_phrase_extractor", self.nlp),
+            "verb_phrase_extractor": VerbPhraseHeadExtractor("verb_phrase_extractor", self.nlp)
         }
         self._relation_processors = {
             "simple_matcher": SimpleRelationMatcher("simple_matcher")

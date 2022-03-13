@@ -45,13 +45,12 @@ class NounPhraseHeadExtractor(KnowledgeHeadExtractor):
 
         heads = []
         clean_text = []
-        text_map = set()
 
         for token in doc:
             if token.text not in STOP_WORDS and token.pos_ != "PROPN":
                 clean_text.append(token.text)
 
-                if token.pos_ == "NOUN" and token.text not in text_map:
+                if token.pos_ == "NOUN":
                     heads.append(
                         KnowledgeHead(
                             text=token.text,
@@ -59,19 +58,45 @@ class NounPhraseHeadExtractor(KnowledgeHeadExtractor):
                             entity=token,
                         )
                     )
-                    text_map.add(token.text)
 
         doc = self.lang(" ".join(clean_text))
 
         for phrase in doc.noun_chunks:
-            if phrase.text not in text_map:
+            heads.append(
+                KnowledgeHead(
+                    text=phrase.text,
+                    type=KnowledgeHeadType.NOUN_PHRASE,
+                    entity=phrase,
+                )
+            )
+
+        return heads
+
+
+class VerbPhraseHeadExtractor(KnowledgeHeadExtractor):
+    def extract(self, text: str, doc: Optional[Doc] = None) -> List[KnowledgeHead]:
+        if not doc:
+            doc = self.lang(text)
+
+        heads = []
+
+        for token in doc:
+            if token.dep_ == 'ROOT':
                 heads.append(
                     KnowledgeHead(
-                        text=phrase.text,
-                        type=KnowledgeHeadType.NOUN_PHRASE,
-                        entity=phrase,
-                    )
-                )
-                text_map.add(phrase.text)
+                        text=f"to {token.lemma_}",
+                        type=KnowledgeHeadType.VERB_PHRASE,
+                        entity=token
+                    ))
+                
+                for child in token.children:
+                    if child.dep_ == 'dobj':
+                        heads.append(
+                            KnowledgeHead(
+                                text=f"{token.lemma_} {child.text}",
+                                type=KnowledgeHeadType.VERB_PHRASE,
+                                entity=[token, child],
+                            )
+                        )
 
         return heads

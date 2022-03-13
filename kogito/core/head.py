@@ -5,6 +5,7 @@ from enum import Enum
 class KnowledgeHeadType(Enum):
     SENTENCE = "sentence"
     NOUN_PHRASE = "noun_phrase"
+    VERB_PHRASE = "verb_phrase"
 
 
 class KnowledgeHead:
