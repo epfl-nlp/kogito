@@ -2,31 +2,28 @@ from typing import Union
 
 import spacy
 
-from kogito.core.knowledge import (
-    Knowledge,
-    KnowledgeBase,
-    KnowledgeGraph,
-    CONCEPTNET_RELATIONS,
-)
-from kogito.core.head import (
+from kogito.core.knowledge import Knowledge, KnowledgeBase, KnowledgeGraph
+from kogito.core.processors.head import (
     KnowledgeHeadExtractor,
     SentenceHeadExtractor,
-    PhraseHeadExtractor,
-    NounHeadExtractor,
+    NounPhraseHeadExtractor
 )
-from kogito.core.relation import KnowledgeRelationMatcher, SimpleRelationMatcher
+from kogito.core.relation import ATOMIC_RELATIONS
+from kogito.core.processors.relation import (
+    KnowledgeRelationMatcher,
+    SimpleRelationMatcher,
+)
 from kogito.models.base import KnowledgeModel
 
 
 class CommonsenseInference:
     def __init__(self, language: str = "en_core_web_sm") -> None:
         self.language = language
-        self.nlp = spacy.load(language)
+        self.nlp = spacy.load(language, exclude=["tok2vec", "ner"])
 
         self._head_processors = {
             "sentence_extractor": SentenceHeadExtractor("sentence_extractor", self.nlp),
-            "phrase_extractor": PhraseHeadExtractor("phrase_extractor", self.nlp),
-            "noun_extractor": NounHeadExtractor("noun_extractor", self.nlp),
+            "phrase_extractor": NounPhraseHeadExtractor("phrase_extractor", self.nlp)
         }
         self._relation_processors = {
             "simple_matcher": SimpleRelationMatcher("simple_matcher")
@@ -65,9 +62,9 @@ class CommonsenseInference:
         for head_relation in head_relations:
             head, relation = head_relation
             kg_base = (
-                KnowledgeBase.CONCEPTNET
-                if relation in CONCEPTNET_RELATIONS
-                else KnowledgeBase.ATOMIC
+                KnowledgeBase.ATOMIC2020
+                if relation in ATOMIC_RELATIONS
+                else KnowledgeBase.CONCEPTNET
             )
             kg_list.append(Knowledge(head=head.text, relation=relation, base=kg_base))
 

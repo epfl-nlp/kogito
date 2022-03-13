@@ -1,8 +1,116 @@
-from abc import ABC, abstractmethod
-from typing import List, Tuple
+from kogito.core.head import KnowledgeHeadType
 
-from kogito.core.head import KnowledgeHead, KnowledgeHeadType
 
+KG_RELATIONS = [
+    "AtLocation",
+    "CapableOf",
+    "Causes",
+    "CausesDesire",
+    "CreatedBy",
+    "DefinedAs",
+    "DesireOf",
+    "Desires",
+    "HasA",
+    "HasFirstSubevent",
+    "HasLastSubevent",
+    "HasPainCharacter",
+    "HasPainIntensity",
+    "HasPrerequisite",
+    "HasProperty",
+    "HasSubEvent",
+    "HasSubevent",
+    "HinderedBy",
+    "InheritsFrom",
+    "InstanceOf",
+    "IsA",
+    "LocatedNear",
+    "LocationOfAction",
+    "MadeOf",
+    "MadeUpOf",
+    "MotivatedByGoal",
+    "NotCapableOf",
+    "NotDesires",
+    "NotHasA",
+    "NotHasProperty",
+    "NotIsA",
+    "NotMadeOf",
+    "ObjectUse",
+    "PartOf",
+    "ReceivesAction",
+    "RelatedTo",
+    "SymbolOf",
+    "UsedFor",
+    "isAfter",
+    "isBefore",
+    "isFilledBy",
+    "oEffect",
+    "oReact",
+    "oWant",
+    "xAttr",
+    "xEffect",
+    "xIntent",
+    "xNeed",
+    "xReact",
+    "xReason",
+    "xWant",
+]
+
+CONCEPTNET_RELATIONS = [
+    "AtLocation",
+    "CapableOf",
+    "Causes",
+    "CausesDesire",
+    "CreatedBy",
+    "DefinedAs",
+    "Desires",
+    "HasA",
+    "HasFirstSubevent",
+    "HasLastSubevent",
+    "HasPrerequisite",
+    "HasProperty",
+    "HasSubevent",
+    "InheritsFrom",
+    "InstanceOf",
+    "IsA",
+    "MadeOf",
+    "MotivatedByGoal",
+    "NotCapableOf",
+    "NotDesires",
+    "NotHasA",
+    "NotHasProperty",
+    "NotIsA",
+    "NotMadeOf",
+    "PartOf",
+    "ReceivesAction",
+    "SymbolOf",
+    "UsedFor",
+]
+
+ATOMIC_RELATIONS = [
+    "AtLocation",
+    "CapableOf",
+    "Causes",
+    "Desires",
+    "HasProperty",
+    "HasSubEvent",
+    "HinderedBy",
+    "MadeUpOf",
+    "NotDesires",
+    "isAfter",
+    "isBefore",
+    "isFilledBy",
+    "oEffect",
+    "oReact",
+    "oWant",
+    "xAttr",
+    "xEffect",
+    "xIntent",
+    "xNeed",
+    "xReact",
+    "xReason",
+    "xWant",
+    "ObjectUse",
+]
 
 SENTENCE_RELATIONS = [
     "Causes",
@@ -36,7 +144,7 @@ SENTENCE_RELATIONS = [
     "xWant",
 ]
 
-PHRASE_NOUN_RELATIONS = [
+NOUN_PHRASE_RELATIONS = [
     "AtLocation",
     "CapableOf",
     "Causes",
@@ -76,27 +184,5 @@ PHRASE_NOUN_RELATIONS = [
 
 HEAD_TO_RELATION_MAP = {
     KnowledgeHeadType.SENTENCE: SENTENCE_RELATIONS,
-    KnowledgeHeadType.PHRASE: PHRASE_NOUN_RELATIONS,
-    KnowledgeHeadType.NOUN: PHRASE_NOUN_RELATIONS,
+    KnowledgeHeadType.NOUN_PHRASE: NOUN_PHRASE_RELATIONS,
 }
-
-
-class KnowledgeRelationMatcher(ABC):
-    def __init__(self, name: str) -> None:
-        self.name = name
-
-    @abstractmethod
-    def match(self, heads: List[KnowledgeHead]) -> List[Tuple[KnowledgeHead, str]]:
-        raise NotImplementedError
-
-
-class SimpleRelationMatcher(KnowledgeRelationMatcher):
-    def match(self, heads: List[KnowledgeHead]) -> List[Tuple[KnowledgeHead, str]]:
-        head_relations = []
-
-        for head in heads:
-            relations = HEAD_TO_RELATION_MAP[head.type]
-            for relation in relations:
-                head_relations.append((head, relation))
-
-        return head_relations

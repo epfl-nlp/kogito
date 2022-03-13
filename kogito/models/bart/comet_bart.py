@@ -16,10 +16,8 @@ from torch.utils.data import DataLoader
 from transformers import MBartTokenizer, get_linear_schedule_with_warmup
 from transformers import AutoModelForSeq2SeqLM, AutoTokenizer
 
-from kogito.core.knowledge import (
-    KG_RELATIONS,
-    KnowledgeGraph,
-)
+from kogito.core.knowledge import KnowledgeGraph
+from kogito.core.relation import KG_RELATIONS
 from kogito.core.utils import (
     assert_all_frozen,
     use_task_specific_params,
