@@ -130,3 +130,7 @@ dmypy.json
 
 # MacOS
 .DS_Store
+
+# kogito
+examples/data
+examples/output

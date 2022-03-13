@@ -184,6 +184,36 @@ NOUN_PHRASE_RELATIONS = [
 
 VERB_PHRASE_RELATIONS = SENTENCE_RELATIONS
 
+PHYSICAL_RELATIONS = [
+    "ObjectUse",
+    "CapableOf",
+    "MadeUpOf",
+    "HasProperty",
+    "Desires",
+    "NotDesires",
+    "AtLocation"
+]
+
+EVENT_RELATIONS = [
+    "Causes",
+    "HinderedBy",
+    "xReason",
+    "isAfter",
+    "isBefore",
+    "HasSubEvent"
+]
+
+SOCIAL_RELATIONS = [
+    "xIntent",
+    "xReact",
+    "oReact",
+    "xAttr",
+    "xEffect",
+    "xNeed",
+    "xWant",
+    "oEffect",
+    "oWant"
+]
 
 HEAD_TO_RELATION_MAP = {
     KnowledgeHeadType.SENTENCE: SENTENCE_RELATIONS,
