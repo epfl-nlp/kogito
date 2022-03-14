@@ -134,3 +134,5 @@ dmypy.json
 # kogito
 examples/data
 examples/output
+examples/models
+wandb
