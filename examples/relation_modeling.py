@@ -53,11 +53,8 @@ class HeadDataset(Dataset):
 
 
 class BertClassifier(nn.Module):
-
     def __init__(self, dropout=0.5, hidden_dim=768, num_classes=3):
-
         super(BertClassifier, self).__init__()
-
         self.bert = BertModel.from_pretrained('bert-base-cased')
         self.dropout = nn.Dropout(dropout)
         self.linear = nn.Linear(hidden_dim, num_classes)
@@ -67,15 +64,14 @@ class BertClassifier(nn.Module):
         _, outputs = self.bert(input_ids=input_ids, attention_mask=mask, return_dict=False)
         outputs = self.dropout(outputs)
         outputs = self.linear(outputs)
-        probs = self.softmax(outputs)
-
-        return probs
+        outputs = self.softmax(outputs)
+        return outputs
     
     def save_pretrained(self, path):
         torch.save(self, path)
 
 
-def train(model, train_dataset, val_dataset, learning_rate=1e-3, epochs=10, batch_size=8):
+def train(model, train_dataset, val_dataset, learning_rate=1e-4, epochs=10, batch_size=8):
     wandb.init(project="kogito-relation-matcher", config={"learning_rate": learning_rate, "epochs": epochs, "batch_size": batch_size})
 
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -149,11 +145,14 @@ def train(model, train_dataset, val_dataset, learning_rate=1e-3, epochs=10, batc
         model.save_pretrained(f"./models/checkpoint_{epoch_num}.pth")
 
 
+print("Loading data...")
 train_df = load_data("data/atomic2020_data-feb2021/train.tsv")
 dev_df = load_data("data/atomic2020_data-feb2021/dev.tsv")
+print("Preparing data for training...")
 train_data = HeadDataset(train_df)
 val_data = HeadDataset(dev_df)
 model = BertClassifier()
+print("Start training...")
 train(model=model, train_dataset=train_data, val_dataset=val_data, epochs=2, batch_size=4)
 model.save_pretrained("./models/final_model.pth")
 
