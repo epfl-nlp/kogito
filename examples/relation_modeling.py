@@ -10,8 +10,6 @@ from torch import nn
 from transformers import BertModel
 import wandb
 
-tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
-
 def load_data(datapath):
     data = []
     head_label_set = set()
@@ -39,8 +37,9 @@ def load_data(datapath):
 
 class HeadDataset(Dataset):
     def __init__(self, df):
+        self.tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
         self.labels = df['label'].to_numpy()
-        self.texts = [tokenizer(text, padding='max_length', max_length = 512, truncation=True,
+        self.texts = [self.tokenizer(text, padding='max_length', max_length=512, truncation=True,
                                 return_tensors="pt") for text in df['text']]
 
     def classes(self):
@@ -76,7 +75,7 @@ class BertClassifier(nn.Module):
         torch.save(self, path)
 
 
-def train(model, train_dataset, val_dataset, learning_rate=1e-6, epochs=10, batch_size=8):
+def train(model, train_dataset, val_dataset, learning_rate=1e-3, epochs=10, batch_size=8):
     wandb.init(project="kogito-relation-matcher", config={"learning_rate": learning_rate, "epochs": epochs, "batch_size": batch_size})
 
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -99,12 +98,13 @@ def train(model, train_dataset, val_dataset, learning_rate=1e-6, epochs=10, batc
         total_loss_train = 0
 
         for train_input, train_label in tqdm(train_dataloader):
+            model.zero_grad()
 
             train_label = train_label.to(device)
             mask = train_input['attention_mask'].to(device)
-            input_id = train_input['input_ids'].squeeze(1).to(device)
+            input_ids = train_input['input_ids'].squeeze(1).to(device)
 
-            output = model(input_id, mask)
+            output = model(input_ids, mask)
             
             batch_loss = criterion(output, train_label)
             total_loss_train += batch_loss.item()
@@ -112,7 +112,6 @@ def train(model, train_dataset, val_dataset, learning_rate=1e-6, epochs=10, batc
             acc = (output.argmax(dim=1) == train_label).sum().item()
             total_acc_train += acc
 
-            model.zero_grad()
             batch_loss.backward()
             optimizer.step()
         
@@ -125,9 +124,9 @@ def train(model, train_dataset, val_dataset, learning_rate=1e-6, epochs=10, batc
 
                 val_label = val_label.to(device)
                 mask = val_input['attention_mask'].to(device)
-                input_id = val_input['input_ids'].squeeze(1).to(device)
+                input_ids = val_input['input_ids'].squeeze(1).to(device)
 
-                output = model(input_id, mask)
+                output = model(input_ids, mask)
 
                 batch_loss = criterion(output, val_label)
                 total_loss_val += batch_loss.item()
@@ -155,7 +154,7 @@ dev_df = load_data("data/atomic2020_data-feb2021/dev.tsv")
 train_data = HeadDataset(train_df)
 val_data = HeadDataset(dev_df)
 model = BertClassifier()
-train(model=model, train_dataset=train_data, val_dataset=val_data, epochs=2, batch_size=8)
+train(model=model, train_dataset=train_data, val_dataset=val_data, epochs=2, batch_size=4)
 model.save_pretrained("./models/final_model.pth")
 
 
