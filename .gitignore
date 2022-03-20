@@ -136,3 +136,4 @@ examples/data
 examples/output
 examples/models
 wandb
+.vector_cache/
