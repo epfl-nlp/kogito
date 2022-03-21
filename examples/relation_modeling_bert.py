@@ -1,4 +1,3 @@
-from kogito.core.relation import PHYSICAL_RELATIONS, SOCIAL_RELATIONS, EVENT_RELATIONS
 import pandas as pd
 import torch
 import numpy as np
@@ -10,36 +9,12 @@ from torch import nn
 from transformers import BertModel
 import wandb
 
-def load_data(datapath):
-    data = []
-    head_label_set = set()
-
-    with open(datapath) as f:
-        for line in f:
-            try:
-                head, relation, _ = line.split('\t')
-
-                label = 0 
-
-                if relation in EVENT_RELATIONS:
-                    label = 1
-                elif relation in SOCIAL_RELATIONS:
-                    label = 2
-
-                if (head, label) not in head_label_set:
-                    data.append((head, label))
-                    head_label_set.add((head, label))
-            except:
-                pass
-
-    return pd.DataFrame(data, columns=['text', 'label'])
-
 
 class HeadDataset(Dataset):
     def __init__(self, df):
         self.tokenizer = BertTokenizer.from_pretrained('bert-base-cased')
         self.labels = df['label'].to_numpy()
-        self.texts = [self.tokenizer(text, padding='max_length', max_length=512, truncation=True,
+        self.texts = [self.tokenizer(text, padding='max_length', max_length=32, truncation=True,
                                 return_tensors="pt") for text in df['text']]
 
     def classes(self):
@@ -75,7 +50,7 @@ class BertClassifier(nn.Module):
         torch.save(self, path)
 
 
-def train(model, train_dataset, val_dataset, learning_rate=1e-3, epochs=10, batch_size=8):
+def train(model, train_dataset, val_dataset, learning_rate=1e-3, epochs=10, batch_size=4):
     wandb.init(project="kogito-relation-matcher", config={"learning_rate": learning_rate, "epochs": epochs, "batch_size": batch_size})
 
     train_dataloader = torch.utils.data.DataLoader(train_dataset, batch_size=batch_size, shuffle=True)
@@ -89,8 +64,9 @@ def train(model, train_dataset, val_dataset, learning_rate=1e-3, epochs=10, batc
 
     if use_cuda:
         print("Using CUDA")
-        model = model.to(device)
-        criterion = criterion.to(device)
+
+    model = model.to(device)
+    criterion = criterion.to(device)
 
     for epoch_num in range(epochs):
 
@@ -149,12 +125,12 @@ def train(model, train_dataset, val_dataset, learning_rate=1e-3, epochs=10, batc
         model.save_pretrained(f"./models/checkpoint_{epoch_num}.pth")
 
 
+from relation_modeling_utils import load_data
+
 train_df = load_data("data/atomic2020_data-feb2021/train.tsv")
 dev_df = load_data("data/atomic2020_data-feb2021/dev.tsv")
 train_data = HeadDataset(train_df)
 val_data = HeadDataset(dev_df)
 model = BertClassifier()
-train(model=model, train_dataset=train_data, val_dataset=val_data, epochs=2, batch_size=4)
+train(model=model, train_dataset=train_data, val_dataset=val_data, epochs=10, batch_size=4, learning_rate=1e-6)
 model.save_pretrained("./models/final_model.pth")
-
-
