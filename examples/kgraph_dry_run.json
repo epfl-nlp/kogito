@@ -1,0 +1,192 @@
+{"head": "Gabby always brought cookies to school.", "relation": "Causes", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "CausesDesire", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "Desires", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "HasFirstSubevent", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "HasLastSubevent", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "HasPrerequisite", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "HasSubEvent", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "HasSubevent", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "HinderedBy", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "InheritsFrom", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "InstanceOf", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "MotivatedByGoal", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "NotCapableOf", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "NotDesires", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "ReceivesAction", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "SymbolOf", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "isAfter", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "isBefore", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "isFilledBy", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "oEffect", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "oReact", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "oWant", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "xAttr", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "xEffect", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "xIntent", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "xNeed", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "xReact", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "xReason", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "xWant", "tails": []}
+{"head": "cookies", "relation": "AtLocation", "tails": []}
+{"head": "cookies", "relation": "CapableOf", "tails": []}
+{"head": "cookies", "relation": "Causes", "tails": []}
+{"head": "cookies", "relation": "CausesDesire", "tails": []}
+{"head": "cookies", "relation": "CreatedBy", "tails": []}
+{"head": "cookies", "relation": "DefinedAs", "tails": []}
+{"head": "cookies", "relation": "Desires", "tails": []}
+{"head": "cookies", "relation": "HasA", "tails": []}
+{"head": "cookies", "relation": "HasFirstSubevent", "tails": []}
+{"head": "cookies", "relation": "HasLastSubevent", "tails": []}
+{"head": "cookies", "relation": "HasPrerequisite", "tails": []}
+{"head": "cookies", "relation": "HasProperty", "tails": []}
+{"head": "cookies", "relation": "HasSubEvent", "tails": []}
+{"head": "cookies", "relation": "HasSubevent", "tails": []}
+{"head": "cookies", "relation": "HinderedBy", "tails": []}
+{"head": "cookies", "relation": "InheritsFrom", "tails": []}
+{"head": "cookies", "relation": "InstanceOf", "tails": []}
+{"head": "cookies", "relation": "IsA", "tails": []}
+{"head": "cookies", "relation": "MadeOf", "tails": []}
+{"head": "cookies", "relation": "MadeUpOf", "tails": []}
+{"head": "cookies", "relation": "MotivatedByGoal", "tails": []}
+{"head": "cookies", "relation": "NotCapableOf", "tails": []}
+{"head": "cookies", "relation": "NotDesires", "tails": []}
+{"head": "cookies", "relation": "NotHasA", "tails": []}
+{"head": "cookies", "relation": "NotHasProperty", "tails": []}
+{"head": "cookies", "relation": "NotIsA", "tails": []}
+{"head": "cookies", "relation": "NotMadeOf", "tails": []}
+{"head": "cookies", "relation": "ObjectUse", "tails": []}
+{"head": "cookies", "relation": "PartOf", "tails": []}
+{"head": "cookies", "relation": "ReceivesAction", "tails": []}
+{"head": "cookies", "relation": "SymbolOf", "tails": []}
+{"head": "cookies", "relation": "UsedFor", "tails": []}
+{"head": "cookies", "relation": "isAfter", "tails": []}
+{"head": "cookies", "relation": "isBefore", "tails": []}
+{"head": "cookies", "relation": "isFilledBy", "tails": []}
+{"head": "school", "relation": "AtLocation", "tails": []}
+{"head": "school", "relation": "CapableOf", "tails": []}
+{"head": "school", "relation": "Causes", "tails": []}
+{"head": "school", "relation": "CausesDesire", "tails": []}
+{"head": "school", "relation": "CreatedBy", "tails": []}
+{"head": "school", "relation": "DefinedAs", "tails": []}
+{"head": "school", "relation": "Desires", "tails": []}
+{"head": "school", "relation": "HasA", "tails": []}
+{"head": "school", "relation": "HasFirstSubevent", "tails": []}
+{"head": "school", "relation": "HasLastSubevent", "tails": []}
+{"head": "school", "relation": "HasPrerequisite", "tails": []}
+{"head": "school", "relation": "HasProperty", "tails": []}
+{"head": "school", "relation": "HasSubEvent", "tails": []}
+{"head": "school", "relation": "HasSubevent", "tails": []}
+{"head": "school", "relation": "HinderedBy", "tails": []}
+{"head": "school", "relation": "InheritsFrom", "tails": []}
+{"head": "school", "relation": "InstanceOf", "tails": []}
+{"head": "school", "relation": "IsA", "tails": []}
+{"head": "school", "relation": "MadeOf", "tails": []}
+{"head": "school", "relation": "MadeUpOf", "tails": []}
+{"head": "school", "relation": "MotivatedByGoal", "tails": []}
+{"head": "school", "relation": "NotCapableOf", "tails": []}
+{"head": "school", "relation": "NotDesires", "tails": []}
+{"head": "school", "relation": "NotHasA", "tails": []}
+{"head": "school", "relation": "NotHasProperty", "tails": []}
+{"head": "school", "relation": "NotIsA", "tails": []}
+{"head": "school", "relation": "NotMadeOf", "tails": []}
+{"head": "school", "relation": "ObjectUse", "tails": []}
+{"head": "school", "relation": "PartOf", "tails": []}
+{"head": "school", "relation": "ReceivesAction", "tails": []}
+{"head": "school", "relation": "SymbolOf", "tails": []}
+{"head": "school", "relation": "UsedFor", "tails": []}
+{"head": "school", "relation": "isAfter", "tails": []}
+{"head": "school", "relation": "isBefore", "tails": []}
+{"head": "school", "relation": "isFilledBy", "tails": []}
+{"head": "cookies school", "relation": "AtLocation", "tails": []}
+{"head": "cookies school", "relation": "CapableOf", "tails": []}
+{"head": "cookies school", "relation": "Causes", "tails": []}
+{"head": "cookies school", "relation": "CausesDesire", "tails": []}
+{"head": "cookies school", "relation": "CreatedBy", "tails": []}
+{"head": "cookies school", "relation": "DefinedAs", "tails": []}
+{"head": "cookies school", "relation": "Desires", "tails": []}
+{"head": "cookies school", "relation": "HasA", "tails": []}
+{"head": "cookies school", "relation": "HasFirstSubevent", "tails": []}
+{"head": "cookies school", "relation": "HasLastSubevent", "tails": []}
+{"head": "cookies school", "relation": "HasPrerequisite", "tails": []}
+{"head": "cookies school", "relation": "HasProperty", "tails": []}
+{"head": "cookies school", "relation": "HasSubEvent", "tails": []}
+{"head": "cookies school", "relation": "HasSubevent", "tails": []}
+{"head": "cookies school", "relation": "HinderedBy", "tails": []}
+{"head": "cookies school", "relation": "InheritsFrom", "tails": []}
+{"head": "cookies school", "relation": "InstanceOf", "tails": []}
+{"head": "cookies school", "relation": "IsA", "tails": []}
+{"head": "cookies school", "relation": "MadeOf", "tails": []}
+{"head": "cookies school", "relation": "MadeUpOf", "tails": []}
+{"head": "cookies school", "relation": "MotivatedByGoal", "tails": []}
+{"head": "cookies school", "relation": "NotCapableOf", "tails": []}
+{"head": "cookies school", "relation": "NotDesires", "tails": []}
+{"head": "cookies school", "relation": "NotHasA", "tails": []}
+{"head": "cookies school", "relation": "NotHasProperty", "tails": []}
+{"head": "cookies school", "relation": "NotIsA", "tails": []}
+{"head": "cookies school", "relation": "NotMadeOf", "tails": []}
+{"head": "cookies school", "relation": "ObjectUse", "tails": []}
+{"head": "cookies school", "relation": "PartOf", "tails": []}
+{"head": "cookies school", "relation": "ReceivesAction", "tails": []}
+{"head": "cookies school", "relation": "SymbolOf", "tails": []}
+{"head": "cookies school", "relation": "UsedFor", "tails": []}
+{"head": "cookies school", "relation": "isAfter", "tails": []}
+{"head": "cookies school", "relation": "isBefore", "tails": []}
+{"head": "cookies school", "relation": "isFilledBy", "tails": []}
+{"head": "to bring", "relation": "Causes", "tails": []}
+{"head": "to bring", "relation": "CausesDesire", "tails": []}
+{"head": "to bring", "relation": "Desires", "tails": []}
+{"head": "to bring", "relation": "HasFirstSubevent", "tails": []}
+{"head": "to bring", "relation": "HasLastSubevent", "tails": []}
+{"head": "to bring", "relation": "HasPrerequisite", "tails": []}
+{"head": "to bring", "relation": "HasSubEvent", "tails": []}
+{"head": "to bring", "relation": "HasSubevent", "tails": []}
+{"head": "to bring", "relation": "HinderedBy", "tails": []}
+{"head": "to bring", "relation": "InheritsFrom", "tails": []}
+{"head": "to bring", "relation": "InstanceOf", "tails": []}
+{"head": "to bring", "relation": "MotivatedByGoal", "tails": []}
+{"head": "to bring", "relation": "NotCapableOf", "tails": []}
+{"head": "to bring", "relation": "NotDesires", "tails": []}
+{"head": "to bring", "relation": "ReceivesAction", "tails": []}
+{"head": "to bring", "relation": "SymbolOf", "tails": []}
+{"head": "to bring", "relation": "isAfter", "tails": []}
+{"head": "to bring", "relation": "isBefore", "tails": []}
+{"head": "to bring", "relation": "isFilledBy", "tails": []}
+{"head": "to bring", "relation": "oEffect", "tails": []}
+{"head": "to bring", "relation": "oReact", "tails": []}
+{"head": "to bring", "relation": "oWant", "tails": []}
+{"head": "to bring", "relation": "xAttr", "tails": []}
+{"head": "to bring", "relation": "xEffect", "tails": []}
+{"head": "to bring", "relation": "xIntent", "tails": []}
+{"head": "to bring", "relation": "xNeed", "tails": []}
+{"head": "to bring", "relation": "xReact", "tails": []}
+{"head": "to bring", "relation": "xReason", "tails": []}
+{"head": "to bring", "relation": "xWant", "tails": []}
+{"head": "bring cookies", "relation": "Causes", "tails": []}
+{"head": "bring cookies", "relation": "CausesDesire", "tails": []}
+{"head": "bring cookies", "relation": "Desires", "tails": []}
+{"head": "bring cookies", "relation": "HasFirstSubevent", "tails": []}
+{"head": "bring cookies", "relation": "HasLastSubevent", "tails": []}
+{"head": "bring cookies", "relation": "HasPrerequisite", "tails": []}
+{"head": "bring cookies", "relation": "HasSubEvent", "tails": []}
+{"head": "bring cookies", "relation": "HasSubevent", "tails": []}
+{"head": "bring cookies", "relation": "HinderedBy", "tails": []}
+{"head": "bring cookies", "relation": "InheritsFrom", "tails": []}
+{"head": "bring cookies", "relation": "InstanceOf", "tails": []}
+{"head": "bring cookies", "relation": "MotivatedByGoal", "tails": []}
+{"head": "bring cookies", "relation": "NotCapableOf", "tails": []}
+{"head": "bring cookies", "relation": "NotDesires", "tails": []}
+{"head": "bring cookies", "relation": "ReceivesAction", "tails": []}
+{"head": "bring cookies", "relation": "SymbolOf", "tails": []}
+{"head": "bring cookies", "relation": "isAfter", "tails": []}
+{"head": "bring cookies", "relation": "isBefore", "tails": []}
+{"head": "bring cookies", "relation": "isFilledBy", "tails": []}
+{"head": "bring cookies", "relation": "oEffect", "tails": []}
+{"head": "bring cookies", "relation": "oReact", "tails": []}
+{"head": "bring cookies", "relation": "oWant", "tails": []}
+{"head": "bring cookies", "relation": "xAttr", "tails": []}
+{"head": "bring cookies", "relation": "xEffect", "tails": []}
+{"head": "bring cookies", "relation": "xIntent", "tails": []}
+{"head": "bring cookies", "relation": "xNeed", "tails": []}
+{"head": "bring cookies", "relation": "xReact", "tails": []}
+{"head": "bring cookies", "relation": "xReason", "tails": []}
+{"head": "bring cookies", "relation": "xWant", "tails": []}

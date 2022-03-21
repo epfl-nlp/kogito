@@ -1,8 +1,10 @@
-from typing import Union
+from typing import Union, List
+from itertools import product
 
 import spacy
 
 from kogito.core.knowledge import Knowledge, KnowledgeBase, KnowledgeGraph
+from kogito.core.head import KnowledgeHead, KnowledgeHeadType
 from kogito.core.processors.head import (
     KnowledgeHeadExtractor,
     SentenceHeadExtractor,
@@ -39,25 +41,36 @@ class CommonsenseInference:
         }
 
     def infer(
-        self, text: str, model: KnowledgeModel, model_args: dict = None
+        self, text: str, model: KnowledgeModel, model_args: dict = None, extract_heads: bool = True, match_relations: bool = True, relations: List[str] = None, dry_run: bool = False
     ) -> KnowledgeGraph:
         heads = []
         head_relations = []
         head_texts = set()
         model_args = model_args or {}
 
-        print("Extracting heads...")
-        for head_proc in self._head_processors.values():
-            extracted_heads = head_proc.extract(text)
-            for head in extracted_heads:
-                head_text = head.text.strip().lower()
-                if head_text not in head_texts:
-                    heads.append(head)
-                    head_texts.add(head_text)
+        if extract_heads:
+            print("Extracting heads...")
+            for head_proc in self._head_processors.values():
+                extracted_heads = head_proc.extract(text)
+                for head in extracted_heads:
+                    head_text = head.text.strip().lower()
+                    if head_text not in head_texts:
+                        heads.append(head)
+                        head_texts.add(head_text)
+        else:
+            heads.append(KnowledgeHead(text=text, type=KnowledgeHeadType.SENTENCE))
 
-        print("Matching relations...")
-        for relation_proc in self._relation_processors.values():
-            head_relations.extend(relation_proc.match(heads))
+        if match_relations:
+            print("Matching relations...")
+            for relation_proc in self._relation_processors.values():
+                head_relations.extend(relation_proc.match(heads, relations))
+        elif relations:
+            if not isinstance(relations, list):
+                raise ValueError("Relation subset should be a list")
+            
+            head_relations.extend(list(product(heads, relations)))
+        else:
+            raise ValueError("No relation found to match")
 
         kg_list = []
 
@@ -71,6 +84,10 @@ class CommonsenseInference:
             kg_list.append(Knowledge(head=head.text, relation=relation, base=kg_base))
 
         input_graph = KnowledgeGraph(kg_list)
+
+        if dry_run:
+            return input_graph
+
         print("Generating commonsense graph...")
         output_graph = model.generate(input_graph, **model_args)
 

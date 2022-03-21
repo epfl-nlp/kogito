@@ -1,0 +1,192 @@
+{"head": "Gabby always brought cookies to school.", "relation": "Causes", "tails": [" the kids to like the cookies", " the kids to eat the cookies", " the kids to like them"]}
+{"head": "Gabby always brought cookies to school.", "relation": "CausesDesire", "tails": [" Gives cookies to friends", " gabby's cookies", " gabby"]}
+{"head": "Gabby always brought cookies to school.", "relation": "Desires", "tails": [" to be nice", " to be nice.", " to be helpful"]}
+{"head": "Gabby always brought cookies to school.", "relation": "HasFirstSubevent", "tails": [" none", " cookies", " eat"]}
+{"head": "Gabby always brought cookies to school.", "relation": "HasLastSubevent", "tails": [" they get a cookie", " they get a reward", " cookies"]}
+{"head": "Gabby always brought cookies to school.", "relation": "HasPrerequisite", "tails": [" eat the cookies", " get a reward", " get a snack"]}
+{"head": "Gabby always brought cookies to school.", "relation": "HasSubEvent", "tails": [" eat the cookies", " eat the cookie", " get a reward"]}
+{"head": "Gabby always brought cookies to school.", "relation": "HasSubevent", "tails": [" to be nice", " to make cookies", " eat cookies"]}
+{"head": "Gabby always brought cookies to school.", "relation": "HinderedBy", "tails": [" Gaby is allergic to cookies.", " They are allergic to the cookies.", " They are allergic to cookies."]}
+{"head": "Gabby always brought cookies to school.", "relation": "InheritsFrom", "tails": [" they get a treat", " they get a cookie", " they get a reward"]}
+{"head": "Gabby always brought cookies to school.", "relation": "InstanceOf", "tails": [" good about themselves", " none", " good"]}
+{"head": "Gabby always brought cookies to school.", "relation": "MotivatedByGoal", "tails": [" they get a treat", " they get a cookie", " they get a reward"]}
+{"head": "Gabby always brought cookies to school.", "relation": "NotCapableOf", "tails": [" eat the cookies", " to make cookies", " eat the cookie"]}
+{"head": "Gabby always brought cookies to school.", "relation": "NotDesires", "tails": [" to be nice", " to be helpful", " none"]}
+{"head": "Gabby always brought cookies to school.", "relation": "ReceivesAction", "tails": [" none", " cookies", " eat"]}
+{"head": "Gabby always brought cookies to school.", "relation": "SymbolOf", "tails": [" eat cookies", " eat them", " none"]}
+{"head": "Gabby always brought cookies to school.", "relation": "isAfter", "tails": [" PersonY gives the cookies to PersonY", " PersonY gives PersonY a cookie.", " PersonY gives PersonY a cookie"]}
+{"head": "Gabby always brought cookies to school.", "relation": "isBefore", "tails": [" PersonY eats the cookies.", " PersonX eats the cookies.", " PersonY eats the cookies"]}
+{"head": "Gabby always brought cookies to school.", "relation": "isFilledBy", "tails": [" cookies", " cookie", " candy"]}
+{"head": "Gabby always brought cookies to school.", "relation": "oEffect", "tails": [" eat the cookies", " eat the cookie", " get a treat"]}
+{"head": "Gabby always brought cookies to school.", "relation": "oReact", "tails": [" none", " happy", " grateful"]}
+{"head": "Gabby always brought cookies to school.", "relation": "oWant", "tails": [" to thank them", " to thank her", " to thank him"]}
+{"head": "Gabby always brought cookies to school.", "relation": "xAttr", "tails": [" generous", " kind", " caring"]}
+{"head": "Gabby always brought cookies to school.", "relation": "xEffect", "tails": [" gets a snack", " gets a reward", " gets thanked"]}
+{"head": "Gabby always brought cookies to school.", "relation": "xIntent", "tails": [" to be nice", " to be nice.", " to be helpful"]}
+{"head": "Gabby always brought cookies to school.", "relation": "xNeed", "tails": [" to bake cookies", " to make cookies", " to buy cookies"]}
+{"head": "Gabby always brought cookies to school.", "relation": "xReact", "tails": [" happy", " good", " satisfied"]}
+{"head": "Gabby always brought cookies to school.", "relation": "xReason", "tails": [" they get a cookie", " they get a reward", " they got a cookie"]}
+{"head": "Gabby always brought cookies to school.", "relation": "xWant", "tails": [" to eat the cookies", " to get a reward", " to eat them"]}
+{"head": "cookies", "relation": "AtLocation", "tails": [" cookie jar", " cookies", " cookie dough"]}
+{"head": "cookies", "relation": "CapableOf", "tails": [" bake cookies", " make cookies", " eat"]}
+{"head": "cookies", "relation": "Causes", "tails": [" cookies", " baked", " chocolate"]}
+{"head": "cookies", "relation": "CausesDesire", "tails": [" chocolate", " cookies", " baked"]}
+{"head": "cookies", "relation": "CreatedBy", "tails": [" cookies", " baked", " bake"]}
+{"head": "cookies", "relation": "DefinedAs", "tails": [" cookies", " cookie dough", " chocolate chips"]}
+{"head": "cookies", "relation": "Desires", "tails": [" make cookies", " cookies", " eat"]}
+{"head": "cookies", "relation": "HasA", "tails": [" cookies", " chocolate", " cake"]}
+{"head": "cookies", "relation": "HasFirstSubevent", "tails": [" cookies", " chocolate", " cake"]}
+{"head": "cookies", "relation": "HasLastSubevent", "tails": [" cookies", " cookie dough", " cake batter"]}
+{"head": "cookies", "relation": "HasPrerequisite", "tails": [" cookies", " cake", " baked"]}
+{"head": "cookies", "relation": "HasProperty", "tails": [" made with", " made from", " baked"]}
+{"head": "cookies", "relation": "HasSubEvent", "tails": [" bake cookies", " make cookies", " eat"]}
+{"head": "cookies", "relation": "HasSubevent", "tails": [" cookies", " cookie dough", " chocolate chips"]}
+{"head": "cookies", "relation": "HinderedBy", "tails": [" cookie dough", " bake cookies", " cookies"]}
+{"head": "cookies", "relation": "InheritsFrom", "tails": [" cookies", " chocolate", " baked"]}
+{"head": "cookies", "relation": "InstanceOf", "tails": [" cookies", " cookie dough", " chocolate chips"]}
+{"head": "cookies", "relation": "IsA", "tails": [" cookies", " cake", " chocolate"]}
+{"head": "cookies", "relation": "MadeOf", "tails": [" cookies", " baked goods", " chocolate chips"]}
+{"head": "cookies", "relation": "MadeUpOf", "tails": [" cookies", " cookie", " cake"]}
+{"head": "cookies", "relation": "MotivatedByGoal", "tails": [" cookies", " cookie dough", " chocolate chips"]}
+{"head": "cookies", "relation": "NotCapableOf", "tails": [" bake cookies", " make cookies", " eat"]}
+{"head": "cookies", "relation": "NotDesires", "tails": [" make cookies", " eat", " cookies"]}
+{"head": "cookies", "relation": "NotHasA", "tails": [" cookies", " chocolate", " baked"]}
+{"head": "cookies", "relation": "NotHasProperty", "tails": [" made with", " made from", " baked"]}
+{"head": "cookies", "relation": "NotIsA", "tails": [" cookies", " chocolate", " food"]}
+{"head": "cookies", "relation": "NotMadeOf", "tails": [" baked goods", " cookies", " chocolate chips"]}
+{"head": "cookies", "relation": "ObjectUse", "tails": [" bake cookies", " make cookies", " eat"]}
+{"head": "cookies", "relation": "PartOf", "tails": [" cookies", " chocolate", " cake"]}
+{"head": "cookies", "relation": "ReceivesAction", "tails": [" cookies", " cookie dough", " chocolate chips"]}
+{"head": "cookies", "relation": "SymbolOf", "tails": [" cookies", " chocolate", " bake"]}
+{"head": "cookies", "relation": "UsedFor", "tails": [" cookies", " cookie dough", " chocolate chips"]}
+{"head": "cookies", "relation": "isAfter", "tails": [" cookies", " cookie dough", " cookie jar"]}
+{"head": "cookies", "relation": "isBefore", "tails": [" cookie dough", " cookies", " cake mix"]}
+{"head": "cookies", "relation": "isFilledBy", "tails": [" cookies", " cookie", " cake"]}
+{"head": "school", "relation": "AtLocation", "tails": [" school", " classroom", " city"]}
+{"head": "school", "relation": "CapableOf", "tails": [" learn new things", " learn to read", " learn new skills"]}
+{"head": "school", "relation": "Causes", "tails": [" school", " learning", " educated"]}
+{"head": "school", "relation": "CausesDesire", "tails": [" school", " learning", " bored"]}
+{"head": "school", "relation": "CreatedBy", "tails": [" learning", " school", " learn"]}
+{"head": "school", "relation": "DefinedAs", "tails": [" school bus", " school uniform", " school day"]}
+{"head": "school", "relation": "Desires", "tails": [" learn things", " learn", " learning"]}
+{"head": "school", "relation": "HasA", "tails": [" school", " classroom", " learning"]}
+{"head": "school", "relation": "HasFirstSubevent", "tails": [" school bus", " school house", " schoolhouse"]}
+{"head": "school", "relation": "HasLastSubevent", "tails": [" school bus", " school uniform", " school day"]}
+{"head": "school", "relation": "HasPrerequisite", "tails": [" learn new things", " get good grades", " get good education"]}
+{"head": "school", "relation": "HasProperty", "tails": [" found in", " found at", " school"]}
+{"head": "school", "relation": "HasSubEvent", "tails": [" learn new things", " go to class", " get out of"]}
+{"head": "school", "relation": "HasSubevent", "tails": [" school bus", " school uniform", " school"]}
+{"head": "school", "relation": "HinderedBy", "tails": [" school is closed", " school bus", " school"]}
+{"head": "school", "relation": "InheritsFrom", "tails": [" school bus", " school uniform", " school house"]}
+{"head": "school", "relation": "InstanceOf", "tails": [" school", " classroom", " education"]}
+{"head": "school", "relation": "IsA", "tails": [" school bus", " school uniform", " school"]}
+{"head": "school", "relation": "MadeOf", "tails": [" school", " education", " learning"]}
+{"head": "school", "relation": "MadeUpOf", "tails": [" school bus", " schoolhouse", " school house"]}
+{"head": "school", "relation": "MotivatedByGoal", "tails": [" school", " classroom", " teachers"]}
+{"head": "school", "relation": "NotCapableOf", "tails": [" learn new things", " learn to read", " learn new skills"]}
+{"head": "school", "relation": "NotDesires", "tails": [" learn new things", " get good grades", " learn new skills"]}
+{"head": "school", "relation": "NotHasA", "tails": [" school bus", " learning about", " school"]}
+{"head": "school", "relation": "NotHasProperty", "tails": [" found in", " found at", " school"]}
+{"head": "school", "relation": "NotIsA", "tails": [" school bus", " school", " learn"]}
+{"head": "school", "relation": "NotMadeOf", "tails": [" not good", " none", " school"]}
+{"head": "school", "relation": "ObjectUse", "tails": [" learn new things", " get a job", " learning"]}
+{"head": "school", "relation": "PartOf", "tails": [" school", " learning", " learn"]}
+{"head": "school", "relation": "ReceivesAction", "tails": [" school", " classroom", " schools"]}
+{"head": "school", "relation": "SymbolOf", "tails": [" learn things", " school", " learn"]}
+{"head": "school", "relation": "UsedFor", "tails": [" school bus", " school house", " schoolhouse"]}
+{"head": "school", "relation": "isAfter", "tails": [" school bus", " school day", " school house"]}
+{"head": "school", "relation": "isBefore", "tails": [" school", " classroom", " class"]}
+{"head": "school", "relation": "isFilledBy", "tails": [" school bus", " schoolhouse", " school house"]}
+{"head": "cookies school", "relation": "AtLocation", "tails": [" cookie jar", " cookie shop", " cookie store"]}
+{"head": "cookies school", "relation": "CapableOf", "tails": [" learn about cookies", " bake cookies", " learn about baking"]}
+{"head": "cookies school", "relation": "Causes", "tails": [" cookies", " hungry", " good"]}
+{"head": "cookies school", "relation": "CausesDesire", "tails": [" hungry", " satisfied", " good"]}
+{"head": "cookies school", "relation": "CreatedBy", "tails": [" cook cookies", " cook food", " cook out"]}
+{"head": "cookies school", "relation": "DefinedAs", "tails": [" cookies", " food", " school"]}
+{"head": "cookies school", "relation": "Desires", "tails": [" learn about cookies", " eat cookies", " to learn"]}
+{"head": "cookies school", "relation": "HasA", "tails": [" cookies", " food", " chocolate"]}
+{"head": "cookies school", "relation": "HasFirstSubevent", "tails": [" cookies", " food", " school"]}
+{"head": "cookies school", "relation": "HasLastSubevent", "tails": [" cookies", " school", " food"]}
+{"head": "cookies school", "relation": "HasPrerequisite", "tails": [" cookies", " food", " school"]}
+{"head": "cookies school", "relation": "HasProperty", "tails": [" good for health", " good for kids", " good for children"]}
+{"head": "cookies school", "relation": "HasSubEvent", "tails": [" learn about cookies", " learn new skills", " learn about baking"]}
+{"head": "cookies school", "relation": "HasSubevent", "tails": [" bake cookies", " eat cookies", " cookies"]}
+{"head": "cookies school", "relation": "HinderedBy", "tails": [" cookies", " cookies school", " cook cookies"]}
+{"head": "cookies school", "relation": "InheritsFrom", "tails": [" cookies", " food", " school"]}
+{"head": "cookies school", "relation": "InstanceOf", "tails": [" cookies", " food", " chocolate"]}
+{"head": "cookies school", "relation": "IsA", "tails": [" cookies", " food", " eat"]}
+{"head": "cookies school", "relation": "MadeOf", "tails": [" cookies", " food", " school"]}
+{"head": "cookies school", "relation": "MadeUpOf", "tails": [" cookies", " cake", " cookie"]}
+{"head": "cookies school", "relation": "MotivatedByGoal", "tails": [" cookies", " food", " school"]}
+{"head": "cookies school", "relation": "NotCapableOf", "tails": [" bake cookies", " eat cookies", " make cookies"]}
+{"head": "cookies school", "relation": "NotDesires", "tails": [" eat cookies", " none", " eat"]}
+{"head": "cookies school", "relation": "NotHasA", "tails": [" cookies", " food", " chocolate"]}
+{"head": "cookies school", "relation": "NotHasProperty", "tails": [" baked goods", " not good", " good"]}
+{"head": "cookies school", "relation": "NotIsA", "tails": [" cookies", " food", " eat"]}
+{"head": "cookies school", "relation": "NotMadeOf", "tails": [" cookies", " none", " food"]}
+{"head": "cookies school", "relation": "ObjectUse", "tails": [" teach kids about cookies", " learn about baking", " make cookies"]}
+{"head": "cookies school", "relation": "PartOf", "tails": [" cookies", " food", " school"]}
+{"head": "cookies school", "relation": "ReceivesAction", "tails": [" cookies", " food", " school"]}
+{"head": "cookies school", "relation": "SymbolOf", "tails": [" bake cookies", " eat cookies", " cookies"]}
+{"head": "cookies school", "relation": "UsedFor", "tails": [" cookies", " food", " school"]}
+{"head": "cookies school", "relation": "isAfter", "tails": [" cookies", " school", " food"]}
+{"head": "cookies school", "relation": "isBefore", "tails": [" cook cookies", " cook out", " cookies"]}
+{"head": "cookies school", "relation": "isFilledBy", "tails": [" cookies", " candy", " cookie"]}
+{"head": "to bring", "relation": "Causes", "tails": [" to bring something", " to bring", " good"]}
+{"head": "to bring", "relation": "CausesDesire", "tails": [" to bring", " desire", " want"]}
+{"head": "to bring", "relation": "Desires", "tails": [" to be prepared", " to have something", " to bring"]}
+{"head": "to bring", "relation": "HasFirstSubevent", "tails": [" to bring ", " to bring", " bring"]}
+{"head": "to bring", "relation": "HasLastSubevent", "tails": [" to bring something", " to bring", " to bring "]}
+{"head": "to bring", "relation": "HasPrerequisite", "tails": [" to bring ", " to bring", " to bring something"]}
+{"head": "to bring", "relation": "HasSubEvent", "tails": [" to bring ", " to bring", " get in car"]}
+{"head": "to bring", "relation": "HasSubevent", "tails": [" to bring something", " to bring", " to have"]}
+{"head": "to bring", "relation": "HinderedBy", "tails": [" to bring  to the event", " to bring  to the party", " to bring"]}
+{"head": "to bring", "relation": "InheritsFrom", "tails": [" to bring", " to bring ", " to bring something"]}
+{"head": "to bring", "relation": "InstanceOf", "tails": [" to bring something", " to bring ", " to bring"]}
+{"head": "to bring", "relation": "MotivatedByGoal", "tails": [" to bring something", " to bring", " to bring "]}
+{"head": "to bring", "relation": "NotCapableOf", "tails": [" to bring", " bring something", " bring"]}
+{"head": "to bring", "relation": "NotDesires", "tails": [" to bring", " to have", " none"]}
+{"head": "to bring", "relation": "ReceivesAction", "tails": [" to bring ", " to bring", " bring"]}
+{"head": "to bring", "relation": "SymbolOf", "tails": [" to bring to the event", " to bring to the party", " to bring something"]}
+{"head": "to bring", "relation": "isAfter", "tails": [" to bring to the event", " to bring to the party", " to bring something"]}
+{"head": "to bring", "relation": "isBefore", "tails": [" to bring to the event", " to bring to the party", " to bring"]}
+{"head": "to bring", "relation": "isFilledBy", "tails": [" food", " suitcase", " box"]}
+{"head": "to bring", "relation": "oEffect", "tails": [" none", " to bring", " get thanked"]}
+{"head": "to bring", "relation": "oReact", "tails": [" none", " happy", " good"]}
+{"head": "to bring", "relation": "oWant", "tails": [" to have something to eat", " to have a good time", " to have something to bring"]}
+{"head": "to bring", "relation": "xAttr", "tails": [" helpful", " responsible", " prepared"]}
+{"head": "to bring", "relation": "xEffect", "tails": [" to bring ", " to bring", " gets thanked"]}
+{"head": "to bring", "relation": "xIntent", "tails": [" to be helpful", " to be prepared", " to have something"]}
+{"head": "to bring", "relation": "xNeed", "tails": [" to know what to bring", " to have something to bring", " to know what they want"]}
+{"head": "to bring", "relation": "xReact", "tails": [" happy", " good", " satisfied"]}
+{"head": "to bring", "relation": "xReason", "tails": [" to bring to the event", " to bring to the party", " to bring something"]}
+{"head": "to bring", "relation": "xWant", "tails": [" to bring something", " to get something", " to bring"]}
+{"head": "bring cookies", "relation": "Causes", "tails": [" bring to the party", " good for the environment", " bring to a party"]}
+{"head": "bring cookies", "relation": "CausesDesire", "tails": [" hungry", " cookies", " good"]}
+{"head": "bring cookies", "relation": "Desires", "tails": [" to be nice", " to eat", " eat"]}
+{"head": "bring cookies", "relation": "HasFirstSubevent", "tails": [" eat cookies", " eat", " cookies"]}
+{"head": "bring cookies", "relation": "HasLastSubevent", "tails": [" eat cookies", " cookies", " eat"]}
+{"head": "bring cookies", "relation": "HasPrerequisite", "tails": [" eat cookies", " bring cookies", " cookies"]}
+{"head": "bring cookies", "relation": "HasSubEvent", "tails": [" eat cookies", " bring cookies", " eat"]}
+{"head": "bring cookies", "relation": "HasSubevent", "tails": [" eat cookies", " cookies", " bring cookies"]}
+{"head": "bring cookies", "relation": "HinderedBy", "tails": [" bring cookies to the party", " cookies are not allowed", " bring cookies"]}
+{"head": "bring cookies", "relation": "InheritsFrom", "tails": [" eat cookies", " cookies", " bring cookies"]}
+{"head": "bring cookies", "relation": "InstanceOf", "tails": [" eat cookies", " cookies", " bring cookies"]}
+{"head": "bring cookies", "relation": "MotivatedByGoal", "tails": [" eat cookies", " cookies", " bring cookies"]}
+{"head": "bring cookies", "relation": "NotCapableOf", "tails": [" bake cookies", " eat cookies", " eat"]}
+{"head": "bring cookies", "relation": "NotDesires", "tails": [" eat cookies", " bring cookies", " eat"]}
+{"head": "bring cookies", "relation": "ReceivesAction", "tails": [" eat cookies", " cookies", " eat"]}
+{"head": "bring cookies", "relation": "SymbolOf", "tails": [" bake cookies", " eat cookies", " eat"]}
+{"head": "bring cookies", "relation": "isAfter", "tails": [" PersonY buys cookies", " PersonY brings cookies", " PersonX buys cookies"]}
+{"head": "bring cookies", "relation": "isBefore", "tails": [" eat cookies", " bake cookies", " cookies"]}
+{"head": "bring cookies", "relation": "isFilledBy", "tails": [" cookies", " cookie jar", " cookie dough"]}
+{"head": "bring cookies", "relation": "oEffect", "tails": [" eat cookies", " none", " eat cookie"]}
+{"head": "bring cookies", "relation": "oReact", "tails": [" none", " happy", " good"]}
+{"head": "bring cookies", "relation": "oWant", "tails": [" to eat cookies", " to eat them", " to eat"]}
+{"head": "bring cookies", "relation": "xAttr", "tails": [" generous", " kind", " hungry"]}
+{"head": "bring cookies", "relation": "xEffect", "tails": [" eat cookies", " get thanked", " eat"]}
+{"head": "bring cookies", "relation": "xIntent", "tails": [" to be nice", " to eat cookies", " to eat"]}
+{"head": "bring cookies", "relation": "xNeed", "tails": [" to go to the store", " to go to the bakery", " to go to a bakery"]}
+{"head": "bring cookies", "relation": "xReact", "tails": [" happy", " good", " excited"]}
+{"head": "bring cookies", "relation": "xReason", "tails": [" eat cookies", " bring cookies", " cookies"]}
+{"head": "bring cookies", "relation": "xWant", "tails": [" to eat them", " to eat cookies", " to eat"]}

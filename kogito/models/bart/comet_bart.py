@@ -8,6 +8,7 @@ from pathlib import Path
 from typing import Dict, List, Tuple
 from dataclasses import asdict
 
+from tqdm import tqdm
 import numpy as np
 import pytorch_lightning as pl
 import torch
@@ -385,7 +386,7 @@ class COMETBART(KnowledgeModel):
     ):
         with torch.no_grad():
             outputs = []
-            for kg_batch in list(chunks(input_graph, batch_size)):
+            for kg_batch in tqdm(list(chunks(input_graph, batch_size))):
                 queries = []
                 for kg_input in kg_batch:
                     queries.append(kg_input.to_query(decode_method=decode_method))

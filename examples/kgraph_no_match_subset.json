@@ -1,0 +1,12 @@
+{"head": "Gabby always brought cookies to school.", "relation": "Causes", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "Desires", "tails": []}
+{"head": "cookies", "relation": "Causes", "tails": []}
+{"head": "cookies", "relation": "Desires", "tails": []}
+{"head": "school", "relation": "Causes", "tails": []}
+{"head": "school", "relation": "Desires", "tails": []}
+{"head": "cookies school", "relation": "Causes", "tails": []}
+{"head": "cookies school", "relation": "Desires", "tails": []}
+{"head": "to bring", "relation": "Causes", "tails": []}
+{"head": "to bring", "relation": "Desires", "tails": []}
+{"head": "bring cookies", "relation": "Causes", "tails": []}
+{"head": "bring cookies", "relation": "Desires", "tails": []}
