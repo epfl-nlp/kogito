@@ -200,7 +200,8 @@ EVENT_RELATIONS = [
     "xReason",
     "isAfter",
     "isBefore",
-    "HasSubEvent"
+    "HasSubEvent",
+    "isFilledBy"
 ]
 
 SOCIAL_RELATIONS = [
