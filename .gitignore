@@ -137,3 +137,6 @@ examples/output
 examples/models
 wandb
 .vector_cache/
+lightning_logs/
+kogito-relation-matcher/
+*.bin
