@@ -70,6 +70,8 @@ def create_emb_matrix(embedding_dim=100):
 class HeadDataset(Dataset):
     def __init__(self, df, vocab, embedding_matrix=None, apply_pooling=False, pooling="avg"):
         nlp = spacy.load("en_core_web_sm")
+        self.texts = []
+
         if apply_pooling:
             # Apply pooling directly without padding
             self.labels = []
@@ -80,10 +82,12 @@ class HeadDataset(Dataset):
                 if embedding is not None:
                     self.features.append(embedding)
                     self.labels.append(df['label'][index])
+                    self.texts.append(text)
             
             self.labels = np.asarray(self.labels)
         else:
             # Pad sequences
+            self.texts = df['text']
             self.labels = np.asarray(df['label'].to_list())
             self.features = pad_sequence([torch.tensor([vocab.get(token.text, 1) for token in nlp(text)], dtype=torch.int) for text in df['text']],
                                     batch_first=True)
