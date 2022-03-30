@@ -191,7 +191,7 @@ PHYSICAL_RELATIONS = [
     "HasProperty",
     "Desires",
     "NotDesires",
-    "AtLocation"
+    "AtLocation",
 ]
 
 EVENT_RELATIONS = [
@@ -201,7 +201,7 @@ EVENT_RELATIONS = [
     "isAfter",
     "isBefore",
     "HasSubEvent",
-    "isFilledBy"
+    "isFilledBy",
 ]
 
 SOCIAL_RELATIONS = [
@@ -213,11 +213,11 @@ SOCIAL_RELATIONS = [
     "xNeed",
     "xWant",
     "oEffect",
-    "oWant"
+    "oWant",
 ]
 
 HEAD_TO_RELATION_MAP = {
     KnowledgeHeadType.SENTENCE: SENTENCE_RELATIONS,
     KnowledgeHeadType.NOUN_PHRASE: NOUN_PHRASE_RELATIONS,
-    KnowledgeHeadType.VERB_PHRASE: VERB_PHRASE_RELATIONS
+    KnowledgeHeadType.VERB_PHRASE: VERB_PHRASE_RELATIONS,
 }

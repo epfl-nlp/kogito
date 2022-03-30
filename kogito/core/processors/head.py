@@ -81,16 +81,17 @@ class VerbPhraseHeadExtractor(KnowledgeHeadExtractor):
         heads = []
 
         for token in doc:
-            if token.dep_ == 'ROOT':
+            if token.dep_ == "ROOT":
                 heads.append(
                     KnowledgeHead(
                         text=f"to {token.lemma_}",
                         type=KnowledgeHeadType.VERB_PHRASE,
-                        entity=token
-                    ))
-                
+                        entity=token,
+                    )
+                )
+
                 for child in token.children:
-                    if child.dep_ == 'dobj':
+                    if child.dep_ == "dobj":
                         heads.append(
                             KnowledgeHead(
                                 text=f"{token.lemma_} {child.text}",

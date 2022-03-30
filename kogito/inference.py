@@ -9,7 +9,7 @@ from kogito.core.processors.head import (
     KnowledgeHeadExtractor,
     SentenceHeadExtractor,
     NounPhraseHeadExtractor,
-    VerbPhraseHeadExtractor
+    VerbPhraseHeadExtractor,
 )
 from kogito.core.relation import ATOMIC_RELATIONS
 from kogito.core.processors.relation import (
@@ -26,11 +26,15 @@ class CommonsenseInference:
 
         self._head_processors = {
             "sentence_extractor": SentenceHeadExtractor("sentence_extractor", self.nlp),
-            "noun_phrase_extractor": NounPhraseHeadExtractor("noun_phrase_extractor", self.nlp),
-            "verb_phrase_extractor": VerbPhraseHeadExtractor("verb_phrase_extractor", self.nlp)
+            "noun_phrase_extractor": NounPhraseHeadExtractor(
+                "noun_phrase_extractor", self.nlp
+            ),
+            "verb_phrase_extractor": VerbPhraseHeadExtractor(
+                "verb_phrase_extractor", self.nlp
+            ),
         }
         self._relation_processors = {
-            "simple_matcher": SimpleRelationMatcher("simple_matcher")
+            "simple_relation_matcher": SimpleRelationMatcher("simple_matcher")
         }
 
     @property
@@ -41,34 +45,50 @@ class CommonsenseInference:
         }
 
     def infer(
-        self, text: str, model: KnowledgeModel, model_args: dict = None, extract_heads: bool = True, match_relations: bool = True, relations: List[str] = None, dry_run: bool = False
+        self,
+        text: str = None,
+        model: KnowledgeModel = None,
+        heads: List[str] = None,
+        model_args: dict = None,
+        extract_heads: bool = True,
+        match_relations: bool = True,
+        relations: List[str] = None,
+        dry_run: bool = False,
     ) -> KnowledgeGraph:
-        heads = []
+        kg_heads = []
         head_relations = []
         head_texts = set()
         model_args = model_args or {}
 
+        if heads:
+            for head in heads:
+                head_texts.add(head)
+                kg_heads.append(KnowledgeHead(text=head, type=KnowledgeHeadType.SENTENCE))
+
         if extract_heads:
-            print("Extracting heads...")
-            for head_proc in self._head_processors.values():
-                extracted_heads = head_proc.extract(text)
-                for head in extracted_heads:
-                    head_text = head.text.strip().lower()
-                    if head_text not in head_texts:
-                        heads.append(head)
-                        head_texts.add(head_text)
+            if text:
+                print("Extracting heads...")
+                for head_proc in self._head_processors.values():
+                    extracted_heads = head_proc.extract(text)
+                    for head in extracted_heads:
+                        head_text = head.text.strip().lower()
+                        if head_text not in head_texts:
+                            kg_heads.append(head)
+                            head_texts.add(head_text)
         else:
-            heads.append(KnowledgeHead(text=text, type=KnowledgeHeadType.SENTENCE))
+            if text and text not in head_texts:
+                head_texts.add(text)
+                kg_heads.append(KnowledgeHead(text=text, type=KnowledgeHeadType.SENTENCE))
 
         if match_relations:
             print("Matching relations...")
             for relation_proc in self._relation_processors.values():
-                head_relations.extend(relation_proc.match(heads, relations))
+                head_relations.extend(relation_proc.match(kg_heads, relations))
         elif relations:
             if not isinstance(relations, list):
                 raise ValueError("Relation subset should be a list")
-            
-            head_relations.extend(list(product(heads, relations)))
+
+            head_relations.extend(list(product(kg_heads, relations)))
         else:
             raise ValueError("No relation found to match")
 
@@ -85,7 +105,7 @@ class CommonsenseInference:
 
         input_graph = KnowledgeGraph(kg_list)
 
-        if dry_run:
+        if dry_run or not model:
             return input_graph
 
         print("Generating commonsense graph...")

@@ -1,0 +1,25 @@
+{"head": "post office", "relation": "xIntent", "tails": [" post office", " mail order", " mail"]}
+{"head": "post office", "relation": "xReact", "tails": [" happy", " satisfied", " good"]}
+{"head": "post office", "relation": "oReact", "tails": [" none", " happy", " good"]}
+{"head": "post office", "relation": "xAttr", "tails": [" responsible", " busy", " organized"]}
+{"head": "post office", "relation": "xEffect", "tails": [" post office", " get mail", " postman"]}
+{"head": "post office", "relation": "xNeed", "tails": [" mail letter", " get mail", " mail package"]}
+{"head": "post office", "relation": "xWant", "tails": [" to deliver mail", " to get mail", " mail package"]}
+{"head": "post office", "relation": "oEffect", "tails": [" get mail", " post office", " postman"]}
+{"head": "post office", "relation": "oWant", "tails": [" to get their mail", " to get the mail", " to get the package"]}
+{"head": "Student gets a card", "relation": "Causes", "tails": [" student receives a card", " student receives a gift", " student is happy"]}
+{"head": "Student gets a card", "relation": "HinderedBy", "tails": [" The card store is closed.", " The card was stolen.", " The card store is closed"]}
+{"head": "Student gets a card", "relation": "xReason", "tails": [" student gets a card", " student receives a card", " student receives a gift"]}
+{"head": "Student gets a card", "relation": "isAfter", "tails": [" PersonY gives PersonX a gift", " Person gives PersonY a gift card", " Person gives PersonY a gift"]}
+{"head": "Student gets a card", "relation": "isBefore", "tails": [" PersonX gives the card to PersonY", " PersonX gives the card to PersonX", " PersonY gives the card to PersonX"]}
+{"head": "Student gets a card", "relation": "HasSubEvent", "tails": [" receives a thank you", " receives a card back", " receives a gift"]}
+{"head": "Student gets a card", "relation": "isFilledBy", "tails": [" mail", " card", " paper"]}
+{"head": "Student gets a card", "relation": "xIntent", "tails": [" to show appreciation", " none", " to be nice"]}
+{"head": "Student gets a card", "relation": "xReact", "tails": [" happy", " excited", " good"]}
+{"head": "Student gets a card", "relation": "oReact", "tails": [" none", " happy", " grateful"]}
+{"head": "Student gets a card", "relation": "xAttr", "tails": [" thoughtful", " excited", " happy"]}
+{"head": "Student gets a card", "relation": "xEffect", "tails": [" receives a gift", " receives a card", " gets thanked"]}
+{"head": "Student gets a card", "relation": "xNeed", "tails": [" to buy a card", " to open the envelope", " to open the card"]}
+{"head": "Student gets a card", "relation": "xWant", "tails": [" to open the card", " to read the card", " to open the gift"]}
+{"head": "Student gets a card", "relation": "oEffect", "tails": [" receives a gift", " receives a card", " none"]}
+{"head": "Student gets a card", "relation": "oWant", "tails": [" to read the card", " to read the card.", " none"]}
