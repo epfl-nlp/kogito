@@ -133,8 +133,9 @@ dmypy.json
 
 # kogito
 examples/data
-examples/output
-examples/models
+examples/relation_modeling/output
+examples/relation_modeling/models
+examples/relation_modeling/data
 wandb
 .vector_cache/
 lightning_logs/
