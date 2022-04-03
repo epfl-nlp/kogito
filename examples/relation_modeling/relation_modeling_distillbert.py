@@ -8,7 +8,7 @@
 # %autoreload 2
 
 
-# In[1]:
+# In[16]:
 
 
 import torch
@@ -19,12 +19,12 @@ from torch import nn
 import pytorch_lightning as pl
 import torchmetrics
 import torch.nn.functional as F
-from transformers import BertTokenizer, BertModel
+from transformers import DistilBertTokenizer, DistilBertModel
 
 
 class HeadDataset(Dataset):
     def __init__(self, df):
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+        self.tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
         self.labels = np.asarray(df['label'].to_list())
         self.texts = [self.tokenizer(text, padding='max_length', max_length=32, truncation=True,
                                      return_tensors="pt") for text in df['text']]
@@ -39,15 +39,15 @@ class HeadDataset(Dataset):
         return self.texts[idx], self.labels[idx]
 
 
-class BERTClassifier(pl.LightningModule):
+class DistilBERTClassifier(pl.LightningModule):
     def __init__(self, num_classes=3, dropout=0.5, learning_rate=1e-4, freeze_emb=False):
         super().__init__()
-        self.bert = BertModel.from_pretrained('bert-base-uncased')
+        self.distilbert = DistilBertModel.from_pretrained('distilbert-base-uncased')
         self.dropout = nn.Dropout(dropout)
         self.linear = nn.Linear(768, num_classes)
 
         if freeze_emb:
-            for parameter in self.bert.parameters():
+            for parameter in self.distilbert.parameters():
                 parameter.requires_grad = False
             self.classifier = nn.Sequential(self.linear)
         else:
@@ -66,8 +66,8 @@ class BERTClassifier(pl.LightningModule):
         self.save_hyperparameters()
     
     def forward(self, input_ids, mask):
-        _, outputs = self.bert(input_ids=input_ids, attention_mask=mask, return_dict=False)
-        outputs = self.classifier(outputs)
+        outputs = self.distilbert(input_ids=input_ids, attention_mask=mask, return_dict=False)
+        outputs = self.classifier(outputs[0][:, 0, :])
         return outputs
 
     def predict(self, input_ids, mask):
@@ -114,7 +114,7 @@ class BERTClassifier(pl.LightningModule):
         return optimizer
 
 
-# In[3]:
+# In[5]:
 
 
 from relation_modeling_utils import load_data
@@ -125,28 +125,29 @@ train_data = HeadDataset(train_df)
 val_data = HeadDataset(dev_df)
 
 
-# In[4]:
+# In[6]:
 
 
 len(train_data), len(val_data)
 
 
-# In[4]:
+# In[7]:
 
 
 train_dataloader = DataLoader(train_data, batch_size=2, shuffle=True)
 val_dataloader = DataLoader(val_data, batch_size=2)
 
 
-# In[5]:
+# In[17]:
 
 
 from pytorch_lightning.loggers import WandbLogger
 import wandb
 
-wandb_logger = WandbLogger(project="kogito-relation-matcher", name="bert_multi_label_frozen")
-model = BERTClassifier(learning_rate=1e-4, freeze_emb=True)
-trainer = pl.Trainer(max_epochs=3, logger=wandb_logger, accelerator="gpu", devices=[0])
+wandb_logger = WandbLogger(project="kogito-relation-matcher", name="distilbert_multi_label")
+model = DistilBERTClassifier(learning_rate=1e-4)
+trainer = pl.Trainer(max_epochs=2, logger=wandb_logger, accelerator="gpu", devices=[1])
 trainer.fit(model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
+trainer.save_checkpoint("models/distilbert_model.ckpt")
 wandb.finish()
 
