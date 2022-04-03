@@ -34,7 +34,7 @@ class CommonsenseInference:
             ),
         }
         self._relation_processors = {
-            "simple_relation_matcher": SimpleRelationMatcher("simple_matcher")
+            "simple_relation_matcher": SimpleRelationMatcher("simple_matcher", self.nlp)
         }
 
     @property
@@ -63,7 +63,9 @@ class CommonsenseInference:
         if heads:
             for head in heads:
                 head_texts.add(head)
-                kg_heads.append(KnowledgeHead(text=head, type=KnowledgeHeadType.SENTENCE))
+                kg_heads.append(
+                    KnowledgeHead(text=head, type=KnowledgeHeadType.SENTENCE)
+                )
 
         if extract_heads:
             if text:
@@ -78,7 +80,9 @@ class CommonsenseInference:
         else:
             if text and text not in head_texts:
                 head_texts.add(text)
-                kg_heads.append(KnowledgeHead(text=text, type=KnowledgeHeadType.SENTENCE))
+                kg_heads.append(
+                    KnowledgeHead(text=text, type=KnowledgeHeadType.SENTENCE)
+                )
 
         if match_relations:
             print("Matching relations...")
@@ -118,8 +122,10 @@ class CommonsenseInference:
     ) -> None:
         if isinstance(processor, KnowledgeHeadExtractor):
             self._head_processors[processor.name] = processor
+            processor.lang = self.nlp
         elif isinstance(processor, KnowledgeRelationMatcher):
             self._relation_processors[processor.name] = processor
+            processor.lang = self.nlp
         else:
             raise ValueError("Unknown processor")
 

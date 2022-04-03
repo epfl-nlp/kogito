@@ -1,16 +1,20 @@
 from abc import ABC, abstractmethod
-from typing import List, Tuple
+from typing import List, Tuple, Optional
 
 import numpy as np
 import torch
-import spacy
 from torch import nn
 import pytorch_lightning as pl
-import torch.nn.functional as F
 from torch.nn.utils.rnn import pad_sequence
+from spacy.language import Language
 
 from kogito.core.head import KnowledgeHead
-from kogito.core.relation import HEAD_TO_RELATION_MAP, PHYSICAL_RELATIONS, EVENT_RELATIONS, SOCIAL_RELATIONS
+from kogito.core.relation import (
+    HEAD_TO_RELATION_MAP,
+    PHYSICAL_RELATIONS,
+    EVENT_RELATIONS,
+    SOCIAL_RELATIONS,
+)
 
 RELATION_CLASSES = [PHYSICAL_RELATIONS, EVENT_RELATIONS, SOCIAL_RELATIONS]
 
@@ -33,16 +37,17 @@ class SWEMRelationClassifier(pl.LightningModule):
         self.pool = MaxPool() if pooling == "max" else AvgPool()
         self.linear = nn.Linear(100, num_classes)
         self.model = nn.Sequential(self.embedding, self.pool, self.linear)
-    
+
     def forward(self, X):
         outputs = self.model(X)
-        probs = F.sigmoid(outputs)
+        probs = torch.sigmoid(outputs)
         return probs
 
 
 class KnowledgeRelationMatcher(ABC):
-    def __init__(self, name: str) -> None:
+    def __init__(self, name: str, lang: Optional[Language] = None) -> None:
         self.name = name
+        self.lang = lang
 
     @abstractmethod
     def match(
@@ -73,24 +78,44 @@ class SWEMRelationMatcher(KnowledgeRelationMatcher):
     def match(
         self, heads: List[KnowledgeHead], relations: List[str] = None
     ) -> List[Tuple[KnowledgeHead, str]]:
-        nlp = spacy.load("en_core_web_sm")
-        vocab = np.load("./relation_modeling/data/vocab_glove_100d.npy", allow_pickle=True).item()
-        head_inputs = pad_sequence([torch.tensor([vocab.get(token.text, 1) for token in nlp(head.text)], dtype=torch.int) for head in heads],
-                                    batch_first=True)
+        vocab = np.load(
+            "./relation_modeling/data/vocab_glove_100d.npy", allow_pickle=True
+        ).item()
+        head_inputs = pad_sequence(
+            [
+                torch.tensor(
+                    [vocab.get(token.text, 1) for token in self.lang(head.text)],
+                    dtype=torch.int,
+                )
+                for head in heads
+            ],
+            batch_first=True,
+        )
         model = SWEMRelationClassifier()
-        model.load_state_dict(torch.load('./relation_modeling/models/swem_multi_label_finetune_state_dict.pth'))
+        model.load_state_dict(
+            torch.load(
+                "./relation_modeling/models/swem_multi_label_finetune_state_dict.pth"
+            )
+        )
         probs = model.forward(head_inputs).detach().numpy()
-        predictions = np.where(probs >= 0.5, 1, 0).tolist()
         head_relations = []
 
-        for head, prediction in zip(heads, predictions):
-            pred_rel_classes = [RELATION_CLASSES[idx] for idx, pred in enumerate(prediction) if pred == 1]
-            if pred_rel_classes:
-                for rel_class in pred_rel_classes:
-                    rels_to_match = rel_class
-                    if relations:
-                        rels_to_match = set(rels_to_match).intersection(set(relations))
-                    for relation in rels_to_match:
-                        head_relations.append((head, relation))
+        for head, prob in zip(heads, probs):
+            prediction = np.where(prob >= 0.5, 1, 0).tolist()
+            pred_rel_classes = [
+                RELATION_CLASSES[idx]
+                for idx, pred in enumerate(prediction)
+                if pred == 1
+            ]
+
+            if not pred_rel_classes:
+                pred_rel_classes = [RELATION_CLASSES[np.argmax(prob)]]
+
+            for rel_class in pred_rel_classes:
+                rels_to_match = rel_class
+                if relations:
+                    rels_to_match = set(rels_to_match).intersection(set(relations))
+                for relation in rels_to_match:
+                    head_relations.append((head, relation))
 
         return head_relations
