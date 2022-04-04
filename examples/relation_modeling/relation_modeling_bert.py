@@ -140,13 +140,15 @@ val_dataloader = DataLoader(val_data, batch_size=2)
 
 # In[5]:
 
-
+from relation_modeling_utils import get_timestamp
 from pytorch_lightning.loggers import WandbLogger
 import wandb
 
-wandb_logger = WandbLogger(project="kogito-relation-matcher", name="bert_multi_label_frozen")
-model = BERTClassifier(learning_rate=1e-4, freeze_emb=True)
-trainer = pl.Trainer(max_epochs=3, logger=wandb_logger, accelerator="gpu", devices=[0])
+timestamp = get_timestamp()
+wandb_logger = WandbLogger(project="kogito-relation-matcher", name=f"bert_multi_label_finetune_{timestamp}")
+model = BERTClassifier(learning_rate=1e-4)
+trainer = pl.Trainer(default_root_dir="models/bert", max_epochs=2, logger=wandb_logger, accelerator="gpu", devices=[0])
 trainer.fit(model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
+trainer.save_checkpoint(f"models/bert/bert_model_finetune_{timestamp}.ckpt", weights_only=True)
 wandb.finish()
 

@@ -134,20 +134,21 @@ len(train_data), len(val_data)
 # In[7]:
 
 
-train_dataloader = DataLoader(train_data, batch_size=2, shuffle=True)
-val_dataloader = DataLoader(val_data, batch_size=2)
+train_dataloader = DataLoader(train_data, batch_size=64, shuffle=True)
+val_dataloader = DataLoader(val_data, batch_size=64)
 
 
 # In[17]:
 
-
+from relation_modeling_utils import get_timestamp
 from pytorch_lightning.loggers import WandbLogger
 import wandb
 
-wandb_logger = WandbLogger(project="kogito-relation-matcher", name="distilbert_multi_label")
+timestamp = get_timestamp()
+wandb_logger = WandbLogger(project="kogito-relation-matcher", name=f"distilbert_multi_label_{timestamp}")
 model = DistilBERTClassifier(learning_rate=1e-4)
-trainer = pl.Trainer(max_epochs=2, logger=wandb_logger, accelerator="gpu", devices=[1])
+trainer = pl.Trainer(default_root_dir="models/distilbert", max_epochs=2, logger=wandb_logger, accelerator="gpu", devices=[1])
 trainer.fit(model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
-trainer.save_checkpoint("models/distilbert_model.ckpt")
+trainer.save_checkpoint(f"models/distilbert/distilbert_model_{timestamp}.ckpt", weights_only=True)
 wandb.finish()
 

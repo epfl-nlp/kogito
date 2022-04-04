@@ -2,6 +2,7 @@ import pandas as pd
 import numpy as np
 from tqdm import tqdm
 from collections import defaultdict
+from datetime import datetime
 
 import torch
 from tqdm import tqdm
@@ -127,3 +128,8 @@ def text_to_embedding(text, vocab, embedding_matrix, pooling="max", nlp=None):
         if pooling == "max":
             return np.amax(np.array(vectors, dtype=np.float32), axis=0)
         return np.mean(vectors, axis=0, dtype=np.float32)
+
+
+def get_timestamp():
+    now = datetime.now()
+    return now.strftime('%Y%m%dH%H%M')
