@@ -1,4 +1,5 @@
 from abc import ABC, abstractmethod
+from multiprocessing import pool
 from typing import List, Tuple, Optional
 
 import numpy as np
@@ -91,7 +92,7 @@ class SWEMRelationMatcher(KnowledgeRelationMatcher):
             ],
             batch_first=True,
         )
-        model = SWEMRelationClassifier()
+        model = SWEMRelationClassifier(pooling="avg")
         model.load_state_dict(
             torch.load(
                 "./relation_modeling/models/swem_multi_label_finetune_state_dict.pth"

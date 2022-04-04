@@ -221,3 +221,18 @@ HEAD_TO_RELATION_MAP = {
     KnowledgeHeadType.NOUN_PHRASE: NOUN_PHRASE_RELATIONS,
     KnowledgeHeadType.VERB_PHRASE: VERB_PHRASE_RELATIONS,
 }
+
+CONCEPTNET_TO_ATOMIC_MAP = {
+    "Causes":           ["Causes", "xEffect"],
+    "CausesDesire":     "xWant",
+    "MadeOf":           "MadeUpOf",
+    "HasA":             ["MadeUpOf", "HasProperty"],
+    "HasPrerequisite":  "xNeed",
+    "HasSubevent":      "HasSubEvent",
+    "HasFirstSubevent": "HasSubEvent",
+    "HasLastSubevent":  "HasSubEvent",
+    "MotivatedByGoal":  ["xIntent", "xReason"],
+    "PartOf":           "MadeUpOf",
+    "UsedFor":          "ObjectUse",
+    "ReceivesAction":   ["MadeUpOf", "AtLocation", "Causes", "ObjectUse"]
+}
