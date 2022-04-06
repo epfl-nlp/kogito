@@ -10,8 +10,12 @@ from torch import nn
 from torch.utils.data import Dataset
 import spacy
 from torch.nn.utils.rnn import pad_sequence
+import torchmetrics
 
 from kogito.core.relation import PHYSICAL_RELATIONS, SOCIAL_RELATIONS, EVENT_RELATIONS
+from spacy.lang.en.stop_words import STOP_WORDS
+
+STOPWORDS = STOP_WORDS | set(["PersonX", "PersonY", "PersonZ", "_", "'", "-"])
 
 PHYSICAL_REL_LABEL = 0
 EVENT_REL_LABEL = 1
@@ -133,3 +137,69 @@ def text_to_embedding(text, vocab, embedding_matrix, pooling="max", nlp=None):
 def get_timestamp():
     now = datetime.now()
     return now.strftime('%Y%m%dH%H%M')
+
+
+def explode_labels(df):
+    df['label_0'] = df.label.apply(lambda l: l[0])
+    df['label_1'] = df.label.apply(lambda l: l[1])
+    df['label_2'] = df.label.apply(lambda l: l[2])
+    return df
+
+
+def get_class_dist_report(df):
+    class_0 = df.label.apply(lambda l: l[0])
+    class_1 = df.label.apply(lambda l: l[1])
+    class_2 = df.label.apply(lambda l: l[2])
+    report = {}
+
+    for class_x_idx, class_x in enumerate([class_0, class_1, class_2]):
+        for class_y_idx, class_y in enumerate([class_0, class_1, class_2]):
+            for label_x in [0, 1]:
+                for label_y in [0, 1]:
+                    sub_df = df[(class_x == label_x)]
+                    subsub_df = df[(class_x == label_x) & (class_y == label_y)]
+                    report[(f"class_{class_x_idx}", label_x)] = len(sub_df) / len(df)
+                    report[(f"class_{class_x_idx}", f"class_{class_y_idx}", label_x, label_y)] = len(subsub_df) / len(df)
+    
+    return report
+
+class HeuristicClassifier:
+    def __init__(self):
+        self.nlp = spacy.load("en_core_web_sm", exclude=["ner"])
+
+    def predict(self, data):
+        preds = []
+
+        for text in tqdm(data.text):
+            doc = self.nlp(text.replace("_", "").replace("  ", " "))
+            is_sentence = False
+
+            for token in doc:
+                if token.dep_ == "ROOT" and token.pos_ == "VERB":
+                    is_sentence = True
+                    break
+            
+            if is_sentence:
+                preds.append([0, 1, 1])
+            else:
+                preds.append([1, 0, 0])
+        
+        return preds
+
+def report_metrics(preds, y):
+    accuracy = torchmetrics.Accuracy()
+    precision = torchmetrics.Precision(num_classes=3, average="weighted")
+    recall = torchmetrics.Recall(num_classes=3, average="weighted")
+    f1 = torchmetrics.F1Score(num_classes=3, average="weighted")
+    print(f'Accuracy={accuracy(preds, y).item():.3f}, precision={precision(preds, y).item():.3f}, recall={recall(preds, y).item():.3f}, f1={f1(preds, y).item():.3f}')
+
+def create_vocab(data):
+    nlp = spacy.load("en_core_web_sm", exclude=["ner"])
+    vocab = set()
+    text = " ".join(data.text.to_list())
+    doc = nlp(text)
+    for token in tqdm(doc, total=len(doc)):
+        if token.text not in STOPWORDS:
+            vocab.add(token.lemma_)
+    
+    return vocab
