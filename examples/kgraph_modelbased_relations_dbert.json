@@ -1,0 +1,30 @@
+{"head": "banana", "relation": "ObjectUse", "tails": []}
+{"head": "banana", "relation": "CapableOf", "tails": []}
+{"head": "banana", "relation": "MadeUpOf", "tails": []}
+{"head": "banana", "relation": "HasProperty", "tails": []}
+{"head": "banana", "relation": "Desires", "tails": []}
+{"head": "banana", "relation": "NotDesires", "tails": []}
+{"head": "banana", "relation": "AtLocation", "tails": []}
+{"head": "love another", "relation": "Causes", "tails": []}
+{"head": "love another", "relation": "HinderedBy", "tails": []}
+{"head": "love another", "relation": "xReason", "tails": []}
+{"head": "love another", "relation": "isAfter", "tails": []}
+{"head": "love another", "relation": "isBefore", "tails": []}
+{"head": "love another", "relation": "HasSubEvent", "tails": []}
+{"head": "love another", "relation": "isFilledBy", "tails": []}
+{"head": "love another", "relation": "xIntent", "tails": []}
+{"head": "love another", "relation": "xReact", "tails": []}
+{"head": "love another", "relation": "oReact", "tails": []}
+{"head": "love another", "relation": "xAttr", "tails": []}
+{"head": "love another", "relation": "xEffect", "tails": []}
+{"head": "love another", "relation": "xNeed", "tails": []}
+{"head": "love another", "relation": "xWant", "tails": []}
+{"head": "love another", "relation": "oEffect", "tails": []}
+{"head": "love another", "relation": "oWant", "tails": []}
+{"head": "Student gets a card", "relation": "ObjectUse", "tails": []}
+{"head": "Student gets a card", "relation": "CapableOf", "tails": []}
+{"head": "Student gets a card", "relation": "MadeUpOf", "tails": []}
+{"head": "Student gets a card", "relation": "HasProperty", "tails": []}
+{"head": "Student gets a card", "relation": "Desires", "tails": []}
+{"head": "Student gets a card", "relation": "NotDesires", "tails": []}
+{"head": "Student gets a card", "relation": "AtLocation", "tails": []}

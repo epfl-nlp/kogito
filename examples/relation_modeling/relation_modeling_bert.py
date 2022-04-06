@@ -1,16 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
-# %load_ext autoreload
-# %autoreload 2
-
-
-# In[1]:
-
-
 import torch
 import numpy as np
 from torch.utils.data import DataLoader, Dataset
@@ -20,11 +7,19 @@ import pytorch_lightning as pl
 import torchmetrics
 import torch.nn.functional as F
 from transformers import BertTokenizer, BertModel
+from relation_modeling_utils import load_data, get_timestamp
+from pytorch_lightning.loggers import WandbLogger
+import wandb
 
+
+MODEL_TYPE = "cased"
+NUM_EPOCHS = 2
+BATCH_SIZE = 2
+FREEZE_EMB = False
 
 class HeadDataset(Dataset):
-    def __init__(self, df):
-        self.tokenizer = BertTokenizer.from_pretrained('bert-base-uncased')
+    def __init__(self, df, tokenizer_type="cased"):
+        self.tokenizer = BertTokenizer.from_pretrained(f'bert-base-{tokenizer_type}')
         self.labels = np.asarray(df['label'].to_list())
         self.texts = [self.tokenizer(text, padding='max_length', max_length=32, truncation=True,
                                      return_tensors="pt") for text in df['text']]
@@ -40,9 +35,9 @@ class HeadDataset(Dataset):
 
 
 class BERTClassifier(pl.LightningModule):
-    def __init__(self, num_classes=3, dropout=0.5, learning_rate=1e-4, freeze_emb=False):
+    def __init__(self, num_classes=3, dropout=0.5, learning_rate=1e-4, freeze_emb=False, model_type="cased"):
         super().__init__()
-        self.bert = BertModel.from_pretrained('bert-base-uncased')
+        self.bert = BertModel.from_pretrained(f'bert-base-{model_type}')
         self.dropout = nn.Dropout(dropout)
         self.linear = nn.Linear(768, num_classes)
 
@@ -114,41 +109,25 @@ class BERTClassifier(pl.LightningModule):
         return optimizer
 
 
-# In[3]:
 
+if __name__ == "__main__":
+    train_df = load_data("data/atomic2020_data-feb2021/train.tsv", multi_label=True)
+    dev_df = load_data("data/atomic2020_data-feb2021/dev.tsv", multi_label=True)
+    train_data = HeadDataset(train_df, tokenizer_type=MODEL_TYPE)
+    val_data = HeadDataset(dev_df, tokenizer_type=MODEL_TYPE)
 
-from relation_modeling_utils import load_data
+    train_dataloader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
+    val_dataloader = DataLoader(val_data, batch_size=BATCH_SIZE)
 
-train_df = load_data("data/atomic2020_data-feb2021/train.tsv", multi_label=True)
-dev_df = load_data("data/atomic2020_data-feb2021/dev.tsv", multi_label=True)
-train_data = HeadDataset(train_df)
-val_data = HeadDataset(dev_df)
+    timestamp = get_timestamp()
+    emb_txt = 'frozen' if FREEZE_EMB else 'finetune'
 
-
-# In[4]:
-
-
-len(train_data), len(val_data)
-
-
-# In[4]:
-
-
-train_dataloader = DataLoader(train_data, batch_size=2, shuffle=True)
-val_dataloader = DataLoader(val_data, batch_size=2)
-
-
-# In[5]:
-
-from relation_modeling_utils import get_timestamp
-from pytorch_lightning.loggers import WandbLogger
-import wandb
-
-timestamp = get_timestamp()
-wandb_logger = WandbLogger(project="kogito-relation-matcher", name=f"bert_multi_label_finetune_{timestamp}")
-model = BERTClassifier(learning_rate=1e-4)
-trainer = pl.Trainer(default_root_dir="models/bert", max_epochs=2, logger=wandb_logger, accelerator="gpu", devices=[0])
-trainer.fit(model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
-trainer.save_checkpoint(f"models/bert/bert_model_finetune_{timestamp}.ckpt", weights_only=True)
-wandb.finish()
+    wandb_logger = WandbLogger(project="kogito-relation-matcher", name=f"bert_multi_label_{emb_txt}_{MODEL_TYPE}_{timestamp}")
+    wandb_logger.experiment.config["epochs"] = NUM_EPOCHS
+    wandb_logger.experiment.config["batch_size"] = BATCH_SIZE
+    model = BERTClassifier(learning_rate=1e-4, model_type=MODEL_TYPE)
+    trainer = pl.Trainer(default_root_dir="models/bert", max_epochs=NUM_EPOCHS, logger=wandb_logger, accelerator="gpu", devices=[0])
+    trainer.fit(model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
+    trainer.save_checkpoint(f"models/bert/bert_model_{emb_txt}_{MODEL_TYPE}_{timestamp}.ckpt", weights_only=True)
+    wandb.finish()
 

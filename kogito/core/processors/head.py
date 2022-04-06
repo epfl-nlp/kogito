@@ -81,7 +81,7 @@ class VerbPhraseHeadExtractor(KnowledgeHeadExtractor):
         heads = []
 
         for token in doc:
-            if token.dep_ == "ROOT":
+            if token.dep_ == "ROOT" and token.pos_ == "VERB":
                 heads.append(
                     KnowledgeHead(
                         text=f"to {token.lemma_}",
