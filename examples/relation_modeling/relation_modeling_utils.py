@@ -15,7 +15,7 @@ import torchmetrics
 from kogito.core.relation import PHYSICAL_RELATIONS, SOCIAL_RELATIONS, EVENT_RELATIONS
 from spacy.lang.en.stop_words import STOP_WORDS
 
-STOPWORDS = STOP_WORDS | set(["PersonX", "PersonY", "PersonZ", "_", "'", "-"])
+IGNORE_WORDS = ["PersonX", "PersonY", "PersonZ", "_", "'", "-"]
 
 PHYSICAL_REL_LABEL = 0
 EVENT_REL_LABEL = 1
@@ -72,7 +72,7 @@ def create_emb_matrix(embedding_dim=100):
     return vocab, embeddings
 
 
-class HeadDataset(Dataset):
+class SWEMHeadDataset(Dataset):
     def __init__(self, df, vocab, embedding_matrix=None, apply_pooling=False, pooling="avg"):
         nlp = spacy.load("en_core_web_sm")
         self.texts = []
@@ -193,13 +193,14 @@ def report_metrics(preds, y):
     f1 = torchmetrics.F1Score(num_classes=3, average="weighted")
     print(f'Accuracy={accuracy(preds, y).item():.3f}, precision={precision(preds, y).item():.3f}, recall={recall(preds, y).item():.3f}, f1={f1(preds, y).item():.3f}')
 
-def create_vocab(data):
+def create_vocab(data, exclude_stopwords=False):
     nlp = spacy.load("en_core_web_sm", exclude=["ner"])
-    vocab = set()
+    vocab = defaultdict(int)
     text = " ".join(data.text.to_list())
     doc = nlp(text)
+
     for token in tqdm(doc, total=len(doc)):
-        if token.text not in STOPWORDS:
-            vocab.add(token.lemma_)
+        if token.text not in IGNORE_WORDS and (not exclude_stopwords or token.text not in STOP_WORDS):
+            vocab[token.lemma_] += 1
     
     return vocab
