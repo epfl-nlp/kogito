@@ -1,5 +1,4 @@
 from typing import List
-from enum import Enum
 import pandas as pd
 import json
 
@@ -12,16 +11,6 @@ PAD_TOKEN = "[PAD]"
 DECODE_METHODS = ["greedy", "beam"]
 
 
-class KnowledgeBase(Enum):
-    TRANSOMCS = "transomcs"
-    ATOMIC = "atomic"
-    CONCEPTNET = "conceptnet"
-    ATOMIC2020 = "atomic2020"
-
-    def __repr__(self):
-        return str(self.value)
-
-
 class UnknownRelationError(Exception):
     pass
 
@@ -31,17 +20,15 @@ class Knowledge:
         self,
         head: str = None,
         relation: str = None,
-        tails: List[str] = None,
-        base: KnowledgeBase = KnowledgeBase.ATOMIC2020,
+        tails: List[str] = None
     ):
         self.head = head
         self.relation = relation
         self.tails = tails or []
-        self.base = base
         self.prompt = None
 
     def __repr__(self):
-        return f'Knowledge(head="{self.head}", relation="{self.relation}", tails={self.tails}, base={self.base})'
+        return f'Knowledge(head="{self.head}", relation="{self.relation}", tails={self.tails})'
 
     def to_prompt(self):
         head = self.head

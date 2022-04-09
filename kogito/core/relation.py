@@ -1,4 +1,27 @@
+from typing import Any
+from enum import Enum
 from kogito.core.head import KnowledgeHeadType
+
+
+class KnowledgeRelationType(Enum):
+    TRANSOMCS = "transomcs"
+    ATOMIC = "atomic"
+    CONCEPTNET = "conceptnet"
+
+    def __repr__(self):
+        return str(self.value)
+
+
+class KnowledgeRelation:
+    def __init__(self, text: str, type: KnowledgeRelationType = KnowledgeRelationType.ATOMIC) -> None:
+        self.text = text
+        self.type = type
+    
+    def verbalize(self):
+        return f"Event: {self.text}"
+
+    def __repr__(self):
+        return str(self.text)
 
 
 KG_RELATIONS = [
