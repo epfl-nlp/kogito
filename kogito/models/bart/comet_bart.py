@@ -326,7 +326,7 @@ class COMETBART(KnowledgeModel):
             raise ValueError
 
         if self.config.atomic:
-            self.model.tokenizer.add_tokens(KG_RELATIONS)
+            self.model.tokenizer.add_tokens([str(relation) for relation in KG_RELATIONS])
             self.model.model.resize_token_embeddings(len(self.model.tokenizer))
 
         if (

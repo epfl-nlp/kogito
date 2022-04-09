@@ -54,14 +54,14 @@ class KnowledgeRelationMatcher(ABC):
 
     @abstractmethod
     def match(
-        self, heads: List[KnowledgeHead], relations: List[str] = None
+        self, heads: List[KnowledgeHead], relations: List[str] = None, **kwargs
     ) -> List[Tuple[KnowledgeHead, str]]:
         raise NotImplementedError
 
 
 class SimpleRelationMatcher(KnowledgeRelationMatcher):
     def match(
-        self, heads: List[KnowledgeHead], relations: List[str] = None
+        self, heads: List[KnowledgeHead], relations: List[str] = None, **kwargs
     ) -> List[Tuple[KnowledgeHead, str]]:
         head_relations = []
 
@@ -79,7 +79,7 @@ class SimpleRelationMatcher(KnowledgeRelationMatcher):
 
 class SWEMRelationMatcher(KnowledgeRelationMatcher):
     def match(
-        self, heads: List[KnowledgeHead], relations: List[str] = None
+        self, heads: List[KnowledgeHead], relations: List[str] = None, **kwargs
     ) -> List[Tuple[KnowledgeHead, str]]:
         vocab = np.load(
             "./data/vocab_glove_100d.npy", allow_pickle=True
@@ -124,24 +124,6 @@ class SWEMRelationMatcher(KnowledgeRelationMatcher):
         return head_relations
 
 
-class SimpleRelationMatcher(KnowledgeRelationMatcher):
-    def match(
-        self, heads: List[KnowledgeHead], relations: List[str] = None
-    ) -> List[Tuple[KnowledgeHead, str]]:
-        head_relations = []
-
-        for head in heads:
-            rels_to_match = HEAD_TO_RELATION_MAP[head.type]
-            if relations:
-                rels_to_match = set(HEAD_TO_RELATION_MAP[head.type]).intersection(
-                    set(relations)
-                )
-            for relation in rels_to_match:
-                head_relations.append((head, relation))
-
-        return head_relations
-
-
 class DistilBertHeadDataset(Dataset):
     def __init__(self, heads):
         self.tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
@@ -179,7 +161,7 @@ class DistilBERTClassifier(pl.LightningModule):
 
 class DistilBertRelationMatcher(KnowledgeRelationMatcher):
     def match(
-        self, heads: List[KnowledgeHead], relations: List[str] = None
+        self, heads: List[KnowledgeHead], relations: List[str] = None, **kwargs
     ) -> List[Tuple[KnowledgeHead, str]]:
         dataset = DistilBertHeadDataset(heads)
         dataloader = DataLoader(dataset, batch_size=128)
@@ -204,6 +186,27 @@ class DistilBertRelationMatcher(KnowledgeRelationMatcher):
                 if relations:
                     rels_to_match = set(rels_to_match).intersection(set(relations))
                 for relation in rels_to_match:
+                    head_relations.append((head, relation))
+
+        return head_relations
+
+
+class GraphBasedRelationMatcher(KnowledgeRelationMatcher):
+    def match(self, heads: List[KnowledgeHead], relations: List[str] = None, **kwargs) -> List[Tuple[KnowledgeHead, str]]:
+        sample_graph = kwargs.get("sample_graph")
+        head_relations = []
+
+        if sample_graph:
+            matched_rels = set()
+
+            for kg in sample_graph:
+                matched_rels.add(kg.relation)
+
+            if relations:
+                matched_rels = matched_rels.intersection(set(relations))
+
+            for head in heads:
+                for relation in matched_rels:
                     head_relations.append((head, relation))
 
         return head_relations

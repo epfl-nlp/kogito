@@ -13,7 +13,7 @@ import spacy
 from torch.nn.utils.rnn import pad_sequence
 import torchmetrics
 
-from kogito.core.relation import PHYSICAL_RELATIONS, SOCIAL_RELATIONS, EVENT_RELATIONS
+from kogito.core.relation import PHYSICAL_RELATIONS, SOCIAL_RELATIONS, EVENT_RELATIONS, KnowledgeRelation
 from spacy.lang.en.stop_words import STOP_WORDS
 
 IGNORE_WORDS = ["PersonX", "PersonY", "PersonZ", "_", "'", "-"]
@@ -29,8 +29,8 @@ def load_data(datapath, multi_label=False):
     with open(datapath) as f:
         for line in f:
             try:
-                head, relation, _ = line.split('\t')
-
+                head, rel, _ = line.split('\t')
+                relation = KnowledgeRelation.from_text(rel)
                 label = PHYSICAL_REL_LABEL
 
                 if relation in EVENT_RELATIONS:

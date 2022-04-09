@@ -1,58 +1,32 @@
 {"head": "post office", "relation": "Causes", "tails": []}
-{"head": "post office", "relation": "CausesDesire", "tails": []}
-{"head": "post office", "relation": "Desires", "tails": []}
-{"head": "post office", "relation": "HasFirstSubevent", "tails": []}
-{"head": "post office", "relation": "HasLastSubevent", "tails": []}
-{"head": "post office", "relation": "HasPrerequisite", "tails": []}
-{"head": "post office", "relation": "HasSubEvent", "tails": []}
-{"head": "post office", "relation": "HasSubevent", "tails": []}
 {"head": "post office", "relation": "HinderedBy", "tails": []}
-{"head": "post office", "relation": "InheritsFrom", "tails": []}
-{"head": "post office", "relation": "InstanceOf", "tails": []}
-{"head": "post office", "relation": "MotivatedByGoal", "tails": []}
-{"head": "post office", "relation": "NotCapableOf", "tails": []}
-{"head": "post office", "relation": "NotDesires", "tails": []}
-{"head": "post office", "relation": "ReceivesAction", "tails": []}
-{"head": "post office", "relation": "SymbolOf", "tails": []}
+{"head": "post office", "relation": "xReason", "tails": []}
 {"head": "post office", "relation": "isAfter", "tails": []}
 {"head": "post office", "relation": "isBefore", "tails": []}
+{"head": "post office", "relation": "HasSubEvent", "tails": []}
 {"head": "post office", "relation": "isFilledBy", "tails": []}
-{"head": "post office", "relation": "oEffect", "tails": []}
+{"head": "post office", "relation": "xIntent", "tails": []}
+{"head": "post office", "relation": "xReact", "tails": []}
 {"head": "post office", "relation": "oReact", "tails": []}
-{"head": "post office", "relation": "oWant", "tails": []}
 {"head": "post office", "relation": "xAttr", "tails": []}
 {"head": "post office", "relation": "xEffect", "tails": []}
-{"head": "post office", "relation": "xIntent", "tails": []}
 {"head": "post office", "relation": "xNeed", "tails": []}
-{"head": "post office", "relation": "xReact", "tails": []}
-{"head": "post office", "relation": "xReason", "tails": []}
 {"head": "post office", "relation": "xWant", "tails": []}
+{"head": "post office", "relation": "oEffect", "tails": []}
+{"head": "post office", "relation": "oWant", "tails": []}
 {"head": "to get out of the room", "relation": "Causes", "tails": []}
-{"head": "to get out of the room", "relation": "CausesDesire", "tails": []}
-{"head": "to get out of the room", "relation": "Desires", "tails": []}
-{"head": "to get out of the room", "relation": "HasFirstSubevent", "tails": []}
-{"head": "to get out of the room", "relation": "HasLastSubevent", "tails": []}
-{"head": "to get out of the room", "relation": "HasPrerequisite", "tails": []}
-{"head": "to get out of the room", "relation": "HasSubEvent", "tails": []}
-{"head": "to get out of the room", "relation": "HasSubevent", "tails": []}
 {"head": "to get out of the room", "relation": "HinderedBy", "tails": []}
-{"head": "to get out of the room", "relation": "InheritsFrom", "tails": []}
-{"head": "to get out of the room", "relation": "InstanceOf", "tails": []}
-{"head": "to get out of the room", "relation": "MotivatedByGoal", "tails": []}
-{"head": "to get out of the room", "relation": "NotCapableOf", "tails": []}
-{"head": "to get out of the room", "relation": "NotDesires", "tails": []}
-{"head": "to get out of the room", "relation": "ReceivesAction", "tails": []}
-{"head": "to get out of the room", "relation": "SymbolOf", "tails": []}
+{"head": "to get out of the room", "relation": "xReason", "tails": []}
 {"head": "to get out of the room", "relation": "isAfter", "tails": []}
 {"head": "to get out of the room", "relation": "isBefore", "tails": []}
+{"head": "to get out of the room", "relation": "HasSubEvent", "tails": []}
 {"head": "to get out of the room", "relation": "isFilledBy", "tails": []}
-{"head": "to get out of the room", "relation": "oEffect", "tails": []}
+{"head": "to get out of the room", "relation": "xIntent", "tails": []}
+{"head": "to get out of the room", "relation": "xReact", "tails": []}
 {"head": "to get out of the room", "relation": "oReact", "tails": []}
-{"head": "to get out of the room", "relation": "oWant", "tails": []}
 {"head": "to get out of the room", "relation": "xAttr", "tails": []}
 {"head": "to get out of the room", "relation": "xEffect", "tails": []}
-{"head": "to get out of the room", "relation": "xIntent", "tails": []}
 {"head": "to get out of the room", "relation": "xNeed", "tails": []}
-{"head": "to get out of the room", "relation": "xReact", "tails": []}
-{"head": "to get out of the room", "relation": "xReason", "tails": []}
 {"head": "to get out of the room", "relation": "xWant", "tails": []}
+{"head": "to get out of the room", "relation": "oEffect", "tails": []}
+{"head": "to get out of the room", "relation": "oWant", "tails": []}
