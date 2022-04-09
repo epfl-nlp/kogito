@@ -3,6 +3,7 @@ import numpy as np
 from tqdm import tqdm
 from collections import defaultdict
 from datetime import datetime
+import ast
 
 import torch
 from tqdm import tqdm
@@ -204,3 +205,9 @@ def create_vocab(data, exclude_stopwords=False):
             vocab[token.lemma_] += 1
     
     return vocab
+
+
+def load_fdata(datapath):
+    data = pd.read_csv(datapath)
+    data['label'] = data['label'].apply(ast.literal_eval)
+    return data

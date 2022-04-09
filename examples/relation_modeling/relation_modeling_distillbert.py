@@ -1,16 +1,3 @@
-#!/usr/bin/env python
-# coding: utf-8
-
-# In[1]:
-
-
-# %load_ext autoreload
-# %autoreload 2
-
-
-# In[16]:
-
-
 import torch
 import numpy as np
 from torch.utils.data import DataLoader, Dataset
@@ -20,11 +7,19 @@ import pytorch_lightning as pl
 import torchmetrics
 import torch.nn.functional as F
 from transformers import DistilBertTokenizer, DistilBertModel
+from relation_modeling_utils import get_timestamp, load_fdata
+from pytorch_lightning.loggers import WandbLogger
+import wandb
 
+MODEL_TYPE = "uncased"
+NUM_EPOCHS = 3
+BATCH_SIZE = 64
+DATASET_TYPE = "f1"
+FREEZE_EMB = False
 
-class HeadDataset(Dataset):
-    def __init__(self, df):
-        self.tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
+class DistilBERTHeadDataset(Dataset):
+    def __init__(self, df, tokenizer_type="uncased"):
+        self.tokenizer = DistilBertTokenizer.from_pretrained(f'distilbert-base-{tokenizer_type}')
         self.labels = np.asarray(df['label'].to_list())
         self.texts = [self.tokenizer(text, padding='max_length', max_length=32, truncation=True,
                                      return_tensors="pt") for text in df['text']]
@@ -40,9 +35,9 @@ class HeadDataset(Dataset):
 
 
 class DistilBERTClassifier(pl.LightningModule):
-    def __init__(self, num_classes=3, dropout=0.5, learning_rate=1e-4, freeze_emb=False):
+    def __init__(self, num_classes=3, dropout=0.5, learning_rate=1e-4, freeze_emb=False, model_type="uncased"):
         super().__init__()
-        self.distilbert = DistilBertModel.from_pretrained('distilbert-base-uncased')
+        self.distilbert = DistilBertModel.from_pretrained(f'distilbert-base-{model_type}')
         self.dropout = nn.Dropout(dropout)
         self.linear = nn.Linear(768, num_classes)
 
@@ -63,6 +58,12 @@ class DistilBERTClassifier(pl.LightningModule):
         self.val_recall = torchmetrics.Recall(num_classes=3, average='weighted')
         self.train_f1 = torchmetrics.F1Score(num_classes=3, average='weighted')
         self.val_f1 = torchmetrics.F1Score(num_classes=3, average='weighted')
+
+        self.test_accuracy = torchmetrics.Accuracy()
+        self.test_precision = torchmetrics.Precision(num_classes=3, average='weighted')
+        self.test_recall = torchmetrics.Recall(num_classes=3, average='weighted')
+        self.test_f1 = torchmetrics.F1Score(num_classes=3, average='weighted')
+
         self.save_hyperparameters()
     
     def forward(self, input_ids, mask):
@@ -109,46 +110,52 @@ class DistilBERTClassifier(pl.LightningModule):
         self.log('val_f1', self.val_f1, on_epoch=True)
         return val_loss
 
+    def test_step(self, batch, batch_idx):
+        X, y = batch
+        mask = X['attention_mask']
+        input_ids = X['input_ids'].squeeze(1)
+        outputs = self.forward(input_ids, mask)
+        test_loss = self.criterion(outputs, y.float())
+        preds = F.sigmoid(outputs)
+        self.test_accuracy(preds, y)
+        self.test_precision(preds, y)
+        self.test_recall(preds, y)
+        self.test_f1(preds, y)
+        self.log("test_loss", test_loss, on_epoch=True)
+        self.log('test_accuracy', self.test_accuracy, on_epoch=True)
+        self.log('test_precision', self.test_precision, on_epoch=True)
+        self.log('test_recall', self.test_recall, on_epoch=True)
+        self.log('test_f1', self.test_f1, on_epoch=True)
+        return test_loss
+
     def configure_optimizers(self):
         optimizer = Adam(self.parameters(), lr=self.learning_rate)
         return optimizer
 
 
-# In[5]:
 
+if __name__ == "__main__":
+    train_df = load_fdata(f"data/atomic_ood/{DATASET_TYPE}/train_{DATASET_TYPE}.csv")
+    val_df = load_fdata(f"data/atomic_ood/{DATASET_TYPE}/val_{DATASET_TYPE}.csv")
+    test_df = load_fdata(f"data/atomic_ood/{DATASET_TYPE}/test_{DATASET_TYPE}.csv")
+    train_data = DistilBERTHeadDataset(train_df, tokenizer_type=MODEL_TYPE)
+    val_data = DistilBERTHeadDataset(val_df, tokenizer_type=MODEL_TYPE)
+    test_data = DistilBERTHeadDataset(test_df, tokenizer_type=MODEL_TYPE)
 
-from relation_modeling_utils import load_data
+    train_dataloader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
+    val_dataloader = DataLoader(val_data, batch_size=BATCH_SIZE)
+    test_dataloader = DataLoader(test_data, batch_size=BATCH_SIZE)
 
-train_df = load_data("data/atomic2020_data-feb2021/train.tsv", multi_label=True)
-dev_df = load_data("data/atomic2020_data-feb2021/dev.tsv", multi_label=True)
-train_data = HeadDataset(train_df)
-val_data = HeadDataset(dev_df)
+    emb_txt = 'frozen' if FREEZE_EMB else 'finetune'
 
-
-# In[6]:
-
-
-len(train_data), len(val_data)
-
-
-# In[7]:
-
-
-train_dataloader = DataLoader(train_data, batch_size=64, shuffle=True)
-val_dataloader = DataLoader(val_data, batch_size=64)
-
-
-# In[17]:
-
-from relation_modeling_utils import get_timestamp
-from pytorch_lightning.loggers import WandbLogger
-import wandb
-
-timestamp = get_timestamp()
-wandb_logger = WandbLogger(project="kogito-relation-matcher", name=f"distilbert_multi_label_{timestamp}")
-model = DistilBERTClassifier(learning_rate=1e-4)
-trainer = pl.Trainer(default_root_dir="models/distilbert", max_epochs=2, logger=wandb_logger, accelerator="gpu", devices=[1])
-trainer.fit(model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
-trainer.save_checkpoint(f"models/distilbert/distilbert_model_{timestamp}.ckpt", weights_only=True)
-wandb.finish()
+    timestamp = get_timestamp()
+    wandb_logger = WandbLogger(project="kogito-relation-matcher", name=f"distilbert_{emb_txt}_{MODEL_TYPE}_{DATASET_TYPE}")
+    wandb_logger.experiment.config["epochs"] = NUM_EPOCHS
+    wandb_logger.experiment.config["batch_size"] = BATCH_SIZE
+    model = DistilBERTClassifier(learning_rate=1e-4, model_type=MODEL_TYPE, freeze_emb=FREEZE_EMB)
+    trainer = pl.Trainer(default_root_dir="models/distilbert", max_epochs=NUM_EPOCHS, logger=wandb_logger, accelerator="gpu", devices=[1])
+    trainer.fit(model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
+    trainer.test(model, dataloaders=test_dataloader)
+    trainer.save_checkpoint(f"models/distilbert/distilbert_model_{emb_txt}_{MODEL_TYPE}_{DATASET_TYPE}_{timestamp}.ckpt", weights_only=True)
+    wandb.finish()
 
