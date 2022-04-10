@@ -108,6 +108,9 @@ class CommonsenseInference:
 
         input_graph = KnowledgeGraph(kg_list)
 
+        if sample_graph:
+            input_graph = input_graph + sample_graph
+
         if dry_run or not model:
             return input_graph
 

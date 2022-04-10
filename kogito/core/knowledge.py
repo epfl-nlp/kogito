@@ -22,16 +22,26 @@ class Knowledge:
         self.head = head if isinstance(head, KnowledgeHead) else KnowledgeHead(head)
         self.relation = relation if isinstance(relation, KnowledgeRelation) else KnowledgeRelation.from_text(relation)
         self.tails = tails or []
-        self.prompt = None
+        if isinstance(self.tails, str):
+            self.tails = [self.tails]
 
     def __repr__(self):
         return f'Knowledge(head="{str(self.head)}", relation="{str(self.relation)}", tails={self.tails})'
 
-    def to_prompt(self, include_tail: bool = False):
+    def __eq__(self, other: object) -> bool:
+        return isinstance(other, Knowledge) and self.head == other.head and self.relation == other.relation and self.tails == other.tails
+
+    def __ne__(self, other):
+        return not self.__eq__(other)
+
+    def __hash__(self) -> int:
+        return hash((self.head, self.relation, tuple(self.tails)))
+
+    def to_prompt(self, include_tail: bool = False, **kwargs):
         head = self.head
         relation = self.relation
         tail = self.tails[0] if self.tails else None
-        return relation.verbalize(str(head), tail, include_tail=include_tail)
+        return relation.verbalize(str(head), tail, include_tail=include_tail, **kwargs)
 
     def to_query(self, decode_method: str = "greedy"):
         if decode_method == "greedy":
@@ -72,6 +82,12 @@ class KnowledgeGraph:
     def __getitem__(self, idx):
         return self.graph[idx]
 
+    def __add__(self, other):
+        return self.union(other)
+
+    def __sub__(self, other):
+        return self.difference(other)
+
     @classmethod
     def from_jsonl(
         cls,
@@ -95,6 +111,30 @@ class KnowledgeGraph:
 
         return cls(kg_list)
 
+    @classmethod
+    def from_csv(
+        cls,
+        filepath: str,
+        header=True,
+        head_col: str = "head",
+        relation_col: str = "relation",
+        tails_col: str = "tails",
+        sep=",",
+        relation_type: KnowledgeRelationType = KnowledgeRelationType.ATOMIC
+    ):
+        kg_list = []
+        graph_df = pd.read_csv(filepath, sep=sep, header=header, names=[head_col, relation_col, tails_col])
+
+        for _, row in graph_df.iterrows():
+            head = row[head_col]
+            relation = KnowledgeRelation.from_text(row[relation_col], relation_type)
+            tails = row[tails_col]
+            kg_list.append(
+                Knowledge(head=head, relation=relation, tails=tails)
+            )
+
+        return cls(kg_list)
+
     def to_jsonl(self, filepath):
         with open(filepath, "w") as file:
             lines = []
@@ -104,3 +144,12 @@ class KnowledgeGraph:
 
     def to_dataframe(self):
         return pd.DataFrame([kg.to_json(only_one_tail=True) for kg in self.graph])
+    
+    def union(self, other):
+        return KnowledgeGraph(set(self.graph).union(set(other.graph)))
+
+    def intersection(self, other):
+        return KnowledgeGraph(set(self.graph).intersection(set(other.graph)))
+
+    def difference(self, other):
+        return KnowledgeGraph(set(self.graph).difference(set(other.graph)))

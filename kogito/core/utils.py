@@ -6,6 +6,7 @@ import os
 import pickle
 from logging import getLogger
 from typing import Callable, Dict, Iterable, List
+import uuid
 
 import git
 import numpy as np
@@ -231,3 +232,10 @@ def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
         yield lst[i : i + n]
+
+
+def get_uuid(length=8):
+    u = str(uuid.uuid4())
+    if length is not None:
+        u = u[:length]
+    return u

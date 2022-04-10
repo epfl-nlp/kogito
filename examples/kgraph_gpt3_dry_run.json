@@ -1,0 +1,2 @@
+{"head": "PersonX accuses PersonY of cheating", "relation": "xNeed", "tails": ["\n\n1. Check if there is any rule in the game that PersonY"]}
+{"head": "PersonX aces PersonX's exam", "relation": "xNeed", "tails": ["\n\nstudy."]}

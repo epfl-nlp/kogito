@@ -1,9 +1,11 @@
 import time
+from typing import Callable
 
 import openai
 
 from kogito.models.base import KnowledgeModel
 from kogito.core.knowledge import KnowledgeGraph
+from kogito.core.utils import get_uuid
 
 
 class GPT3Zeroshot(KnowledgeModel):
@@ -24,13 +26,15 @@ class GPT3Zeroshot(KnowledgeModel):
     def generate(
         self,
         input_graph: KnowledgeGraph,
-        num_samples: int = 5,
+        num_samples: int = 10,
         max_tokens: int = 16,
         temperature: float = 0.9,
         top_p: float = 1,
         n: int = 1,
         logprobs: int = None,
-        stop: str = "\n"
+        stop: str = None,
+        include_task_prompt: bool = True,
+        debug: bool = False
     ):
         rel_kg_map = {}
         outputs = []
@@ -46,26 +50,48 @@ class GPT3Zeroshot(KnowledgeModel):
         for relation, kg_map in rel_kg_map.items():
             samples = kg_map['samples'][:num_samples]
             targets = kg_map['targets']
-            prompts = []
-            sample_prompt = '\n'.join([sample_kg.to_prompt(include_tail=True) for sample_kg in samples])
-            
-            for target in targets:
-                prompts.append(f"{sample_prompt}\n{target.to_prompt()}")
 
-            responses = complete_gpt3(api_key=self.api_key, model_name=self.model_name, prompt=prompts,
-                                     max_tokens=max_tokens, temperature=temperature, top_p=top_p, logprobs=logprobs, n=n, stop=stop)
-            
-            for target, response in zip(targets, responses):
-                output_kg = target.copy()
-                output_kg.tails = [choice["text"] for choice in response["choices"]]
-                outputs.append(output_kg)
+            if targets:
+                prompts = []
+                sample_prompts = []
+                
+                for index, sample_kg in enumerate(samples):
+                    sample_prompt = sample_kg.to_prompt(include_tail=True, index=index+1)
+                    sample_prompts.append(sample_prompt)
+
+                final_sample_prompt = "\n\n".join(sample_prompts)
+
+                for target in targets:
+                    target_prompt = target.to_prompt(index=len(samples)+1)
+                    final_prompt = f"{final_sample_prompt}\n\n{target_prompt}"
+
+                    if include_task_prompt and relation.prompt:
+                        final_prompt = f"{relation.prompt}\n\n{final_prompt}"
+                    prompts.append(final_prompt)
+
+                response = complete_gpt3(api_key=self.api_key, model_name=self.model_name, prompt=prompts,
+                                        max_tokens=max_tokens, temperature=temperature, top_p=top_p, logprobs=logprobs, n=n, stop=stop, debug=debug)
+                
+                rel_outputs = []
+                for target in targets:
+                    rel_outputs.append(target.copy())
+
+                for result in response.choices:
+                    output_kg = rel_outputs[result["index"] // n]
+                    output_kg.tails.append(result["text"])
+                
+                outputs.extend(rel_outputs)
 
         return KnowledgeGraph(outputs)
 
 
-def complete_gpt3(api_key, model_name, prompt, max_tokens=16, temperature=1, top_p=1, logprobs=None, n=1, stop="\n"):
+def complete_gpt3(api_key, model_name, prompt, max_tokens=16, temperature=1, top_p=1, logprobs=None, n=1, stop=None, debug=False):
     response = None
     openai.api_key = api_key
+
+    if debug:
+        with open(f"gpt3_prompt_{get_uuid()}.txt", "w") as f:
+            f.write('\n\n'.join(prompt))
 
     try:
         response = openai.Completion.create(engine=model_name, 
@@ -73,10 +99,10 @@ def complete_gpt3(api_key, model_name, prompt, max_tokens=16, temperature=1, top
                                             max_tokens=max_tokens,
                                             temperature=temperature,
                                             logprobs=logprobs,
+                                            top_p=top_p,
                                             echo=False,
                                             stop=stop,
                                             n=n)
-        received = True
     except Exception as e:
         print("Something went wrong when querying GPT-3 API")
         raise e

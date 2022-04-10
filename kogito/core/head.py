@@ -17,8 +17,6 @@ class KnowledgeHead:
         self.verbalizer = verbalizer
 
     def __eq__(self, other: object) -> bool:
-        if self == other:
-            return True
         return isinstance(other, KnowledgeHead) and self.text == other.text
 
     def __ne__(self, other):
