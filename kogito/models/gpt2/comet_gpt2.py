@@ -45,7 +45,10 @@ class COMETGPT2(KnowledgeModel):
             {
                 "eos_token": EOS_TOKEN,
                 "pad_token": PAD_TOKEN,
-                "additional_special_tokens": [str(relation) for relation in KG_RELATIONS] + [GEN_TOKEN],
+                "additional_special_tokens": [
+                    str(relation) for relation in KG_RELATIONS
+                ]
+                + [GEN_TOKEN],
             }
         )
 

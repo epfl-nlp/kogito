@@ -10,7 +10,13 @@ class KnowledgeHeadType(Enum):
 
 
 class KnowledgeHead:
-    def __init__(self, text: str, type: KnowledgeHeadType = KnowledgeHeadType.TEXT, entity: Any = None, verbalizer: Callable = None) -> None:
+    def __init__(
+        self,
+        text: str,
+        type: KnowledgeHeadType = KnowledgeHeadType.TEXT,
+        entity: Any = None,
+        verbalizer: Callable = None,
+    ) -> None:
         self.text = text
         self.type = type
         self.entity = entity

@@ -1,18 +1,17 @@
-from random import sample
 from typing import Union, List
 from itertools import product
 
 import spacy
 
 from kogito.core.knowledge import Knowledge, KnowledgeGraph
-from kogito.core.head import KnowledgeHead, KnowledgeHeadType
+from kogito.core.head import KnowledgeHead
 from kogito.core.processors.head import (
     KnowledgeHeadExtractor,
     SentenceHeadExtractor,
     NounPhraseHeadExtractor,
     VerbPhraseHeadExtractor,
 )
-from kogito.core.relation import ATOMIC_RELATIONS, KnowledgeRelation
+from kogito.core.relation import KnowledgeRelation
 from kogito.core.processors.relation import (
     GraphBasedRelationMatcher,
     KnowledgeRelationMatcher,
@@ -36,8 +35,12 @@ class CommonsenseInference:
             ),
         }
         self._relation_processors = {
-            "simple_relation_matcher": SimpleRelationMatcher("simple_matcher", self.nlp),
-            "graph_relation_matcher": GraphBasedRelationMatcher("graph_matcher", self.nlp)
+            "simple_relation_matcher": SimpleRelationMatcher(
+                "simple_matcher", self.nlp
+            ),
+            "graph_relation_matcher": GraphBasedRelationMatcher(
+                "graph_matcher", self.nlp
+            ),
         }
 
     @property
@@ -57,7 +60,7 @@ class CommonsenseInference:
         match_relations: bool = True,
         relations: List[KnowledgeRelation] = None,
         dry_run: bool = False,
-        sample_graph: KnowledgeGraph = None
+        sample_graph: KnowledgeGraph = None,
     ) -> KnowledgeGraph:
         kg_heads = []
         head_relations = []
@@ -67,9 +70,7 @@ class CommonsenseInference:
         if heads:
             for head in heads:
                 head_texts.add(head)
-                kg_heads.append(
-                    KnowledgeHead(text=head)
-                )
+                kg_heads.append(KnowledgeHead(text=head))
 
         if extract_heads:
             if text:
@@ -84,14 +85,14 @@ class CommonsenseInference:
         else:
             if text and text not in head_texts:
                 head_texts.add(text)
-                kg_heads.append(
-                    KnowledgeHead(text=text)
-                )
+                kg_heads.append(KnowledgeHead(text=text))
 
         if match_relations:
             print("Matching relations...")
             for relation_proc in self._relation_processors.values():
-                head_relations.extend(relation_proc.match(kg_heads, relations, sample_graph=sample_graph))
+                head_relations.extend(
+                    relation_proc.match(kg_heads, relations, sample_graph=sample_graph)
+                )
         elif relations:
             if not isinstance(relations, list):
                 raise ValueError("Relation subset should be a list")

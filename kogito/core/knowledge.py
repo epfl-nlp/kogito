@@ -17,10 +17,14 @@ class Knowledge:
         self,
         head: Union[KnowledgeHead, str] = None,
         relation: Union[KnowledgeRelation, str] = None,
-        tails: List[str] = None
+        tails: List[str] = None,
     ):
         self.head = head if isinstance(head, KnowledgeHead) else KnowledgeHead(head)
-        self.relation = relation if isinstance(relation, KnowledgeRelation) else KnowledgeRelation.from_text(relation)
+        self.relation = (
+            relation
+            if isinstance(relation, KnowledgeRelation)
+            else KnowledgeRelation.from_text(relation)
+        )
         self.tails = tails or []
         if isinstance(self.tails, str):
             self.tails = [self.tails]
@@ -29,7 +33,12 @@ class Knowledge:
         return f'Knowledge(head="{str(self.head)}", relation="{str(self.relation)}", tails={self.tails})'
 
     def __eq__(self, other: object) -> bool:
-        return isinstance(other, Knowledge) and self.head == other.head and self.relation == other.relation and self.tails == other.tails
+        return (
+            isinstance(other, Knowledge)
+            and self.head == other.head
+            and self.relation == other.relation
+            and self.tails == other.tails
+        )
 
     def __ne__(self, other):
         return not self.__eq__(other)
@@ -52,15 +61,13 @@ class Knowledge:
             raise ValueError
 
     def copy(self):
-        return Knowledge(
-            head=self.head, relation=self.relation, tails=self.tails
-        )
+        return Knowledge(head=self.head, relation=self.relation, tails=self.tails)
 
     def to_json(self, only_one_tail=False):
         return {
             "head": str(self.head),
             "relation": str(self.relation),
-            "tails": self.tails[0] if self.tails and only_one_tail else self.tails
+            "tails": self.tails[0] if self.tails and only_one_tail else self.tails,
         }
 
 
@@ -95,7 +102,7 @@ class KnowledgeGraph:
         head_attr: str = "head",
         relation_attr: str = "relation",
         tails_attr: str = "tails",
-        relation_type: KnowledgeRelationType = KnowledgeRelationType.ATOMIC
+        relation_type: KnowledgeRelationType = KnowledgeRelationType.ATOMIC,
     ):
         kg_list = []
 
@@ -103,11 +110,11 @@ class KnowledgeGraph:
             for line in file:
                 kg_json = json.loads(line)
                 head = kg_json.get(head_attr)
-                relation = KnowledgeRelation.from_text(kg_json.get(relation_attr), relation_type)
-                tails = kg_json.get(tails_attr)
-                kg_list.append(
-                    Knowledge(head=head, relation=relation, tails=tails)
+                relation = KnowledgeRelation.from_text(
+                    kg_json.get(relation_attr), relation_type
                 )
+                tails = kg_json.get(tails_attr)
+                kg_list.append(Knowledge(head=head, relation=relation, tails=tails))
 
         return cls(kg_list)
 
@@ -120,18 +127,18 @@ class KnowledgeGraph:
         relation_col: str = "relation",
         tails_col: str = "tails",
         sep=",",
-        relation_type: KnowledgeRelationType = KnowledgeRelationType.ATOMIC
+        relation_type: KnowledgeRelationType = KnowledgeRelationType.ATOMIC,
     ):
         kg_list = []
-        graph_df = pd.read_csv(filepath, sep=sep, header=header, names=[head_col, relation_col, tails_col])
+        graph_df = pd.read_csv(
+            filepath, sep=sep, header=header, names=[head_col, relation_col, tails_col]
+        )
 
         for _, row in graph_df.iterrows():
             head = row[head_col]
             relation = KnowledgeRelation.from_text(row[relation_col], relation_type)
             tails = row[tails_col]
-            kg_list.append(
-                Knowledge(head=head, relation=relation, tails=tails)
-            )
+            kg_list.append(Knowledge(head=head, relation=relation, tails=tails))
 
         return cls(kg_list)
 
@@ -144,7 +151,7 @@ class KnowledgeGraph:
 
     def to_dataframe(self):
         return pd.DataFrame([kg.to_json(only_one_tail=True) for kg in self.graph])
-    
+
     def union(self, other):
         return KnowledgeGraph(set(self.graph).union(set(other.graph)))
 

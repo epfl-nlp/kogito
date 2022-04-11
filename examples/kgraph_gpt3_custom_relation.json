@@ -1,4 +1,4 @@
-{"head": "PersonX sees PersonY's point", "relation": "xWant2", "tails": ["\n\nIn each situation, the person's wants are directly affected by the situation"]}
-{"head": "PersonX makes a huge mistake", "relation": "xWant2", "tails": [" to apologize"]}
-{"head": "PersonX sees PersonY's point", "relation": "xNeed", "tails": [" to listen to PersonY"]}
 {"head": "PersonX makes a huge mistake", "relation": "xNeed", "tails": ["\n\nPersonX needs to be alive for this event to take place."]}
+{"head": "PersonX sees PersonY's point", "relation": "xNeed", "tails": [" to disagree with PersonY"]}
+{"head": "PersonX makes a huge mistake", "relation": "xWant2", "tails": [" to fix it"]}
+{"head": "PersonX sees PersonY's point", "relation": "xWant2", "tails": [" to concede the argument"]}

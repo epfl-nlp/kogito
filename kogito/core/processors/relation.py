@@ -1,5 +1,4 @@
 from abc import ABC, abstractmethod
-from multiprocessing import pool
 from typing import List, Tuple, Optional
 
 import numpy as np
@@ -81,9 +80,7 @@ class SWEMRelationMatcher(KnowledgeRelationMatcher):
     def match(
         self, heads: List[KnowledgeHead], relations: List[str] = None, **kwargs
     ) -> List[Tuple[KnowledgeHead, str]]:
-        vocab = np.load(
-            "./data/vocab_glove_100d.npy", allow_pickle=True
-        ).item()
+        vocab = np.load("./data/vocab_glove_100d.npy", allow_pickle=True).item()
         head_inputs = pad_sequence(
             [
                 torch.tensor(
@@ -96,9 +93,7 @@ class SWEMRelationMatcher(KnowledgeRelationMatcher):
         )
         model = SWEMRelationClassifier(pooling="avg")
         model.load_state_dict(
-            torch.load(
-                "./models/swem_multi_label_finetune_state_dict.pth"
-            )
+            torch.load("./models/swem_multi_label_finetune_state_dict.pth")
         )
         probs = model.forward(head_inputs).detach().numpy()
         head_relations = []
@@ -126,9 +121,17 @@ class SWEMRelationMatcher(KnowledgeRelationMatcher):
 
 class DistilBertHeadDataset(Dataset):
     def __init__(self, heads):
-        self.tokenizer = DistilBertTokenizer.from_pretrained('distilbert-base-uncased')
-        self.texts = [self.tokenizer(head.text, padding='max_length', max_length=32, truncation=True,
-                                     return_tensors="pt") for head in heads]
+        self.tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
+        self.texts = [
+            self.tokenizer(
+                head.text,
+                padding="max_length",
+                max_length=32,
+                truncation=True,
+                return_tensors="pt",
+            )
+            for head in heads
+        ]
 
     def __len__(self):
         return len(self.texts)
@@ -140,20 +143,22 @@ class DistilBertHeadDataset(Dataset):
 class DistilBERTClassifier(pl.LightningModule):
     def __init__(self, num_classes=3, dropout=0.5):
         super().__init__()
-        self.distilbert = DistilBertModel.from_pretrained('distilbert-base-uncased')
+        self.distilbert = DistilBertModel.from_pretrained("distilbert-base-uncased")
         self.dropout = nn.Dropout(dropout)
         self.linear = nn.Linear(768, num_classes)
         self.classifier = nn.Sequential(self.dropout, self.linear)
-    
+
     def forward(self, input_ids, mask):
-        outputs = self.distilbert(input_ids=input_ids, attention_mask=mask, return_dict=False)
+        outputs = self.distilbert(
+            input_ids=input_ids, attention_mask=mask, return_dict=False
+        )
         outputs = self.classifier(outputs[0][:, 0, :])
         return outputs
 
     def predict_step(self, batch, batch_idx):
         X = batch
-        mask = X['attention_mask']
-        input_ids = X['input_ids'].squeeze(1)
+        mask = X["attention_mask"]
+        input_ids = X["input_ids"].squeeze(1)
         outputs = self.forward(input_ids, mask)
         probs = torch.sigmoid(outputs)
         return probs
@@ -165,9 +170,15 @@ class DistilBertRelationMatcher(KnowledgeRelationMatcher):
     ) -> List[Tuple[KnowledgeHead, str]]:
         dataset = DistilBertHeadDataset(heads)
         dataloader = DataLoader(dataset, batch_size=128)
-        model = DistilBERTClassifier.load_from_checkpoint('./models/distilbert/distilbert_model_20220404H1852.ckpt')
+        model = DistilBERTClassifier.load_from_checkpoint(
+            "./models/distilbert/distilbert_model_20220404H1852.ckpt"
+        )
         trainer = pl.Trainer()
-        probs = [prob for batch_probs in trainer.predict(model, dataloader) for prob in batch_probs]
+        probs = [
+            prob
+            for batch_probs in trainer.predict(model, dataloader)
+            for prob in batch_probs
+        ]
         head_relations = []
 
         for head, prob in zip(heads, probs):
@@ -192,7 +203,9 @@ class DistilBertRelationMatcher(KnowledgeRelationMatcher):
 
 
 class GraphBasedRelationMatcher(KnowledgeRelationMatcher):
-    def match(self, heads: List[KnowledgeHead], relations: List[str] = None, **kwargs) -> List[Tuple[KnowledgeHead, str]]:
+    def match(
+        self, heads: List[KnowledgeHead], relations: List[str] = None, **kwargs
+    ) -> List[Tuple[KnowledgeHead, str]]:
         sample_graph = kwargs.get("sample_graph")
         head_relations = []
 
