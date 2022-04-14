@@ -36,6 +36,8 @@ pytest = "*"
 flake8 = "*"
 black = "*"
 mypy = "*"
+sphinx = "*"
+insegel = "*"
 
 [build-system]
 requires = ["poetry-core>=1.0.0"]

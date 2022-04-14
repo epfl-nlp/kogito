@@ -22,6 +22,8 @@ PHYSICAL_REL_LABEL = 0
 EVENT_REL_LABEL = 1
 SOCIAL_REL_LABEL = 2
 
+GLOBAL_DOCS = {}
+
 def load_data(datapath, multi_label=False):
     data = []
     head_label_map = defaultdict(set)
@@ -194,18 +196,25 @@ def report_metrics(preds, y):
     f1 = torchmetrics.F1Score(num_classes=3, average="weighted")
     print(f'Accuracy={accuracy(preds, y).item():.3f}, precision={precision(preds, y).item():.3f}, recall={recall(preds, y).item():.3f}, f1={f1(preds, y).item():.3f}')
 
-def create_vocab(data, exclude_stopwords=False):
+def create_vocab(data, include_stopwords=True):
     nlp = spacy.load("en_core_web_sm", exclude=["ner"])
     vocab = defaultdict(int)
-    text = " ".join(data.text.to_list())
-    doc = nlp(text)
 
-    for token in tqdm(doc, total=len(doc)):
-        if token.text not in IGNORE_WORDS and (not exclude_stopwords or token.text not in STOP_WORDS):
-            vocab[token.lemma_] += 1
+    for text in tqdm(data.text, total=len(data)):
+        doc = get_doc(nlp, text)
+        for token in doc:
+            if token.text not in IGNORE_WORDS and (include_stopwords or token.text not in STOP_WORDS):
+                vocab[token.lemma_] += 1
     
     return vocab
 
+def get_doc(nlp, text):
+    doc = GLOBAL_DOCS.get(text)
+    if doc:
+        return doc
+    doc = nlp(text)
+    GLOBAL_DOCS[text] = doc
+    return doc
 
 def load_fdata(datapath):
     data = pd.read_csv(datapath)
