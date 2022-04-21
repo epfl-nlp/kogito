@@ -17,9 +17,11 @@ FREEZE_EMB = False
 BATCH_SIZE = 128
 POOLING = "avg"
 
-class SWEMClassifier(pl.LightningModule, Evaluator):
+VOCAB, EMBEDDING_MATRIX = np.load("data/vocab_glove_100d.npy", allow_pickle=True).item(), np.load("data/embedding_matrix_glove_100d.npy", allow_pickle=True)
+
+class SWEMClassifier(Evaluator, pl.LightningModule):
     def __init__(self, num_classes=3, pooling="avg", freeze_emb=False, learning_rate=1e-4):
-        super().__init__()
+        super(SWEMClassifier, self).__init__()
         self.embedding = nn.Embedding(num_embeddings=EMBEDDING_MATRIX.shape[0],
                                       embedding_dim=EMBEDDING_MATRIX.shape[1]).from_pretrained(torch.tensor(EMBEDDING_MATRIX, dtype=torch.float32), freeze=freeze_emb)
         self.pool = MaxPool() if pooling == "max" else AvgPool()
@@ -68,11 +70,9 @@ class SWEMClassifier(pl.LightningModule, Evaluator):
 
 
 if __name__ == "__main__":
-    VOCAB, EMBEDDING_MATRIX = np.load("data/vocab_glove_100d.npy", allow_pickle=True).item(), np.load("data/embedding_matrix_glove_100d.npy", allow_pickle=True)
-
-    train_df = load_fdata(f"data/atomic_ood/{DATASET_TYPE}/train_{DATASET_TYPE}.csv")
+    train_df = load_fdata(f"data/atomic_ood2/{DATASET_TYPE}/train_{DATASET_TYPE}.csv")
     val_df = load_data("data/atomic2020_data-feb2021/dev.tsv", multi_label=True)
-    test_df = load_fdata(f"data/atomic_ood/{DATASET_TYPE}/test_{DATASET_TYPE}.csv")
+    test_df = load_fdata(f"data/atomic_ood2/{DATASET_TYPE}/test_{DATASET_TYPE}.csv")
     train_data = SWEMHeadDataset(train_df, vocab=VOCAB)
     val_data = SWEMHeadDataset(val_df, vocab=VOCAB)
     test_data = SWEMHeadDataset(test_df, vocab=VOCAB)

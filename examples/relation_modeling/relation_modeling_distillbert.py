@@ -34,7 +34,7 @@ class DistilBERTHeadDataset(Dataset):
         return self.texts[idx], self.labels[idx]
 
 
-class DistilBERTClassifier(pl.LightningModule):
+class DistilBERTClassifier(Evaluator, pl.LightningModule):
     def __init__(self, num_classes=3, dropout=0.5, learning_rate=1e-4, freeze_emb=False, model_type="uncased"):
         super().__init__()
         self.distilbert = DistilBertModel.from_pretrained(f'distilbert-base-{model_type}')
@@ -101,9 +101,9 @@ class DistilBERTClassifier(pl.LightningModule):
 
 
 if __name__ == "__main__":
-    train_df = load_fdata(f"data/atomic_ood/{DATASET_TYPE}/train_{DATASET_TYPE}.csv")
+    train_df = load_fdata(f"data/atomic_ood2/{DATASET_TYPE}/train_{DATASET_TYPE}.csv")
     val_df = load_data("data/atomic2020_data-feb2021/dev.tsv", multi_label=True)
-    test_df = load_fdata(f"data/atomic_ood/{DATASET_TYPE}/test_{DATASET_TYPE}.csv")
+    test_df = load_fdata(f"data/atomic_ood2/{DATASET_TYPE}/test_{DATASET_TYPE}.csv")
     train_data = DistilBERTHeadDataset(train_df, tokenizer_type=MODEL_TYPE)
     val_data = DistilBERTHeadDataset(val_df, tokenizer_type=MODEL_TYPE)
     test_data = DistilBERTHeadDataset(test_df, tokenizer_type=MODEL_TYPE)

@@ -224,6 +224,7 @@ def load_fdata(datapath):
 
 class Evaluator:
     def __init__(self) -> None:
+        super().__init__()
         self.metrics = dict(
             train_accuracy = torchmetrics.Accuracy(),
             # (weighted)
@@ -285,5 +286,5 @@ class Evaluator:
     def log_metrics(self, preds, y, type):
         for metric_name, metric in self.metrics.items():
             if metric_name.startswith(type):
-                metric(preds, y)
-                self.log(metric_name, metric, on_epoch=True, on_step=False)
+                metric(preds.cpu(), y.cpu())
+                self.log(metric_name, metric.compute(), on_epoch=True, on_step=False)

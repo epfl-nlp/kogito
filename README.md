@@ -26,3 +26,8 @@ cd data
 wget https://ai2-atomic.s3-us-west-2.amazonaws.com/data/atomic2020_data-feb2021.zip
 unzip atomic2020_data-feb2021.zip
 ```
+
+Login to wandb
+```sh
+wandb login
+```

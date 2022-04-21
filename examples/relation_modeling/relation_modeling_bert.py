@@ -35,7 +35,7 @@ class BERTHeadDataset(Dataset):
         return self.texts[idx], self.labels[idx]
 
 
-class BERTClassifier(pl.LightningModule, Evaluator):
+class BERTClassifier(Evaluator, pl.LightningModule):
     def __init__(self, num_classes=3, dropout=0.5, learning_rate=1e-4, freeze_emb=False, model_type="uncased"):
         super().__init__()
         self.bert = BertModel.from_pretrained(f'bert-base-{model_type}')
@@ -102,9 +102,9 @@ class BERTClassifier(pl.LightningModule, Evaluator):
 
 
 if __name__ == "__main__":
-    train_df = load_fdata(f"data/atomic_ood/{DATASET_TYPE}/train_{DATASET_TYPE}.csv")
+    train_df = load_fdata(f"data/atomic_ood2/{DATASET_TYPE}/train_{DATASET_TYPE}.csv")
     val_df = load_data("data/atomic2020_data-feb2021/dev.tsv", multi_label=True)
-    test_df = load_fdata(f"data/atomic_ood/{DATASET_TYPE}/test_{DATASET_TYPE}.csv")
+    test_df = load_fdata(f"data/atomic_ood2/{DATASET_TYPE}/test_{DATASET_TYPE}.csv")
     train_data = BERTHeadDataset(train_df, tokenizer_type=MODEL_TYPE)
     val_data = BERTHeadDataset(val_df, tokenizer_type=MODEL_TYPE)
     test_data = BERTHeadDataset(test_df, tokenizer_type=MODEL_TYPE)
