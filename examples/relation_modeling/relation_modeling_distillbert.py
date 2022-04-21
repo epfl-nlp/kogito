@@ -4,18 +4,18 @@ from torch.utils.data import DataLoader, Dataset
 from torch.optim import Adam
 from torch import nn
 import pytorch_lightning as pl
-import torchmetrics
 import torch.nn.functional as F
 from transformers import DistilBertTokenizer, DistilBertModel
-from relation_modeling_utils import get_timestamp, load_fdata
+from relation_modeling_utils import get_timestamp, load_fdata, load_data, Evaluator
 from pytorch_lightning.loggers import WandbLogger
 import wandb
 
 MODEL_TYPE = "uncased"
 NUM_EPOCHS = 3
 BATCH_SIZE = 64
-DATASET_TYPE = "f1"
+DATASET_TYPE = "n1"
 FREEZE_EMB = False
+LR_RATE = 1e-4
 
 class DistilBERTHeadDataset(Dataset):
     def __init__(self, df, tokenizer_type="uncased"):
@@ -50,19 +50,6 @@ class DistilBERTClassifier(pl.LightningModule):
 
         self.criterion = nn.BCEWithLogitsLoss()
         self.learning_rate = learning_rate
-        self.train_accuracy = torchmetrics.Accuracy()
-        self.val_accuracy = torchmetrics.Accuracy()
-        self.train_precision = torchmetrics.Precision(num_classes=3, average='weighted')
-        self.val_precision = torchmetrics.Precision(num_classes=3, average='weighted')
-        self.train_recall = torchmetrics.Recall(num_classes=3, average='weighted')
-        self.val_recall = torchmetrics.Recall(num_classes=3, average='weighted')
-        self.train_f1 = torchmetrics.F1Score(num_classes=3, average='weighted')
-        self.val_f1 = torchmetrics.F1Score(num_classes=3, average='weighted')
-
-        self.test_accuracy = torchmetrics.Accuracy()
-        self.test_precision = torchmetrics.Precision(num_classes=3, average='weighted')
-        self.test_recall = torchmetrics.Recall(num_classes=3, average='weighted')
-        self.test_f1 = torchmetrics.F1Score(num_classes=3, average='weighted')
 
         self.save_hyperparameters()
     
@@ -81,15 +68,8 @@ class DistilBERTClassifier(pl.LightningModule):
         outputs = self.forward(input_ids, mask)
         train_loss = self.criterion(outputs, y.float())
         preds = F.sigmoid(outputs)
-        self.train_accuracy(preds, y)
-        self.train_precision(preds, y)
-        self.train_recall(preds, y)
-        self.train_f1(preds, y)
         self.log("train_loss", train_loss, on_epoch=True)
-        self.log('train_accuracy', self.train_accuracy, on_epoch=True)
-        self.log('train_precision', self.train_precision, on_epoch=True)
-        self.log('train_recall', self.train_recall, on_epoch=True)
-        self.log('train_f1', self.train_f1, on_epoch=True)
+        self.log_metrics(preds, y, type="train")
         return train_loss
     
     def validation_step(self, batch, batch_idx):
@@ -99,15 +79,8 @@ class DistilBERTClassifier(pl.LightningModule):
         outputs = self.forward(input_ids, mask)
         val_loss = self.criterion(outputs, y.float())
         preds = F.sigmoid(outputs)
-        self.val_accuracy(preds, y)
-        self.val_precision(preds, y)
-        self.val_recall(preds, y)
-        self.val_f1(preds, y)
         self.log("val_loss", val_loss, on_epoch=True)
-        self.log('val_accuracy', self.val_accuracy, on_epoch=True)
-        self.log('val_precision', self.val_precision, on_epoch=True)
-        self.log('val_recall', self.val_recall, on_epoch=True)
-        self.log('val_f1', self.val_f1, on_epoch=True)
+        self.log_metrics(preds, y, type="val")
         return val_loss
 
     def test_step(self, batch, batch_idx):
@@ -117,15 +90,8 @@ class DistilBERTClassifier(pl.LightningModule):
         outputs = self.forward(input_ids, mask)
         test_loss = self.criterion(outputs, y.float())
         preds = F.sigmoid(outputs)
-        self.test_accuracy(preds, y)
-        self.test_precision(preds, y)
-        self.test_recall(preds, y)
-        self.test_f1(preds, y)
         self.log("test_loss", test_loss, on_epoch=True)
-        self.log('test_accuracy', self.test_accuracy, on_epoch=True)
-        self.log('test_precision', self.test_precision, on_epoch=True)
-        self.log('test_recall', self.test_recall, on_epoch=True)
-        self.log('test_f1', self.test_f1, on_epoch=True)
+        self.log_metrics(preds, y, type="test")
         return test_loss
 
     def configure_optimizers(self):
@@ -136,7 +102,7 @@ class DistilBERTClassifier(pl.LightningModule):
 
 if __name__ == "__main__":
     train_df = load_fdata(f"data/atomic_ood/{DATASET_TYPE}/train_{DATASET_TYPE}.csv")
-    val_df = load_fdata(f"data/atomic_ood/{DATASET_TYPE}/val_{DATASET_TYPE}.csv")
+    val_df = load_data("data/atomic2020_data-feb2021/dev.tsv", multi_label=True)
     test_df = load_fdata(f"data/atomic_ood/{DATASET_TYPE}/test_{DATASET_TYPE}.csv")
     train_data = DistilBERTHeadDataset(train_df, tokenizer_type=MODEL_TYPE)
     val_data = DistilBERTHeadDataset(val_df, tokenizer_type=MODEL_TYPE)
@@ -152,7 +118,7 @@ if __name__ == "__main__":
     wandb_logger = WandbLogger(project="kogito-relation-matcher", name=f"distilbert_{emb_txt}_{MODEL_TYPE}_{DATASET_TYPE}")
     wandb_logger.experiment.config["epochs"] = NUM_EPOCHS
     wandb_logger.experiment.config["batch_size"] = BATCH_SIZE
-    model = DistilBERTClassifier(learning_rate=1e-4, model_type=MODEL_TYPE, freeze_emb=FREEZE_EMB)
+    model = DistilBERTClassifier(learning_rate=LR_RATE, model_type=MODEL_TYPE, freeze_emb=FREEZE_EMB)
     trainer = pl.Trainer(default_root_dir="models/distilbert", max_epochs=NUM_EPOCHS, logger=wandb_logger, accelerator="gpu", devices=[1])
     trainer.fit(model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
     trainer.test(model, dataloaders=test_dataloader)
