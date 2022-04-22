@@ -8,7 +8,7 @@ import logging
 
 from kogito.models.modeling import train, beam_generations
 from kogito.core.dataset import KnowledgeDataset
-from kogito.models.base import KnowledgeModel
+from kogito.core.model import KnowledgeModel
 from kogito.core.knowledge import KnowledgeGraph, GEN_TOKEN, EOS_TOKEN, PAD_TOKEN
 from kogito.core.relation import KG_RELATIONS
 

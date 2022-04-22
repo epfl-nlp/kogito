@@ -35,7 +35,7 @@ from kogito.core.utils import (
 )
 from kogito.core.dataset import Seq2SeqDataset, MBartDataset
 from kogito.core.callbacks import Seq2SeqLoggingCallback, get_checkpoint_callback
-from kogito.models.base import KnowledgeModel
+from kogito.core.model import KnowledgeModel
 from kogito.models.bart.config import COMETBARTConfig
 from kogito.models.bart.lightning import BaseTransformer, generic_train
 

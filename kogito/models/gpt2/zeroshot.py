@@ -4,7 +4,7 @@ from torch import cuda
 from transformers import GPT2Tokenizer, GPT2LMHeadModel
 
 from kogito.core.utils import find_nth
-from kogito.models.base import KnowledgeModel
+from kogito.core.model import KnowledgeModel
 from kogito.core.knowledge import KnowledgeGraph
 
 device = "cuda" if cuda.is_available() else "cpu"

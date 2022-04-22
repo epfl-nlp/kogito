@@ -1,6 +1,6 @@
 import openai
 
-from kogito.models.base import KnowledgeModel
+from kogito.core.model import KnowledgeModel
 from kogito.core.knowledge import KnowledgeGraph
 from kogito.core.utils import get_uuid
 

@@ -17,7 +17,7 @@ from kogito.core.processors.relation import (
     KnowledgeRelationMatcher,
     SimpleRelationMatcher,
 )
-from kogito.models.base import KnowledgeModel
+from kogito.core.model import KnowledgeModel
 
 
 class CommonsenseInference:
