@@ -10,7 +10,7 @@ import wandb
 
 from relation_modeling_utils import SWEMHeadDataset, load_fdata, load_data, MaxPool, AvgPool, Evaluator, get_timestamp
 
-DATASET_TYPE = "n1"
+DATASET_TYPE = "n5"
 NUM_EPOCHS = 20
 LR_RATE = 1e-4
 FREEZE_EMB = False

@@ -287,4 +287,9 @@ class Evaluator:
         for metric_name, metric in self.metrics.items():
             if metric_name.startswith(type):
                 metric(preds.cpu(), y.cpu())
-                self.log(metric_name, metric.compute(), on_epoch=True, on_step=False)
+                value = metric.compute()
+                if len(value.shape) > 0:
+                    for idx, val in enumerate(value):
+                        self.log(f'{metric_name}_{idx}', val, on_epoch=True, on_step=False)
+                else:
+                    self.log(metric_name, value, on_epoch=True, on_step=False)

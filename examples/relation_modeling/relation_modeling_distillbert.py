@@ -13,7 +13,7 @@ import wandb
 MODEL_TYPE = "uncased"
 NUM_EPOCHS = 3
 BATCH_SIZE = 64
-DATASET_TYPE = "n1"
+DATASET_TYPE = "n5"
 FREEZE_EMB = False
 LR_RATE = 1e-4
 
