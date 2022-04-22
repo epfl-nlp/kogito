@@ -110,7 +110,7 @@ if __name__ == "__main__":
 
     train_dataloader = DataLoader(train_data, batch_size=BATCH_SIZE, shuffle=True)
     val_dataloader = DataLoader(val_data, batch_size=BATCH_SIZE)
-    test_dataloader = DataLoader(test_data, batch_size=BATCH_SIZE)
+    test_dataloader = DataLoader(test_data, batch_size=BATCH_SIZE, shuffle=True)
 
     emb_txt = 'frozen' if FREEZE_EMB else 'finetune'
 
