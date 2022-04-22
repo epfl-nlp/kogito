@@ -39,7 +39,7 @@ from kogito.models.base import KnowledgeModel
 from kogito.models.bart.config import COMETBARTConfig
 from kogito.models.bart.lightning import BaseTransformer, generic_train
 
-logger = logging.getLogger(__name__)
+logger = logging.getLogger(__name__).setLevel(logging.WARNING)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
@@ -434,5 +434,6 @@ class COMETBART(KnowledgeModel):
         model.to(device)
         return comet_bart
 
-    def save(self, filepath):
-        pass
+    def save_pretrained(self, save_path):
+        self.model.save_pretrained(save_path)
+        self.tokenizer.save_pretrained(save_path)

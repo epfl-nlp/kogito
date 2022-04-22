@@ -11,7 +11,7 @@ class KnowledgeModel(ABC):
         raise NotImplementedError
 
     @abstractmethod
-    def save(self, save_dir: str):
+    def save_pretrained(self, save_path: str):
         raise NotImplementedError
 
     @abstractclassmethod

@@ -138,9 +138,9 @@ class COMETGPT2(KnowledgeModel):
 
         return KnowledgeGraph(outputs)
 
-    def save(self, filepath):
-        self.model.save_pretrained(filepath)
-        self.tokenizer.save_pretrained(filepath)
+    def save_pretrained(self, save_path):
+        self.model.save_pretrained(save_path)
+        self.tokenizer.save_pretrained(save_path)
 
     @classmethod
     def from_pretrained(cls, model_name_or_path: str):

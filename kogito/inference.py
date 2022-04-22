@@ -21,6 +21,8 @@ from kogito.models.base import KnowledgeModel
 
 
 class CommonsenseInference:
+    """_summary_
+    """
     def __init__(self, language: str = "en_core_web_sm") -> None:
         self.language = language
         self.nlp = spacy.load(language, exclude=["ner"])
@@ -62,6 +64,26 @@ class CommonsenseInference:
         dry_run: bool = False,
         sample_graph: KnowledgeGraph = None,
     ) -> KnowledgeGraph:
+        """_summary_
+
+        Args:
+            text (str, optional): _description_. Defaults to None.
+            model (KnowledgeModel, optional): _description_. Defaults to None.
+            heads (List[str], optional): _description_. Defaults to None.
+            model_args (dict, optional): _description_. Defaults to None.
+            extract_heads (bool, optional): _description_. Defaults to True.
+            match_relations (bool, optional): _description_. Defaults to True.
+            relations (List[KnowledgeRelation], optional): _description_. Defaults to None.
+            dry_run (bool, optional): _description_. Defaults to False.
+            sample_graph (KnowledgeGraph, optional): _description_. Defaults to None.
+
+        Raises:
+            ValueError: _description_
+            ValueError: _description_
+
+        Returns:
+            KnowledgeGraph: _description_
+        """
         kg_heads = []
         head_relations = []
         head_texts = set()

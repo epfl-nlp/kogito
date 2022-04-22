@@ -18,6 +18,8 @@ from torch.utils.data import Sampler
 from transformers import BartTokenizer
 
 
+IGNORE_WORDS = set(["PersonX", "PersonY", "PersonZ", "_", "'", "-"])
+
 def vp_present_participle(phrase):
     nlp = spacy.load("en_core_web_sm")
     doc = nlp(phrase)

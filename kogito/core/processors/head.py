@@ -6,7 +6,7 @@ from spacy.language import Language
 from spacy.lang.en.stop_words import STOP_WORDS
 
 from kogito.core.head import KnowledgeHead, KnowledgeHeadType
-
+from kogito.core.utils import IGNORE_WORDS
 
 class KnowledgeHeadExtractor(ABC):
     def __init__(self, name: str, lang: Optional[Language] = None) -> None:
@@ -47,7 +47,7 @@ class NounPhraseHeadExtractor(KnowledgeHeadExtractor):
         clean_text = []
 
         for token in doc:
-            if token.text not in STOP_WORDS and token.pos_ != "PROPN":
+            if token.text not in STOP_WORDS.union(IGNORE_WORDS) and token.pos_ != "PROPN":
                 clean_text.append(token.text)
 
                 if token.pos_ == "NOUN":
@@ -59,16 +59,24 @@ class NounPhraseHeadExtractor(KnowledgeHeadExtractor):
                         )
                     )
 
-        doc = self.lang(" ".join(clean_text))
-
         for phrase in doc.noun_chunks:
-            heads.append(
-                KnowledgeHead(
-                    text=phrase.text,
-                    type=KnowledgeHeadType.NOUN_PHRASE,
-                    entity=phrase,
+            clean_phrase = []
+            phrase_doc = self.lang(phrase.text)
+
+            for token in phrase_doc:
+                if token.text not in STOP_WORDS.union(IGNORE_WORDS):
+                    clean_phrase.append(token.text)
+            
+            clean_text = " ".join(clean_phrase).strip()
+
+            if clean_text:
+                heads.append(
+                    KnowledgeHead(
+                        text=clean_text,
+                        type=KnowledgeHeadType.NOUN_PHRASE,
+                        entity=phrase,
+                    )
                 )
-            )
 
         return heads
 
@@ -91,7 +99,7 @@ class VerbPhraseHeadExtractor(KnowledgeHeadExtractor):
                 )
 
                 for child in token.children:
-                    if child.dep_ == "dobj":
+                    if child.dep_ in ("attr", "dobj"):
                         heads.append(
                             KnowledgeHead(
                                 text=f"{token.lemma_} {child.text}",

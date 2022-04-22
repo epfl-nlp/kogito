@@ -19,9 +19,9 @@ class GPT2Zeroshot(KnowledgeModel):
     def train(self):
         raise ValueError("GPT-2 Zeroshot model is not trainable")
 
-    def save(self, save_model_path):
-        if save_model_path:
-            self.model.save_pretrained(save_model_path)
+    def save_pretrained(self, save_path):
+        self.model.save_pretrained(save_path)
+        self.tokenizer.save_pretrained(save_path)
 
     @classmethod
     def from_pretrained(cls, model_name_or_path):
