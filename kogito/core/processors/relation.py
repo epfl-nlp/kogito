@@ -12,6 +12,7 @@ from torch.utils.data import Dataset, DataLoader
 
 from kogito.core.head import KnowledgeHead
 from kogito.core.relation import (
+    KnowledgeRelation,
     HEAD_TO_RELATION_MAP,
     PHYSICAL_RELATIONS,
     EVENT_RELATIONS,
@@ -53,15 +54,15 @@ class KnowledgeRelationMatcher(ABC):
 
     @abstractmethod
     def match(
-        self, heads: List[KnowledgeHead], relations: List[str] = None, **kwargs
-    ) -> List[Tuple[KnowledgeHead, str]]:
+        self, heads: List[KnowledgeHead], relations: List[KnowledgeRelation] = None, **kwargs
+    ) -> List[Tuple[KnowledgeHead, KnowledgeRelation]]:
         raise NotImplementedError
 
 
 class SimpleRelationMatcher(KnowledgeRelationMatcher):
     def match(
-        self, heads: List[KnowledgeHead], relations: List[str] = None, **kwargs
-    ) -> List[Tuple[KnowledgeHead, str]]:
+        self, heads: List[KnowledgeHead], relations: List[KnowledgeRelation] = None, **kwargs
+    ) -> List[Tuple[KnowledgeHead, KnowledgeRelation]]:
         head_relations = []
 
         for head in heads:
@@ -78,8 +79,8 @@ class SimpleRelationMatcher(KnowledgeRelationMatcher):
 
 class SWEMRelationMatcher(KnowledgeRelationMatcher):
     def match(
-        self, heads: List[KnowledgeHead], relations: List[str] = None, **kwargs
-    ) -> List[Tuple[KnowledgeHead, str]]:
+        self, heads: List[KnowledgeHead], relations: List[KnowledgeRelation] = None, **kwargs
+    ) -> List[Tuple[KnowledgeHead, KnowledgeRelation]]:
         vocab = np.load("./data/vocab_glove_100d.npy", allow_pickle=True).item()
         head_inputs = pad_sequence(
             [
@@ -166,8 +167,8 @@ class DistilBERTClassifier(pl.LightningModule):
 
 class DistilBertRelationMatcher(KnowledgeRelationMatcher):
     def match(
-        self, heads: List[KnowledgeHead], relations: List[str] = None, **kwargs
-    ) -> List[Tuple[KnowledgeHead, str]]:
+        self, heads: List[KnowledgeHead], relations: List[KnowledgeRelation] = None, **kwargs
+    ) -> List[Tuple[KnowledgeHead, KnowledgeRelation]]:
         dataset = DistilBertHeadDataset(heads)
         dataloader = DataLoader(dataset, batch_size=128)
         model = DistilBERTClassifier.load_from_checkpoint(
@@ -204,8 +205,8 @@ class DistilBertRelationMatcher(KnowledgeRelationMatcher):
 
 class GraphBasedRelationMatcher(KnowledgeRelationMatcher):
     def match(
-        self, heads: List[KnowledgeHead], relations: List[str] = None, **kwargs
-    ) -> List[Tuple[KnowledgeHead, str]]:
+        self, heads: List[KnowledgeHead], relations: List[KnowledgeRelation] = None, **kwargs
+    ) -> List[Tuple[KnowledgeHead, KnowledgeRelation]]:
         sample_graph = kwargs.get("sample_graph")
         head_relations = []
 
