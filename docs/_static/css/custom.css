@@ -1,0 +1,13 @@
+@import url('https://fonts.googleapis.com/css2?family=Inconsolata:wght@200;300;400;500;600;700;800;900&display=swap');
+
+.highlight-python .kn {
+    font-weight: 900;
+}
+
+.highlight-python .nn {
+    font-weight: 500;
+}
+
+.highlight-python .nc {
+    font-weight: 500;
+}
