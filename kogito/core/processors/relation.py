@@ -3,6 +3,7 @@ from typing import List, Tuple, Optional
 
 import numpy as np
 import torch
+import pandas as pd
 from torch import nn
 import pytorch_lightning as pl
 from torch.nn.utils.rnn import pad_sequence
@@ -19,32 +20,9 @@ from kogito.core.relation import (
     SOCIAL_RELATIONS,
 )
 
+from kogito.core.processors.models.swem import SWEMHeadDataset, SWEMClassifier
+
 RELATION_CLASSES = [PHYSICAL_RELATIONS, EVENT_RELATIONS, SOCIAL_RELATIONS]
-
-
-class MaxPool(nn.Module):
-    def forward(self, X):
-        values, _ = torch.max(X, dim=1)
-        return values
-
-
-class AvgPool(nn.Module):
-    def forward(self, X):
-        return torch.mean(X, dim=1)
-
-
-class SWEMRelationClassifier(pl.LightningModule):
-    def __init__(self, num_classes=3, pooling="max"):
-        super().__init__()
-        self.embedding = nn.Embedding(num_embeddings=400002, embedding_dim=100)
-        self.pool = MaxPool() if pooling == "max" else AvgPool()
-        self.linear = nn.Linear(100, num_classes)
-        self.model = nn.Sequential(self.embedding, self.pool, self.linear)
-
-    def forward(self, X):
-        outputs = self.model(X)
-        probs = torch.sigmoid(outputs)
-        return probs
 
 
 class KnowledgeRelationMatcher(ABC):
@@ -82,17 +60,9 @@ class SWEMRelationMatcher(KnowledgeRelationMatcher):
         self, heads: List[KnowledgeHead], relations: List[KnowledgeRelation] = None, **kwargs
     ) -> List[Tuple[KnowledgeHead, KnowledgeRelation]]:
         vocab = np.load("./data/vocab_glove_100d.npy", allow_pickle=True).item()
-        head_inputs = pad_sequence(
-            [
-                torch.tensor(
-                    [vocab.get(token.text, 1) for token in self.lang(head.text)],
-                    dtype=torch.int,
-                )
-                for head in heads
-            ],
-            batch_first=True,
-        )
-        model = SWEMRelationClassifier(pooling="avg")
+        df = pd.DataFrame({"text": [str(head) for head in heads]})
+        dataset = SWEMHeadDataset(df, vocab, lang=self.lang)
+        model = None
         model.load_state_dict(
             torch.load("./models/swem_multi_label_finetune_state_dict.pth")
         )
