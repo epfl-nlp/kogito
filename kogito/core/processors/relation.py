@@ -1,15 +1,12 @@
 from abc import ABC, abstractmethod
 from typing import List, Tuple, Optional
+from functools import partial
 
 import numpy as np
 import torch
-import pandas as pd
-from torch import nn
 import pytorch_lightning as pl
-from torch.nn.utils.rnn import pad_sequence
 from spacy.language import Language
-from transformers import DistilBertTokenizer, DistilBertModel
-from torch.utils.data import Dataset, DataLoader
+from torch.utils.data import DataLoader
 
 from kogito.core.head import KnowledgeHead
 from kogito.core.relation import (
@@ -21,6 +18,8 @@ from kogito.core.relation import (
 )
 
 from kogito.core.processors.models.swem import SWEMHeadDataset, SWEMClassifier
+from kogito.core.processors.models.distilbert import DistilBERTHeadDataset, DistilBERTClassifier
+from kogito.core.processors.models.bert import BERTHeadDataset, BERTClassifier
 
 RELATION_CLASSES = [PHYSICAL_RELATIONS, EVENT_RELATIONS, SOCIAL_RELATIONS]
 
@@ -55,17 +54,21 @@ class SimpleRelationMatcher(KnowledgeRelationMatcher):
         return head_relations
 
 
-class SWEMRelationMatcher(KnowledgeRelationMatcher):
-    def match(
-        self, heads: List[KnowledgeHead], relations: List[KnowledgeRelation] = None, **kwargs
-    ) -> List[Tuple[KnowledgeHead, KnowledgeRelation]]:
-        vocab = np.load("./data/vocab_glove_100d.npy", allow_pickle=True).item()
+class ModelBasedRelationMatcher(KnowledgeRelationMatcher):
+    def __init__(self, name: str, dataset_class, model_class, model_path: str, batch_size=64, lang: Optional[Language] = None) -> None:
+        super().__init__(name, lang)
+        self.dataset_class = dataset_class
+        self.model_class = model_class
+        self.model_path = model_path
+        self.batch_size = batch_size
+        self.model = model_class.from_pretrained(model_path)
+
+    def match(self, heads: List[KnowledgeHead], relations: List[KnowledgeRelation] = None, **kwargs) -> List[Tuple[KnowledgeHead, KnowledgeRelation]]:
         data = [str(head) for head in heads]
-        dataset = SWEMHeadDataset(data, vocab, lang=self.lang)
-        model = SWEMClassifier.from_pretrained("mismayil/kogito-rc-swem")
-        dataloader = DataLoader(dataset, batch_size=128)
+        dataset = self.dataset_class(data)
+        dataloader = DataLoader(dataset, batch_size=self.batch_size)
         trainer = pl.Trainer()
-        predictions = torch.cat(trainer.predict(model, dataloaders=dataloader)).numpy()
+        predictions = torch.cat(trainer.predict(self.model, dataloaders=dataloader)).numpy()
         head_relations = []
 
         for head, prob in zip(heads, predictions):
@@ -89,87 +92,30 @@ class SWEMRelationMatcher(KnowledgeRelationMatcher):
         return head_relations
 
 
-class DistilBertHeadDataset(Dataset):
-    def __init__(self, heads):
-        self.tokenizer = DistilBertTokenizer.from_pretrained("distilbert-base-uncased")
-        self.texts = [
-            self.tokenizer(
-                head.text,
-                padding="max_length",
-                max_length=32,
-                truncation=True,
-                return_tensors="pt",
-            )
-            for head in heads
-        ]
-
-    def __len__(self):
-        return len(self.texts)
-
-    def __getitem__(self, idx):
-        return self.texts[idx]
+class SWEMRelationMatcher(KnowledgeRelationMatcher):
+    def __init__(self, name: str, lang: Optional[Language] = None) -> None:
+        vocab = np.load("./data/vocab_glove_100d.npy", allow_pickle=True).item()
+        dataset_class = partial(SWEMHeadDataset, vocab=vocab, lang=lang)
+        model_class = SWEMClassifier
+        model_path = "mismayil/kogito-rc-swem"
+        super().__init__(name, dataset_class=dataset_class, model_class=model_class, model_path=model_path, lang=lang)
 
 
-class DistilBERTClassifier(pl.LightningModule):
-    def __init__(self, num_classes=3, dropout=0.5):
-        super().__init__()
-        self.distilbert = DistilBertModel.from_pretrained("distilbert-base-uncased")
-        self.dropout = nn.Dropout(dropout)
-        self.linear = nn.Linear(768, num_classes)
-        self.classifier = nn.Sequential(self.dropout, self.linear)
 
-    def forward(self, input_ids, mask):
-        outputs = self.distilbert(
-            input_ids=input_ids, attention_mask=mask, return_dict=False
-        )
-        outputs = self.classifier(outputs[0][:, 0, :])
-        return outputs
-
-    def predict_step(self, batch, batch_idx):
-        X = batch
-        mask = X["attention_mask"]
-        input_ids = X["input_ids"].squeeze(1)
-        outputs = self.forward(input_ids, mask)
-        probs = torch.sigmoid(outputs)
-        return probs
+class DistilBERTRelationMatcher(KnowledgeRelationMatcher):
+    def __init__(self, name: str, lang: Optional[Language] = None) -> None:
+        dataset_class = DistilBERTHeadDataset
+        model_class = DistilBERTClassifier
+        model_path = "mismayil/kogito-rc-distilbert"
+        super().__init__(name, dataset_class=dataset_class, model_class=model_class, model_path=model_path, lang=lang)
 
 
-class DistilBertRelationMatcher(KnowledgeRelationMatcher):
-    def match(
-        self, heads: List[KnowledgeHead], relations: List[KnowledgeRelation] = None, **kwargs
-    ) -> List[Tuple[KnowledgeHead, KnowledgeRelation]]:
-        dataset = DistilBertHeadDataset(heads)
-        dataloader = DataLoader(dataset, batch_size=128)
-        model = DistilBERTClassifier.load_from_checkpoint(
-            "./models/distilbert/distilbert_model_20220404H1852.ckpt"
-        )
-        trainer = pl.Trainer()
-        probs = [
-            prob
-            for batch_probs in trainer.predict(model, dataloader)
-            for prob in batch_probs
-        ]
-        head_relations = []
-
-        for head, prob in zip(heads, probs):
-            prediction = np.where(prob >= 0.5, 1, 0).tolist()
-            pred_rel_classes = [
-                RELATION_CLASSES[idx]
-                for idx, pred in enumerate(prediction)
-                if pred == 1
-            ]
-
-            if not pred_rel_classes:
-                pred_rel_classes = [RELATION_CLASSES[np.argmax(prob)]]
-
-            for rel_class in pred_rel_classes:
-                rels_to_match = rel_class
-                if relations:
-                    rels_to_match = set(rels_to_match).intersection(set(relations))
-                for relation in rels_to_match:
-                    head_relations.append((head, relation))
-
-        return head_relations
+class BERTRelationMatcher(KnowledgeRelationMatcher):
+    def __init__(self, name: str, lang: Optional[Language] = None) -> None:
+        dataset_class = BERTHeadDataset
+        model_class = BERTClassifier
+        model_path = "mismayil/kogito-rc-bert"
+        super().__init__(name, dataset_class=dataset_class, model_class=model_class, model_path=model_path, lang=lang)
 
 
 class GraphBasedRelationMatcher(KnowledgeRelationMatcher):

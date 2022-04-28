@@ -42,9 +42,6 @@ class SWEMHeadDataset(Dataset):
             self.labels = np.asarray(labels.to_list()) if labels is not None else None
             self.features = pad_sequence([torch.tensor([vocab.get(token.text, 1) for token in lang(text)], dtype=torch.int) for text in texts], batch_first=True)
 
-    def classes(self):
-        return self.features
-
     def __len__(self):
         return len(self.features)
 
