@@ -36,7 +36,7 @@ Here is a sample usage of the library where you can initialize an inference modu
     from kogito.inference import CommonsenseInference
 
     # Load pre-trained model from HuggingFace
-    model = COMETBART.from_pretrained("mismayil/comet-bart")
+    model = COMETBART.from_pretrained("mismayil/comet-bart-ai2")
 
     # Initialize inference module with a spacy language pipeline
     csi = CommonsenseInference(language="en_core_web_sm")

@@ -19,7 +19,7 @@ def text_to_embedding(text, vocab, embedding_matrix, pooling="max", lang=None):
 
 
 class Evaluator:
-    def __init__(self) -> None:
+    def __init__(self, *args, **kwargs) -> None:
         super().__init__()
         self.metrics = dict(
             train_accuracy = torchmetrics.Accuracy(),
@@ -78,3 +78,14 @@ class Evaluator:
             test_recall_class = torchmetrics.Recall(num_classes=3, average='none'),
             test_f1_class = torchmetrics.F1Score(num_classes=3, average='none')
         )
+
+    def log_metrics(self, preds, y, type):
+        for metric_name, metric in self.metrics.items():
+            if metric_name.startswith(type):
+                metric(preds.cpu(), y.cpu())
+                value = metric.compute()
+                if len(value.shape) > 0:
+                    for idx, val in enumerate(value):
+                        self.log(f'{metric_name}_{idx}', val, on_epoch=True, on_step=False)
+                else:
+                    self.log(metric_name, value, on_epoch=True, on_step=False)

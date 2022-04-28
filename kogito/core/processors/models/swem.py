@@ -7,6 +7,7 @@ import torch.nn.functional as F
 import spacy
 from torch.utils.data import Dataset
 from torch.nn.utils.rnn import pad_sequence
+from transformers import PretrainedConfig, PreTrainedModel
 
 from kogito.core.processors.models.utils import Evaluator, text_to_embedding
 
@@ -37,6 +38,15 @@ class SWEMHeadDataset(Dataset):
             self.features = pad_sequence([torch.tensor([vocab.get(token.text, 1) for token in lang(text)], dtype=torch.int) for text in df['text']],
                                     batch_first=True)
 
+    def classes(self):
+        return self.labels
+
+    def __len__(self):
+        return len(self.labels)
+
+    def __getitem__(self, idx):
+        return self.features[idx], self.labels[idx]
+
 
 class MaxPool(nn.Module):
     def forward(self, X):
@@ -49,18 +59,30 @@ class AvgPool(nn.Module):
         return torch.mean(X, dim=1)
 
 
-class SWEMClassifier(Evaluator, pl.LightningModule):
-    def __init__(self, num_classes=3, pooling="avg", freeze_emb=False, learning_rate=1e-4):
-        super(SWEMClassifier, self).__init__()
+
+class SWEMConfig(PretrainedConfig):
+    def __init__(self, num_classes=3, pooling="avg", freeze_emb=False, learning_rate=1e-4, **kwargs):
+        self.num_classes = num_classes
+        self.pooling = pooling
+        self.freeze_emb = freeze_emb
+        self.learning_rate = learning_rate
+        super().__init__(**kwargs)
+
+
+class SWEMClassifier(PreTrainedModel, Evaluator, pl.LightningModule):
+    config_class = SWEMConfig
+
+    def __init__(self, config: SWEMConfig):
+        super().__init__(config)
         embedding_matrix = np.load("data/embedding_matrix_glove_100d.npy", allow_pickle=True)
         self.embedding = nn.Embedding(num_embeddings=embedding_matrix.shape[0],
-                                      embedding_dim=embedding_matrix.shape[1]).from_pretrained(torch.tensor(embedding_matrix, dtype=torch.float32), freeze=freeze_emb)
-        self.pool = MaxPool() if pooling == "max" else AvgPool()
-        self.linear = nn.Linear(embedding_matrix.shape[1], num_classes)
+                                      embedding_dim=embedding_matrix.shape[1]).from_pretrained(torch.tensor(embedding_matrix, dtype=torch.float32), freeze=config.freeze_emb)
+        self.pool = MaxPool() if config.pooling == "max" else AvgPool()
+        self.linear = nn.Linear(embedding_matrix.shape[1], config.num_classes)
         self.model = nn.Sequential(self.embedding, self.pool, self.linear)
         self.criterion = nn.BCEWithLogitsLoss()
-        self.learning_rate = learning_rate
-        self.save_hyperparameters()
+        self.learning_rate = config.learning_rate
+        self.save_hyperparameters(ignore="config")
     
     def forward(self, X):
         outputs = self.model(X)

@@ -124,7 +124,7 @@ Here is an example of loading a pre-trained model from **HuggingFace**.
     from kogito.models.bart.comet_bart import COMETBART
 
     # Load pre-trained model from HuggingFace
-    model = COMETBART.from_pretrained("mismayil/comet-bart")
+    model = COMETBART.from_pretrained("mismayil/comet-bart-ai2")
 
 
 Inference
