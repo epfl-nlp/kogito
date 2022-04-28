@@ -134,6 +134,7 @@ dmypy.json
 # kogito
 experiments/relation_modeling/output
 experiments/relation_modeling/models
+experiments/relation_modeling/hmodels
 experiments/relation_modeling/data
 wandb
 .vector_cache/

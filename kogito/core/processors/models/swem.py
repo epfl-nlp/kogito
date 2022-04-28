@@ -27,7 +27,8 @@ class SWEMHeadDataset(Dataset):
                 embedding = text_to_embedding(text, vocab=vocab, embedding_matrix=embedding_matrix, lang=lang)
                 if embedding is not None:
                     self.features.append(embedding)
-                    self.labels.append(df['label'][index])
+                    if 'label' in df.columns:
+                        self.labels.append(df['label'][index])
                     self.texts.append(text)
             
             self.labels = np.asarray(self.labels)
@@ -39,13 +40,15 @@ class SWEMHeadDataset(Dataset):
                                     batch_first=True)
 
     def classes(self):
-        return self.labels
+        return self.features
 
     def __len__(self):
-        return len(self.labels)
+        return len(self.features)
 
     def __getitem__(self, idx):
-        return self.features[idx], self.labels[idx]
+        if self.labels is not None:
+            return self.features[idx], self.labels[idx]
+        return self.features[idx]
 
 
 class MaxPool(nn.Module):
@@ -82,7 +85,7 @@ class SWEMClassifier(PreTrainedModel, Evaluator, pl.LightningModule):
         self.model = nn.Sequential(self.embedding, self.pool, self.linear)
         self.criterion = nn.BCEWithLogitsLoss()
         self.learning_rate = config.learning_rate
-        self.save_hyperparameters(ignore="config")
+        self.save_hyperparameters(config.to_dict(), ignore="config")
     
     def forward(self, X):
         outputs = self.model(X)
