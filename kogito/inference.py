@@ -85,7 +85,7 @@ class CommonsenseInference:
             KnowledgeGraph: _description_
         """
         kg_heads = []
-        head_relations = []
+        head_relations = set()
         head_texts = set()
         model_args = model_args or {}
 
@@ -112,14 +112,14 @@ class CommonsenseInference:
         if match_relations:
             print("Matching relations...")
             for relation_proc in self._relation_processors.values():
-                head_relations.extend(
-                    relation_proc.match(kg_heads, relations, sample_graph=sample_graph)
+                head_relations = head_relations.union(
+                    set(relation_proc.match(kg_heads, relations, sample_graph=sample_graph))
                 )
         elif relations:
             if not isinstance(relations, list):
                 raise ValueError("Relation subset should be a list")
 
-            head_relations.extend(list(product(kg_heads, relations)))
+            head_relations = head_relations.union(set(list(product(kg_heads, relations))))
         else:
             raise ValueError("No relation found to match")
 

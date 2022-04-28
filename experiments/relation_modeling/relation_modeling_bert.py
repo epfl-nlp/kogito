@@ -33,7 +33,7 @@ if __name__ == "__main__":
     wandb_logger.experiment.config["batch_size"] = BATCH_SIZE
     config = BERTConfig(learning_rate=LR_RATE, model_case=MODEL_TYPE, freeze_emb=FREEZE_EMB)
     model = BERTClassifier(config)
-    trainer = pl.Trainer(default_root_dir="models/bert", max_epochs=NUM_EPOCHS, logger=wandb_logger, accelerator="gpu", devices=[1])
+    trainer = pl.Trainer(default_root_dir="models/bert", max_epochs=NUM_EPOCHS, logger=wandb_logger, accelerator="gpu", devices=[0])
     trainer.fit(model, train_dataloaders=train_dataloader, val_dataloaders=val_dataloader)
     trainer.test(model, dataloaders=test_dataloader)
     trainer.save_checkpoint(f"models/bert/bert_model_{emb_txt}_{MODEL_TYPE}_{DATASET_TYPE}_{timestamp}.ckpt", weights_only=True)
