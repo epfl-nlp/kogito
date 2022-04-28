@@ -92,7 +92,7 @@ class ModelBasedRelationMatcher(KnowledgeRelationMatcher):
         return head_relations
 
 
-class SWEMRelationMatcher(KnowledgeRelationMatcher):
+class SWEMRelationMatcher(ModelBasedRelationMatcher):
     def __init__(self, name: str, lang: Optional[Language] = None) -> None:
         vocab = np.load("./data/vocab_glove_100d.npy", allow_pickle=True).item()
         dataset_class = partial(SWEMHeadDataset, vocab=vocab, lang=lang)
@@ -102,7 +102,7 @@ class SWEMRelationMatcher(KnowledgeRelationMatcher):
 
 
 
-class DistilBERTRelationMatcher(KnowledgeRelationMatcher):
+class DistilBERTRelationMatcher(ModelBasedRelationMatcher):
     def __init__(self, name: str, lang: Optional[Language] = None) -> None:
         dataset_class = DistilBERTHeadDataset
         model_class = DistilBERTClassifier
@@ -110,7 +110,7 @@ class DistilBERTRelationMatcher(KnowledgeRelationMatcher):
         super().__init__(name, dataset_class=dataset_class, model_class=model_class, model_path=model_path, lang=lang)
 
 
-class BERTRelationMatcher(KnowledgeRelationMatcher):
+class BERTRelationMatcher(ModelBasedRelationMatcher):
     def __init__(self, name: str, lang: Optional[Language] = None) -> None:
         dataset_class = BERTHeadDataset
         model_class = BERTClassifier
