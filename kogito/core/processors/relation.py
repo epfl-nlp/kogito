@@ -60,16 +60,15 @@ class SWEMRelationMatcher(KnowledgeRelationMatcher):
         self, heads: List[KnowledgeHead], relations: List[KnowledgeRelation] = None, **kwargs
     ) -> List[Tuple[KnowledgeHead, KnowledgeRelation]]:
         vocab = np.load("./data/vocab_glove_100d.npy", allow_pickle=True).item()
-        df = pd.DataFrame({"text": [str(head) for head in heads]})
-        dataset = SWEMHeadDataset(df, vocab, lang=self.lang)
-        model = None
-        model.load_state_dict(
-            torch.load("./models/swem_multi_label_finetune_state_dict.pth")
-        )
-        probs = model.forward(head_inputs).detach().numpy()
+        data = [str(head) for head in heads]
+        dataset = SWEMHeadDataset(data, vocab, lang=self.lang)
+        model = SWEMClassifier.from_pretrained("mismayil/kogito-rc-swem")
+        dataloader = DataLoader(dataset, batch_size=128)
+        trainer = pl.Trainer()
+        predictions = torch.cat(trainer.predict(model, dataloaders=dataloader)).numpy()
         head_relations = []
 
-        for head, prob in zip(heads, probs):
+        for head, prob in zip(heads, predictions):
             prediction = np.where(prob >= 0.5, 1, 0).tolist()
             pred_rel_classes = [
                 RELATION_CLASSES[idx]

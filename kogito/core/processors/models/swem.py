@@ -1,4 +1,5 @@
 import numpy as np
+import pandas as pd
 import torch
 from torch.optim import Adam
 from torch import nn
@@ -13,7 +14,10 @@ from kogito.core.processors.models.utils import Evaluator, text_to_embedding
 
 
 class SWEMHeadDataset(Dataset):
-    def __init__(self, df, vocab, embedding_matrix=None, apply_pooling=False, pooling="avg", lang=None):
+    def __init__(self, data, vocab, embedding_matrix=None, apply_pooling=False, pooling="avg", lang=None):
+        texts = data["text"] if isinstance(data, pd.DataFrame) else data
+        labels = data["label"] if isinstance(data, pd.DataFrame) else None
+
         if not lang:
             lang = spacy.load("en_core_web_sm")
         self.texts = []
@@ -23,21 +27,20 @@ class SWEMHeadDataset(Dataset):
             self.labels = []
             self.features = []
 
-            for index, text in enumerate(df['text']):
+            for index, text in enumerate(texts):
                 embedding = text_to_embedding(text, vocab=vocab, embedding_matrix=embedding_matrix, lang=lang)
                 if embedding is not None:
                     self.features.append(embedding)
-                    if 'label' in df.columns:
-                        self.labels.append(df['label'][index])
+                    if labels is not None:
+                        self.labels.append(labels[index])
                     self.texts.append(text)
             
             self.labels = np.asarray(self.labels)
         else:
             # Pad sequences
-            self.texts = df['text']
-            self.labels = np.asarray(df['label'].to_list()) if 'label' in df.columns else None
-            self.features = pad_sequence([torch.tensor([vocab.get(token.text, 1) for token in lang(text)], dtype=torch.int) for text in df['text']],
-                                    batch_first=True)
+            self.texts = texts
+            self.labels = np.asarray(labels.to_list()) if labels is not None else None
+            self.features = pad_sequence([torch.tensor([vocab.get(token.text, 1) for token in lang(text)], dtype=torch.int) for text in texts], batch_first=True)
 
     def classes(self):
         return self.features
