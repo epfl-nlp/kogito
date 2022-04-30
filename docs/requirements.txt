@@ -1,1 +1,2 @@
 insegel
+python>=3.8
