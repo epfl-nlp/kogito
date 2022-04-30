@@ -25,7 +25,7 @@ Kogito provides an easy interface to interact with commonsense reasoning models 
 Here is a sample usage of the library where you can initialize an inference module, a custom commonsense reasoning model, and generate a knowledge graph from text on the fly.
 
 ```python
-from kogito.models.bart.comet_bart import COMETBART
+from kogito.models.bart.comet import COMETBART
 from kogito.inference import CommonsenseInference
 
 # Load pre-trained model from HuggingFace

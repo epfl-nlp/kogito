@@ -1,5 +1,5 @@
 from kogito.core.knowledge import KnowledgeGraph
-from kogito.models.bart.comet_bart import COMETBART
+from kogito.models.bart.comet import COMETBART
 
 input_graph = KnowledgeGraph.from_jsonl("./test_atomic2020.jsonl")
 

@@ -121,7 +121,7 @@ Here is an example of loading a pre-trained model from **HuggingFace**.
 
 .. code-block:: python
 
-    from kogito.models.bart.comet_bart import COMETBART
+    from kogito.models.bart.comet import COMETBART
 
     # Load pre-trained model from HuggingFace
     model = COMETBART.from_pretrained("mismayil/comet-bart-ai2")
@@ -274,8 +274,8 @@ and custom ones can be added. Here is an example where each head is matched with
    csi.add_processor(const_rel_matcher)
 
 
-Manual Inference
-****************
+Manual Mode
+***********
 Beyond automatic head extraction and relation matching, **kogito** also provides several manual controls. 
 For example, you can specify additional heads manually as a list (either as a text or a ``KnowledgeHead`` instance). 
 
@@ -389,7 +389,7 @@ Finally, we initialize our GPT-3 model and run the inference:
 
    from kogito.inference import CommonsenseInference
    from kogito.core.knowledge import KnowledgeGraph
-   from kogito.models.gpt3 import GPT3Zeroshot
+   from kogito.models.gpt3.zeroshot import GPT3Zeroshot
 
    csi = CommonsenseInference()
    # Here we remove the simple relation matcher for simplicity
@@ -404,5 +404,109 @@ Finally, we initialize our GPT-3 model and run the inference:
 
    kgraph = csi.infer(model=model, heads=heads, sample_graph=sample_graph)
 
+Models
+======
+**kogito** offers following knowledge models for inference:
+
+- ``COMETBART``
+- ``COMETGPT2``
+- ``GPT2Zeroshot``
+- ``GPT3Zeroshot``
+
+All of these models implement the ``KnowledgeModel`` interface which provides 4 main methods to interact with these models: ``train``, ``generate``, ``save_pretrained`` and ``from_pretrained``.
+
+Inference
+*********
+``generate`` method is used to make inferences with knowledge models. It takes an (incomplete i.e. without tails) input knowledge graph and outputs a (completed i.e. tails generated) knowledge graph.
+
+Given an input graph in a ``json`` format like below:
+
+.. admonition:: input_graph.jsonl
+
+   {"relation": "xNeed", "head": "PersonX takes things for granted", "tails": []}
+
+   {"relation": "xWant", "head": "PersonX pleases ___ to make", "tails": []}
+
+   {"relation": "xEffect", "head": "PersonX shoves PersonY back", "tails": []}
+
+   {"relation": "isAfter", "head": "PersonX wants to go", "tails": []}
+
+   {"relation": "xEffect", "head": "PersonX hits by lightning", "tails": []}
+
+   {"relation": "xNeed", "head": "PersonX finally meet PersonY", "tails": []}
+
+   {"relation": "ObjectUse", "head": "chain", "tails": []}
+
+We can generate inferences for example using ``COMETBART`` model as below:
+
+.. code-block:: python
+
+   from kogito.core.knowledge import KnowledgeGraph
+   from kogito.models.bart.comet import COMETBART
+
+   input_graph = KnowledgeGraph.from_jsonl("input_graph.jsonl")
+
+   # Load a model from HuggingFace
+   model = COMETBART.from_pretrained("mismayil/comet-bart-ai2")
+   output_graph = model.generate(input_graph)
+   output_graph.to_jsonl("output_graph.jsonl")
+
+While COMET based models have been trained specifically on knowledge graphs, zeroshot models are based on the publicly available language models.
+``GPT2Zeroshot`` model by default uses the publicly available **gpt2** model from HuggingFace and can simply be initialized using the class constructor:
+
+.. code-block:: python
+
+   from kogito.models.gpt2.zeroshot import GPT2Zeroshot
+
+   model = GPT2Zeroshot()
+
+``GPT3Zeroshot`` model on the other hand is currently only available through public API access, hence, an API key is required to interact with this model.
+
+.. code-block:: python
+
+   from kogito.models.gpt3.zeroshot import GPT3Zeroshot
+
+   model = GPT3Zeroshot(api_key="<your API key>", model_name="text-davince-002")
+
 Training
-========
+********
+COMET models have been trained based on the paper **COMET-ATOMIC2020: On Symbolic and Neural Commonsense Knowledge Graphs** and made available as pre-trained models through HuggingFace:
+
+.. code-block:: python
+
+   from kogito.models.bart.comet import COMETBART
+   from kogito.models.gpt2.comet import COMETGPT2
+
+   comet_bart = COMETBART.from_pretrained("mismayil/comet-bart-ai2")
+   comet_gpt2 = COMETGPT2.from_pretrained("mismayil/comet-gpt2-ai2")
+
+However, if you wish to train these models on a new dataset and/or with different hyperparameters, you can do so using the provided ``train`` method. This method takes a training dataset as an instance of a ``KnowledgeGraph`` and additional hyperparameters depending on the model type.
+Please, refer to the **API Reference** for more details on specific parameters accepted by this method for each model.
+
+For example, here is a sample code to train a  ``COMETBART`` model:
+
+.. code-block:: python
+
+   from kogito.core.knowledge import KnowledgeGraph
+   from kogito.models.bart.comet import COMETBART, COMETBARTConfig
+
+
+   config = COMETBARTConfig(
+      output_dir="bart",
+      num_workers=2,
+      learning_rate=1e-5,
+      gpus=1,
+      sortish_sampler=True,
+      atomic=True,
+      pretrained_model="facebook/bart-large",
+   )
+   model = COMETBART(config)
+   train_graph = KnowledgeGraph.from_csv("train.tsv")
+   val_graph = KnowledgeGraph.from_csv("val.tsv")
+   test_graph = KnowledgeGraph.from_csv("test.tsv")
+
+   model.train(train_graph=train_graph, val_graph=val_graph, test_graph=test_graph)
+
+   # Save as a pretrained model
+   model.save_pretrained("comet-bart/v1")
+

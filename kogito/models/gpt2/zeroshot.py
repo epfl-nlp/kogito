@@ -24,7 +24,7 @@ class GPT2Zeroshot(KnowledgeModel):
         self.tokenizer.save_pretrained(save_path)
 
     @classmethod
-    def from_pretrained(cls, model_name_or_path):
+    def from_pretrained(cls, model_name_or_path: str = "gpt2"):
         return cls(model_name_or_path)
 
     def generate(

@@ -1,6 +1,6 @@
 import csv
 from kogito.core.knowledge import Knowledge, KnowledgeGraph
-from kogito.models.bart.comet_bart import COMETBART, COMETBARTConfig
+from kogito.models.bart.comet import COMETBART, COMETBARTConfig
 
 
 def kg_graph_from_tsv(filepath):
