@@ -9,13 +9,26 @@ from transformers import BertTokenizer, BertModel, PretrainedConfig, PreTrainedM
 
 from kogito.core.processors.models.utils import Evaluator
 
+
 class BERTHeadDataset(Dataset):
     def __init__(self, data, tokenizer_type="uncased"):
-        self.tokenizer = BertTokenizer.from_pretrained(f'bert-base-{tokenizer_type}')
-        self.labels = np.asarray(data['label'].to_list()) if isinstance(data, pd.DataFrame) else None
+        self.tokenizer = BertTokenizer.from_pretrained(f"bert-base-{tokenizer_type}")
+        self.labels = (
+            np.asarray(data["label"].to_list())
+            if isinstance(data, pd.DataFrame)
+            else None
+        )
         texts = data["text"] if isinstance(data, pd.DataFrame) else data
-        self.features = [self.tokenizer(text, padding='max_length', max_length=32, truncation=True,
-                                        return_tensors="pt") for text in texts]
+        self.features = [
+            self.tokenizer(
+                text,
+                padding="max_length",
+                max_length=32,
+                truncation=True,
+                return_tensors="pt",
+            )
+            for text in texts
+        ]
 
     def __len__(self):
         return len(self.features)
@@ -27,7 +40,15 @@ class BERTHeadDataset(Dataset):
 
 
 class BERTConfig(PretrainedConfig):
-    def __init__(self, num_classes=3, dropout=0.5, learning_rate=1e-4, freeze_emb=False, model_case="uncased", **kwargs):
+    def __init__(
+        self,
+        num_classes=3,
+        dropout=0.5,
+        learning_rate=1e-4,
+        freeze_emb=False,
+        model_case="uncased",
+        **kwargs,
+    ):
         self.num_classes = num_classes
         self.dropout = dropout
         self.learning_rate = learning_rate
@@ -41,7 +62,7 @@ class BERTClassifier(PreTrainedModel, Evaluator, pl.LightningModule):
 
     def __init__(self, config: BERTConfig):
         super().__init__(config)
-        self.bert = BertModel.from_pretrained(f'bert-base-{config.model_case}')
+        self.bert = BertModel.from_pretrained(f"bert-base-{config.model_case}")
         self.dropout = nn.Dropout(config.dropout)
         self.linear = nn.Linear(768, config.num_classes)
 
@@ -56,27 +77,29 @@ class BERTClassifier(PreTrainedModel, Evaluator, pl.LightningModule):
         self.learning_rate = config.learning_rate
 
         self.save_hyperparameters(config.to_dict(), ignore="config")
-    
+
     def forward(self, input_ids, mask):
-        _, outputs = self.bert(input_ids=input_ids, attention_mask=mask, return_dict=False)
+        _, outputs = self.bert(
+            input_ids=input_ids, attention_mask=mask, return_dict=False
+        )
         outputs = self.classifier(outputs)
         return outputs
-    
+
     def training_step(self, batch, batch_idx):
         X, y = batch
-        mask = X['attention_mask']
-        input_ids = X['input_ids'].squeeze(1)
+        mask = X["attention_mask"]
+        input_ids = X["input_ids"].squeeze(1)
         outputs = self.forward(input_ids, mask)
         train_loss = self.criterion(outputs, y.float())
         preds = torch.sigmoid(outputs)
         self.log("train_loss", train_loss, on_epoch=True)
         self.log_metrics(preds, y, type="train")
         return train_loss
-    
+
     def validation_step(self, batch, batch_idx):
         X, y = batch
-        mask = X['attention_mask']
-        input_ids = X['input_ids'].squeeze(1)
+        mask = X["attention_mask"]
+        input_ids = X["input_ids"].squeeze(1)
         outputs = self.forward(input_ids, mask)
         val_loss = self.criterion(outputs, y.float())
         preds = torch.sigmoid(outputs)
@@ -86,8 +109,8 @@ class BERTClassifier(PreTrainedModel, Evaluator, pl.LightningModule):
 
     def test_step(self, batch, batch_idx):
         X, y = batch
-        mask = X['attention_mask']
-        input_ids = X['input_ids'].squeeze(1)
+        mask = X["attention_mask"]
+        input_ids = X["input_ids"].squeeze(1)
         outputs = self.forward(input_ids, mask)
         test_loss = self.criterion(outputs, y.float())
         preds = torch.sigmoid(outputs)

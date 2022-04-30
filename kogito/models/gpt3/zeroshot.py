@@ -1,3 +1,4 @@
+from typing import Optional
 import openai
 
 from kogito.core.model import KnowledgeModel
@@ -6,18 +7,26 @@ from kogito.core.utils import get_uuid
 
 
 class GPT3Zeroshot(KnowledgeModel):
-    def __init__(self, api_key: str, model_name: str = "text-davinci-002"):
+    """Zeroshot knowledge model based on GPT-3"""
+
+    def __init__(self, api_key: str, model_name: str = "text-davinci-002") -> None:
+        """Initialize a GPT-3 model
+
+        Args:
+            api_key (str): OpenAI API Key for GPT-3 model
+            model_name (str, optional): Type of GPT-3 model. Defaults to "text-davinci-002".
+        """
         self.api_key = api_key
         self.model_name = model_name
 
     def train(self):
         raise ValueError("GPT-3 Zeroshot model is not trainable")
 
-    def save(self, save_model_path):
+    def save(self, save_model_path: str):
         raise ValueError("GPT-3 Zeroshot cannot be saved")
 
     @classmethod
-    def from_pretrained(cls, model_name_or_path):
+    def from_pretrained(cls, model_name_or_path: str):
         raise ValueError("GPT-3 only supports API-based access")
 
     def generate(
@@ -28,11 +37,28 @@ class GPT3Zeroshot(KnowledgeModel):
         temperature: float = 0.9,
         top_p: float = 1,
         n: int = 1,
-        logprobs: int = None,
-        stop: str = None,
+        logprobs: Optional[int] = None,
+        stop: Optional[str] = None,
         include_task_prompt: bool = True,
         debug: bool = False,
-    ):
+    ) -> KnowledgeGraph:
+        """Generate inferences from GPT-3 model
+
+        Args:
+            input_graph (KnowledgeGraph): Input dataset
+            num_samples (int, optional): Number of samples to use. Defaults to 10.
+            max_tokens (int, optional): Max number of tokens. Defaults to 16.
+            temperature (float, optional): Temperature parameter. Defaults to 0.9.
+            top_p (float, optional): Top p parameter. Defaults to 1.
+            n (int, optional): Number of generations. Defaults to 1.
+            logprobs (Optional[int], optional): Log probs to use. Defaults to None.
+            stop (Optional[str], optional): Stop token to use. Defaults to None.
+            include_task_prompt (bool, optional): Whether to include task prompt. Defaults to True.
+            debug (bool, optional): Whether to enable debug mode. Defaults to False.
+
+        Returns:
+            KnowledgeGraph: Completed knowledge graph
+        """
         rel_kg_map = {}
         outputs = []
 

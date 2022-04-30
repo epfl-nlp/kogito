@@ -1,3 +1,4 @@
+from typing import Optional
 import numpy as np
 import torch
 from torch import cuda
@@ -19,7 +20,14 @@ device = "cuda" if cuda.is_available() else "cpu"
 
 
 class COMETGPT2(KnowledgeModel):
-    def __init__(self, model_name_or_path: str = "gpt2"):
+    """COMET model based on GPT-2"""
+
+    def __init__(self, model_name_or_path: str = "gpt2") -> None:
+        """Initialize COMET model
+
+        Args:
+            model_name_or_path (str, optional): HuggingFace model name or local model path. Defaults to "gpt2".
+        """
         self.model = GPT2LMHeadModel.from_pretrained(model_name_or_path)
         self.tokenizer = GPT2Tokenizer.from_pretrained(model_name_or_path)
         self.model.to(device)
@@ -36,8 +44,26 @@ class COMETGPT2(KnowledgeModel):
         lr_rate: float = 1e-5,
         seed: int = 42,
         log_wandb: bool = False,
-        output_dir=None,
-    ):
+        output_dir: Optional[str] = None,
+    ) -> KnowledgeModel:
+        """Train a COMET model
+
+        Args:
+            train_graph (KnowledgeGraph): Training dataset
+            val_graph (KnowledgeGraph): Validation dataset
+            batch_size (int, optional): Batch size. Defaults to 2.
+            in_len (int, optional): Input length. Defaults to 16.
+            out_len (int, optional): Output length. Defaults to 34.
+            summary_len (int, optional): Summary length. Defaults to 0.
+            epochs (int, optional): Number of epochs. Defaults to 3.
+            lr_rate (float, optional): Learning rate. Defaults to 1e-5.
+            seed (int, optional): Random seed. Defaults to 42.
+            log_wandb (bool, optional): Whether to log to wandb. Defaults to False.
+            output_dir (Optional[str], optional): Directory to save intermediate model checkpoints. Defaults to None.
+
+        Returns:
+            KnowledgeModel: Trained knowledge model
+        """
         torch.manual_seed(seed)
         np.random.seed(seed)
         torch.backends.cudnn.deterministic = True
@@ -116,7 +142,18 @@ class COMETGPT2(KnowledgeModel):
         in_len: int = 16,
         out_len: int = 34,
         top_k: int = 1,
-    ):
+    ) -> KnowledgeGraph:
+        """Generate inferences from knowledge model
+
+        Args:
+            input_graph (KnowledgeGraph): Input dataset
+            in_len (int, optional): Input length. Defaults to 16.
+            out_len (int, optional): Output length. Defaults to 34.
+            top_k (int, optional): Top k inferences to consider. Defaults to 1.
+
+        Returns:
+            KnowledgeGraph: Completed knowledge graph
+        """
         params = {"batch_size": 1, "shuffle": False, "num_workers": 0}
         dataset = KnowledgeDataset(
             input_graph,
@@ -138,10 +175,23 @@ class COMETGPT2(KnowledgeModel):
 
         return KnowledgeGraph(outputs)
 
-    def save_pretrained(self, save_path):
+    def save_pretrained(self, save_path: str) -> None:
+        """Save pretrained model
+
+        Args:
+            save_path (str): Directory to save model to
+        """
         self.model.save_pretrained(save_path)
         self.tokenizer.save_pretrained(save_path)
 
     @classmethod
-    def from_pretrained(cls, model_name_or_path: str):
+    def from_pretrained(cls, model_name_or_path: str) -> KnowledgeModel:
+        """Load pretrained model
+
+        Args:
+            model_name_or_path (str): HuggingFace model name or local model path
+
+        Returns:
+            KnowledgeModel: Loaded knowledge model
+        """
         return cls(model_name_or_path)

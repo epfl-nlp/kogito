@@ -24,10 +24,10 @@ question asked about the source knowledge such as ``What does PersonX need?`` an
 
 Knowledge
 *********
-Knowledge in **kogito** is represented using ``Knowledge`` class. It is initialized with an instance of a ``KnowledgeHead``, a ``KnowledgeRelation`` and a list of knowledge tails represented
-as literal strings. While **heads** and **tails** can be any abritrary text, **relations** are rather pre-defined notions and are based on **ATOMIC** and **CONCEPTNET** relations. For example, the relation mentioned above
+Knowledge in **kogito** is represented using :class:`kogito.core.knowledge.Knowledge` class. It is initialized with an instance of a :class:`kogito.core.head.KnowledgeHead`, a :class:`kogito.core.relation.KnowledgeRelation` and a list of knowledge tails represented
+as literal strings. While **heads** and **tails** can be any abritrary text, **relations** are rather pre-defined notions and are based on `ATOMIC <https://allenai.org/data/atomic-2020>`_ and `CONCEPTNET <https://conceptnet.io/>`_ relations. For example, the relation mentioned above
 is represented with the ``X_NEED`` object. However, this being said **kogito** also provides a way to define new custom relations and use them to perform commonsense reasoning. Please, refer to the 
-**Custom Relations** section for more on this.
+`Custom Relations`_ section for more on this.
 
 .. code-block:: python
    
@@ -44,7 +44,7 @@ finally, two ``Knowledge`` objects are equal when their heads, relations and tai
 
 Knowledge Graph
 ***************
-Knowledge graph in **kogito** is represented using ``KnowledgeGraph`` class and is simply a collection of ``Knowledge`` objects. This class provides an easy interface to read, manipulate and write
+Knowledge graph in **kogito** is represented using :class:`kogito.core.knowledge.KnowledgeGraph` class and is simply a collection of ``Knowledge`` objects. This class provides an easy interface to read, manipulate and write
 knowledge instances.
 
 .. code-block:: python
@@ -112,12 +112,12 @@ we can instantiate knowledge graphs as below:
 
 Knowledge Model
 ***************
-Base knowledge model in **kogito** is represented by the ``KnowledgeModel`` class and provides an abstract interface to be implemented by concrete model instances.
+Base knowledge model in **kogito** is represented by the :class:`kogito.core.model.KnowledgeModel` class and provides an abstract interface to be implemented by concrete model instances.
 More specifically, 4 abstract methods, namely, ``train``, ``generate``, ``from_pretrained`` and ``save_pretrained`` are defined and allow for training, querying (generating inferences from),
 loading and saving models respectively. For inference generation, these models take an instance of ``KnowledgeGraph`` (generally this graph will be incomplete i.e. each knowledge instance in its collection will be missing **tails** since we want to predict those)
 and output a complete version of the input graph (**tails** filled in).
-For more information on specific models available as part of **kogito**, please refer to the **Models** section.
-Here is an example of loading a pre-trained model from **HuggingFace**.
+For more information on specific models available as part of **kogito**, please refer to the `Models`_ section.
+Here is an example of loading a pre-trained model from `HuggingFace <https://huggingface.co/>`_.
 
 .. code-block:: python
 
@@ -129,9 +129,9 @@ Here is an example of loading a pre-trained model from **HuggingFace**.
 
 Inference
 =========
-**kogito** offers a simple, yet powerful commonsense inference module called ``CommonsenseInference``. It is initialized with a (spacy) language of choice (by default, ``en_core_web_sm``).
+**kogito** offers a simple, yet powerful commonsense inference module called :class:`kogito.inference.CommonsenseInference`. It is initialized with a (`spacy <https://spacy.io>`_) language of choice (by default, ``en_core_web_sm``).
 Then its ``infer`` method can be called with various arguments to generate commonsense inferences. Here we will walk through some common use-cases for this module and for complete API reference,
-you can refer to **API Reference**.
+you can refer to `API Reference <https://kogito.readthedocs.io/en/latest/api.html>`_.
 
 .. code-block:: python
 
@@ -152,15 +152,15 @@ from the input text to feed into these models.
 
 Under the hood, **kogito** applies various head extraction methods to the given text. By default, following extraction methods are applied automatically:
 
-- Sentence Extraction (``SentenceHeadExtractor``)
+- Sentence Extraction (:class:`kogito.core.processors.head.SentenceHeadExtractor`)
 
   Extracts sentences from text.
 
-- Noun Phrase Extraction (``NounPhraseHeadExtractor``)
+- Noun Phrase Extraction (:class:`kogito.core.processors.head.NounPhraseHeadExtractor`)
 
   Extracts noun phrases from text.
 
-- Verb Phrase Extraction (``VerbPhraseHeadExtractor``)
+- Verb Phrase Extraction (:class:`kogito.core.processors.head.VerbPhraseHeadExtractor`)
 
   Extracts verb phrases from text.
 
@@ -185,7 +185,7 @@ You can also optionally remove head extractors by their name:
 
    csi.remove_processor("noun_phrase_extractor")
 
-**kogito** also allows you to define your own head extractors. For this, you simply need to implement the ``KnowledgeHeadExtractor`` interface and register the new extractor with the 
+**kogito** also allows you to define your own head extractors. For this, you simply need to implement the :class:`kogito.core.processors.head.KnowledgeHeadExtractor` interface and register the new extractor with the 
 inference module. Here is one example that extracts only adjectives from the text: 
 
 .. code-block:: python
@@ -219,20 +219,20 @@ Of course, knowledge heads are not enough on their own to query knowledge models
 Luckily, **kogito** also provides an ability to automatically match relevant relations to the extracted heads.
 By default, following relation matching methods are applied:
 
-- Simple Heuristics-based Relation Matching  (``SimpleRelationMatcher``)
+- Simple Heuristics-based Relation Matching  (:class:`kogito.core.processors.relation.SimpleRelationMatcher`)
 
   Matches heads based on their syntactic category (noun phrase, verb phrase etc.)
 
-- Graph-based Relation Matching (``GraphBasedRelationMatcher``)
+- Graph-based Relation Matching (:class:`kogito.core.processors.relation.GraphBasedRelationMatcher`)
 
-  Matches heads to relations provided in a sample graph (for more info on this, see **Custom Relations**)
+  Matches heads to relations provided in a sample graph (for more info on this, see `Custom Relations`_)
 
-and following model-based relation matchers are available out-of-the-box to be added. These models have been trained as a classifier to match heads to one or more of the relation categories of **ATOMIC**, namely, 
-``PHYSICAL_RELATIONS``, ``EVENT_RELATIONS`` and ``SOCIAL_RELATIONS``.
+and following model-based relation matchers are available out-of-the-box to be added. These models have been trained as a classifier to match heads to one or more of the relation categories of `ATOMIC <https://allenai.org/data/atomic-2020>`_, namely, 
+:data:`kogito.core.relation.PHYSICAL_RELATIONS`, :data:`kogito.core.relation.EVENT_RELATIONS` and :data:`kogito.core.relation.SOCIAL_RELATIONS`.
 
-- Simple Word Embedding model based matcher (``SWEMRelationMatcher``)
-- DistilBert model based matcher (``DistilBertRelationMatcher``)
-- Bert model based matcher (``BertRelationMatcher``)
+- Simple Word Embedding model based matcher (:class:`kogito.core.processors.relation.SWEMRelationMatcher`)
+- DistilBert model based matcher (:class:`kogito.core.processors.relation.DistilBertRelationMatcher`)
+- Bert model based matcher (:class:`kogito.core.processors.relation.BertRelationMatcher`)
 
 These matchers can simply be added to the inference module as below:
 
@@ -303,7 +303,7 @@ Similarly, you can specify a subset of relations to match from. Here relation ma
    heads = ["tennis player", "athlete"]
    kgraph = csi.infer(heads=heads, relations=PHYSICAL_RELATIONS, model=model)
 
-or alternatively, you can switch off automatic relation matching by setting ``match_relations`` flag to ``False`` which will result in heads being matched with all the relations provided.
+or alternatively, you can switch off automatic smart relation matching by setting ``match_relations`` flag to ``False`` which will result in heads being matched with all the relations provided.
 
 .. code-block:: python
    
@@ -334,9 +334,9 @@ which will output an incomplete knowledge graph (i.e. without tails) like below:
 
 Custom Relations
 ****************
-As mentioned before, knowledge relations are rather fixed, pre-defined notions based on **ATOMIC** and **CONCEPTNET** knowledge bases. However, one might want to define their own custom relations
+As mentioned before, knowledge relations are rather fixed, pre-defined notions based on `ATOMIC <https://allenai.org/data/atomic-2020>`_ and `CONCEPTNET <https://conceptnet.io/>`_ knowledge bases. However, one might want to define their own custom relations
 and perform commonsense reasoning based on these new relations. **kogito** also provides this capability through large language models such as GPT-3. 
-In order to do this, we need to use ``GPT3Zeroshot`` model, define and register our new relation using ``KnowledgeRelation`` class and construct a sample knowledge graph with examples for our new relations.
+In order to do this, we need to use :class:`kogito.models.gpt3.zeroshot.GPT3Zeroshot` model, define and register our new relation using ``KnowledgeRelation`` class and construct a sample knowledge graph with examples for our new relations.
 
 To define our new relation, we need to provide a ``verbalizer`` function to convert the knowledge tuple into a meaningful sentence in natural language and a ``prompt`` text that explains the new relation
 as an instruction (these are required to interact with the GPT-3 model). Let's define a new relation called ``X_WISHES`` which does not exist in any of the knowledge bases.
@@ -346,6 +346,8 @@ as an instruction (these are required to interact with the GPT-3 model). Let's d
    from kogito.core.relation import KnowledgeRelation, register_relation
 
    def x_wishes_verbalizer(head, **kwargs):
+      # index will be passed from the model
+      # so that we can enumerate samples which helps with inference
       index = kwargs.get("index")
       index_txt = f"{index}" if index is not None else ""
       return f"Situation {index_txt}: {head}\Wishes: As a result, PersonX wishes"
@@ -381,7 +383,7 @@ Then we construct the following sample graph showing examples for our new relati
 
    PersonX mows the lawn	|  xWishes	| to get a new lawnmower
 
-Note that the unique relation name provided above in the definition (i.e. xWishes) should match the one in the examples.
+Note that the unique relation name provided above in the definition (i.e. "xWishes") should match the one in the examples.
 
 Finally, we initialize our GPT-3 model and run the inference:
 
@@ -408,10 +410,10 @@ Models
 ======
 **kogito** offers following knowledge models for inference:
 
-- ``COMETBART``
-- ``COMETGPT2``
-- ``GPT2Zeroshot``
-- ``GPT3Zeroshot``
+- ``COMETBART`` (:class:`kogito.models.bart.comet.COMETBART`)
+- ``COMETGPT2`` (:class:`kogito.models.gpt2.comet.COMETGPT2`)
+- ``GPT2Zeroshot`` (:class:`kogito.models.gpt2.zeroshot.GPT2Zeroshot`)
+- ``GPT3Zeroshot`` (:class:`kogito.models.gpt3.zeroshot.GPT3Zeroshot`)
 
 All of these models implement the ``KnowledgeModel`` interface which provides 4 main methods to interact with these models: ``train``, ``generate``, ``save_pretrained`` and ``from_pretrained``.
 
@@ -419,7 +421,7 @@ Inference
 *********
 ``generate`` method is used to make inferences with knowledge models. It takes an (incomplete i.e. without tails) input knowledge graph and outputs a (completed i.e. tails generated) knowledge graph.
 
-Given an input graph in a ``json`` format like below:
+Given an input graph in a *json* format like below:
 
 .. admonition:: input_graph.jsonl
 
@@ -452,7 +454,7 @@ We can generate inferences for example using ``COMETBART`` model as below:
    output_graph.to_jsonl("output_graph.jsonl")
 
 While COMET based models have been trained specifically on knowledge graphs, zeroshot models are based on the publicly available language models.
-``GPT2Zeroshot`` model by default uses the publicly available **gpt2** model from HuggingFace and can simply be initialized using the class constructor:
+``GPT2Zeroshot`` model by default uses the publicly available `gpt2 <https://huggingface.co/gpt2>`_ model from HuggingFace and can simply be initialized using the class constructor:
 
 .. code-block:: python
 
@@ -470,7 +472,7 @@ While COMET based models have been trained specifically on knowledge graphs, zer
 
 Training
 ********
-COMET models have been trained based on the paper **COMET-ATOMIC2020: On Symbolic and Neural Commonsense Knowledge Graphs** and made available as pre-trained models through HuggingFace:
+COMET models have been trained based on the paper `COMET-ATOMIC2020: On Symbolic and Neural Commonsense Knowledge Graphs <https://arxiv.org/abs/2010.05953>`_ and made available as pre-trained models through HuggingFace:
 
 .. code-block:: python
 
@@ -481,7 +483,7 @@ COMET models have been trained based on the paper **COMET-ATOMIC2020: On Symboli
    comet_gpt2 = COMETGPT2.from_pretrained("mismayil/comet-gpt2-ai2")
 
 However, if you wish to train these models on a new dataset and/or with different hyperparameters, you can do so using the provided ``train`` method. This method takes a training dataset as an instance of a ``KnowledgeGraph`` and additional hyperparameters depending on the model type.
-Please, refer to the **API Reference** for more details on specific parameters accepted by this method for each model.
+Please, refer to the `API Reference <https://kogito.readthedocs.io/en/latest/api.html>`_ for more details on specific parameters accepted by this method for each model.
 
 For example, here is a sample code to train a  ``COMETBART`` model:
 

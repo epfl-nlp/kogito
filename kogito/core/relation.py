@@ -1,10 +1,14 @@
-from typing import Callable
+from typing import Callable, Optional
 from enum import Enum
 from kogito.core.head import KnowledgeHeadType
 from kogito.core.utils import vp_present_participle, article, posessive
 
 
 class KnowledgeRelationType(Enum):
+    """
+    Represents a Knowledge relation type.
+    """
+
     TRANSOMCS = "transomcs"
     ATOMIC = "atomic"
     CONCEPTNET = "conceptnet"
@@ -14,13 +18,25 @@ class KnowledgeRelationType(Enum):
 
 
 class KnowledgeRelation:
+    """
+    Represents a concept of Knowledge Relation.
+    """
+
     def __init__(
         self,
         text: str,
         type: KnowledgeRelationType = KnowledgeRelationType.ATOMIC,
-        verbalizer: Callable = None,
-        prompt: str = None,
+        verbalizer: Optional[Callable] = None,
+        prompt: Optional[str] = None,
     ) -> None:
+        """Initialize a KnowledgeRelation
+
+        Args:
+            text (str): Relation text.
+            type (KnowledgeRelationType, optional): Relation type. Defaults to KnowledgeRelationType.ATOMIC.
+            verbalizer (Optional[Callable], optional): Function to convert relation to natural text. Defaults to None.
+            prompt (Optional[str], optional): Prompt text to use. Defaults to None.
+        """
         self.text = text
         self.type = type
         self.verbalizer = verbalizer
@@ -33,15 +49,29 @@ class KnowledgeRelation:
             and self.type == other.type
         )
 
-    def __ne__(self, other):
+    def __ne__(self, other: object) -> bool:
         return not self.__eq__(other)
 
     def __hash__(self) -> int:
         return hash((self.text, self.type))
 
     def verbalize(
-        self, head: str, tail: str = None, include_tail: bool = False, **kwargs
-    ) -> str:
+        self,
+        head: str,
+        tail: Optional[str] = None,
+        include_tail: bool = False,
+        **kwargs,
+    ) -> Optional[str]:
+        """Convert knowledge relation into natural text.
+
+        Args:
+            head (str): Knowledge head to use.
+            tail (Optional[str], optional): Knowledge tail to use if any. Defaults to None.
+            include_tail (bool, optional): Whether to include tail. Defaults to False.
+
+        Returns:
+            Optional[str]: Verbalized relation.
+        """
         if self.verbalizer:
             kwargs["tail"] = tail
             text = self.verbalizer(head, **kwargs).strip()
@@ -53,13 +83,22 @@ class KnowledgeRelation:
     def from_text(
         cls, text: str, type: KnowledgeRelationType = KnowledgeRelationType.ATOMIC
     ) -> "KnowledgeRelation":
+        """Initialize relation from text.
+
+        Args:
+            text (str): Relation text.
+            type (KnowledgeRelationType, optional): Type of relation to use. Defaults to KnowledgeRelationType.ATOMIC.
+
+        Returns:
+            KnowledgeRelation: An instance of KnowledgeRelation
+        """
         for relation in KG_RELATIONS:
             if relation.text == text:
                 return relation
 
         return cls(text, type=type)
 
-    def __repr__(self):
+    def __repr__(self) -> str:
         return str(self.text)
 
 
@@ -447,6 +486,7 @@ ATOMIC_RELATIONS = [
     if relation.type == KnowledgeRelationType.ATOMIC
 ]
 
+#: ATOMIC 2020 Physical relations
 PHYSICAL_RELATIONS = [
     OBJECT_USE,
     CAPABLE_OF,
@@ -457,6 +497,7 @@ PHYSICAL_RELATIONS = [
     AT_LOCATION,
 ]
 
+#: ATOMIC 2020 Event relations
 EVENT_RELATIONS = [
     CAUSES,
     HINDERED_BY,
@@ -467,6 +508,7 @@ EVENT_RELATIONS = [
     IS_FILLED_BY,
 ]
 
+#: ATOMIC 2020 Social relations
 SOCIAL_RELATIONS = [
     X_INTENT,
     X_REACT,

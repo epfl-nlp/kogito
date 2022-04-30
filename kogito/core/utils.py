@@ -17,8 +17,11 @@ from torch.utils.data import Sampler
 
 from transformers import BartTokenizer
 
+logger = getLogger(__name__)
 
 IGNORE_WORDS = set(["PersonX", "PersonY", "PersonZ", "_", "'", "-"])
+ROUGE_KEYS = ["rouge1", "rouge2", "rougeL"]
+
 
 def vp_present_participle(phrase):
     nlp = spacy.load("en_core_web_sm")
@@ -130,19 +133,6 @@ class SortishSampler(Sampler):
         return iter(sort_idx)
 
 
-logger = getLogger(__name__)
-
-
-def use_task_specific_params(model, task):
-    """Update config with summarization specific params."""
-    task_specific_params = model.config.task_specific_params
-
-    if task_specific_params is not None:
-        pars = task_specific_params.get(task, {})
-        logger.info(f"using task specific params for {task}: {pars}")
-        model.config.update(pars)
-
-
 def pickle_load(path):
     """pickle.load(path)"""
     with open(path, "rb") as f:
@@ -183,9 +173,6 @@ def get_git_info():
         "repo_branch": str(repo.active_branch),
     }
     return repo_infos
-
-
-ROUGE_KEYS = ["rouge1", "rouge2", "rougeL"]
 
 
 def calculate_rouge(

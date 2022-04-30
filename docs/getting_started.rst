@@ -7,7 +7,7 @@ Installation
 
 Installation with pip
 *********************
-Kogito can be installed using pip.
+**kogito** can be installed using pip.
 
 .. code-block:: shell
 
@@ -17,17 +17,17 @@ It requires a minimum ``python`` version of ``3.8``.
 
 Setup
 =====
-Kogito uses ``spacy`` under the hood for various text processing purposes, so, a ``spacy`` language package has to be installed before running the inference module.
+**kogito** uses `spacy <https://spacy.io>`__ under the hood for various text processing purposes, so, a `spacy <https://spacy.io>`__ language package has to be installed before running the inference module.
 
 .. code-block:: shell
 
    python -m spacy download en_core_web_sm
 
-By default, ``CommonsenseInference`` module uses ``en_core_web_sm`` to initialize ``spacy`` pipeline, but a different language pipeline can be specified as well.
+By default, ``CommonsenseInference`` module uses ``en_core_web_sm`` to initialize `spacy <https://spacy.io>`__ pipeline, but a different language pipeline can be specified as well.
 
 Quickstart
 ===========
-Kogito provides an easy interface to interact with commonsense reasoning models such as ``COMET`` to generate inferences from a text input.
+**kogito** provides an easy interface to interact with commonsense reasoning models such as `COMET <https://arxiv.org/abs/2010.05953>`__ to generate inferences from a text input.
 Here is a sample usage of the library where you can initialize an inference module, a custom commonsense reasoning model, and generate a knowledge graph from text on the fly.
 
 .. code-block:: python
@@ -59,4 +59,4 @@ Here is an excerpt from the result of the above code sample:
    {"head": "great basketball player", "relation": "HasProperty", "tails": [" good at basketball", " good at sports", " very good"]}
    {"head": "become player", "relation": "isAfter", "tails": [" play game", " become coach", " play with"]}
 
-This is just one way to generate commonsense inferences and ``kogito`` offers much more. For information on more use-cases and a complete API reference, you can check out the `User Guide <https://github.com>`_ and `API Reference <https://github.com>`_ pages.
+This is just one way to generate commonsense inferences and **kogito** offers much more. For information on more use-cases and a complete API reference, you can check out the `User Guide </userguide.html>`_ and `API Reference <https://kogito.readthedocs.io/en/latest/api.html>`_ pages.

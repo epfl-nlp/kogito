@@ -11,7 +11,14 @@ device = "cuda" if cuda.is_available() else "cpu"
 
 
 class GPT2Zeroshot(KnowledgeModel):
-    def __init__(self, gpt2_model: str = "gpt2"):
+    """Zeroshot knowledge model based on GPT-2"""
+
+    def __init__(self, gpt2_model: str = "gpt2") -> None:
+        """Initialize GPT-2 model
+
+        Args:
+            gpt2_model (str, optional): HuggingFace model name for gpt2. Defaults to "gpt2".
+        """
         self.tokenizer = GPT2Tokenizer.from_pretrained(gpt2_model)
         self.model = GPT2LMHeadModel.from_pretrained(gpt2_model)
         self.model.to(device)
@@ -36,7 +43,21 @@ class GPT2Zeroshot(KnowledgeModel):
         num_sequences: int = 10,
         num_beams: int = 10,
         stop_token: str = ".",
-    ):
+    ) -> KnowledgeGraph:
+        """Generate inferences from GPT2 model
+
+        Args:
+            input_graph (KnowledgeGraph): Input dataset
+            seed (int, optional): Random seed. Defaults to 42.
+            top_k (int, optional): Top k. Defaults to 1.
+            top_p (float, optional): Top p. Defaults to 0.9.
+            num_sequences (int, optional): Number of sequences. Defaults to 10.
+            num_beams (int, optional): Number of beams. Defaults to 10.
+            stop_token (str, optional): Stop token. Defaults to ".".
+
+        Returns:
+            KnowledgeGraph: Completed knowledge graph
+        """
         torch.manual_seed(seed)
         np.random.seed(seed)
         torch.backends.cudnn.deterministic = True

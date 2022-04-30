@@ -11,3 +11,8 @@
 .highlight-python .nc {
     font-weight: 500;
 }
+
+#logo-container h1::first-letter {
+    background-color: #dce755;
+    font-weight: 400;
+}
