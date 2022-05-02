@@ -1,2 +1,2 @@
-{"head": "PersonX aces PersonX's exam", "relation": "xNeed", "tails": [" study\n\nPersonX fails PersonX's exam. Before, PersonX needs"]}
-{"head": "PersonX accuses PersonY of cheating", "relation": "xNeed", "tails": ["\n\nPersonX needs to have evidence that PersonY is cheating."]}
+{"head": "PersonX aces PersonX's exam", "relation": "xNeed", "tails": [" to study"]}
+{"head": "PersonX accuses PersonY of cheating", "relation": "xNeed", "tails": ["\n\nPersonX depletes energy reserves. Before, PersonX needs to"]}

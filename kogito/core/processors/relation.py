@@ -1,6 +1,8 @@
 from abc import ABC, abstractmethod
 from typing import List, Tuple, Optional, Type
 from functools import partial
+import pkgutil
+from io import BytesIO
 
 import numpy as np
 import torch
@@ -156,7 +158,7 @@ class SWEMRelationMatcher(ModelBasedRelationMatcher):
     """Relation matcher based on Simple Word Embeddings (GloVes)"""
 
     def __init__(self, name: str, lang: Optional[Language] = None) -> None:
-        vocab = np.load("./data/vocab_glove_100d.npy", allow_pickle=True).item()
+        vocab = np.load(BytesIO(pkgutil.get_data(__name__, "data/vocab_glove_100d.npy")), allow_pickle=True).item()
         dataset_class = partial(SWEMHeadDataset, vocab=vocab, lang=lang)
         model_class = SWEMClassifier
         model_path = "mismayil/kogito-rc-swem"

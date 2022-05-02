@@ -22,7 +22,7 @@ class GPT3Zeroshot(KnowledgeModel):
     def train(self):
         raise ValueError("GPT-3 Zeroshot model is not trainable")
 
-    def save(self, save_model_path: str):
+    def save_pretrained(self, save_model_path: str):
         raise ValueError("GPT-3 Zeroshot cannot be saved")
 
     @classmethod

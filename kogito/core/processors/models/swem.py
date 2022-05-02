@@ -88,12 +88,16 @@ class SWEMConfig(PretrainedConfig):
         pooling="avg",
         freeze_emb=False,
         learning_rate=1e-4,
+        num_embeddings=400002,
+        embedding_dim=100,
         **kwargs
     ):
         self.num_classes = num_classes
         self.pooling = pooling
         self.freeze_emb = freeze_emb
         self.learning_rate = learning_rate
+        self.num_embeddings = num_embeddings
+        self.embedding_dim = embedding_dim
         super().__init__(**kwargs)
 
 
@@ -102,18 +106,26 @@ class SWEMClassifier(PreTrainedModel, Evaluator, pl.LightningModule):
 
     def __init__(self, config: SWEMConfig):
         super().__init__(config)
-        embedding_matrix = np.load(
-            "data/embedding_matrix_glove_100d.npy", allow_pickle=True
-        )
-        self.embedding = nn.Embedding(
-            num_embeddings=embedding_matrix.shape[0],
-            embedding_dim=embedding_matrix.shape[1],
-        ).from_pretrained(
-            torch.tensor(embedding_matrix, dtype=torch.float32),
-            freeze=config.freeze_emb,
-        )
+
+        try:
+            embedding_matrix = np.load(
+                "data/embedding_matrix_glove_100d.npy", allow_pickle=True
+            )
+            self.embedding = nn.Embedding(
+                num_embeddings=embedding_matrix.shape[0],
+                embedding_dim=embedding_matrix.shape[1],
+            ).from_pretrained(
+                torch.tensor(embedding_matrix, dtype=torch.float32),
+                freeze=config.freeze_emb,
+            )
+        except FileNotFoundError:
+            self.embedding = nn.Embedding(
+                num_embeddings=config.num_embeddings,
+                embedding_dim=config.embedding_dim,
+            )
+
         self.pool = MaxPool() if config.pooling == "max" else AvgPool()
-        self.linear = nn.Linear(embedding_matrix.shape[1], config.num_classes)
+        self.linear = nn.Linear(self.embedding.embedding_dim, config.num_classes)
         self.model = nn.Sequential(self.embedding, self.pool, self.linear)
         self.criterion = nn.BCEWithLogitsLoss()
         self.learning_rate = config.learning_rate

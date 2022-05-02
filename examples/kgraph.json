@@ -1,51 +1,51 @@
-{"head": "PersonX becomes a great basketball player", "relation": "Causes", "tails": [" PersonX practices every day.", " PersonX plays basketball every day", " PersonX practices every day"]}
-{"head": "PersonX becomes a great basketball player", "relation": "HinderedBy", "tails": [" PersonX's coach won't let him play.", " PersonX is not athletic enough to play basketball.", " PersonX is not athletic enough."]}
 {"head": "PersonX becomes a great basketball player", "relation": "xReason", "tails": [" PersonX practices every day", " PersonX plays basketball", " PersonX practices basketball"]}
-{"head": "PersonX becomes a great basketball player", "relation": "isAfter", "tails": [" PersonX practices every day", " PersonX plays basketball", " PersonX practices basketball"]}
-{"head": "PersonX becomes a great basketball player", "relation": "isBefore", "tails": [" PersonX wins the championship", " PersonX gets a scholarship", " PersonX wins a championship"]}
-{"head": "PersonX becomes a great basketball player", "relation": "HasSubEvent", "tails": [" PersonX wins the game", " PersonX wins the championship", " PersonX gets a scholarship"]}
+{"head": "basketball", "relation": "ObjectUse", "tails": [" play with friends", " play basketball with", " play basketball"]}
+{"head": "PersonX becomes a great basketball player", "relation": "xNeed", "tails": [" to practice hard", " to train hard", " to practice"]}
 {"head": "PersonX becomes a great basketball player", "relation": "isFilledBy", "tails": [" PersonX practices every day", " PersonX plays basketball", " basketball"]}
 {"head": "PersonX becomes a great basketball player", "relation": "xIntent", "tails": [" to be the best", " to play basketball", " none"]}
-{"head": "PersonX becomes a great basketball player", "relation": "xReact", "tails": [" accomplished", " proud", " happy"]}
-{"head": "PersonX becomes a great basketball player", "relation": "oReact", "tails": [" none", " happy", " proud"]}
-{"head": "PersonX becomes a great basketball player", "relation": "xAttr", "tails": [" athletic", " talented", " skilled"]}
-{"head": "PersonX becomes a great basketball player", "relation": "xEffect", "tails": [" PersonX wins the game", " PersonX wins the championship", " PersonX gets a scholarship"]}
-{"head": "PersonX becomes a great basketball player", "relation": "xNeed", "tails": [" to practice hard", " to train hard", " to practice"]}
-{"head": "PersonX becomes a great basketball player", "relation": "xWant", "tails": [" to win a championship", " to win the game", " to win the championship"]}
 {"head": "PersonX becomes a great basketball player", "relation": "oEffect", "tails": [" none", " PersonX's team wins the game", " PersonX's team wins the championship"]}
-{"head": "PersonX becomes a great basketball player", "relation": "oWant", "tails": [" to watch PersonX play", " to play with PersonX", " to win the game"]}
-{"head": "basketball", "relation": "ObjectUse", "tails": [" play with friends", " play basketball with", " play basketball"]}
-{"head": "basketball", "relation": "CapableOf", "tails": [" play basketball", " play game", " play with"]}
-{"head": "basketball", "relation": "MadeUpOf", "tails": [" basketball", " basket", " ball"]}
-{"head": "basketball", "relation": "HasProperty", "tails": [" played on court", " found in gym", " basketball"]}
-{"head": "basketball", "relation": "Desires", "tails": [" have fun", " play basketball", " play with"]}
-{"head": "basketball", "relation": "NotDesires", "tails": [" dribble", " play basketball", " basketball game"]}
-{"head": "basketball", "relation": "AtLocation", "tails": [" basketball game", " basketball court", " basketball"]}
-{"head": "player", "relation": "ObjectUse", "tails": [" play a game", " play the game", " play with"]}
-{"head": "player", "relation": "CapableOf", "tails": [" play game", " win game", " play football"]}
-{"head": "player", "relation": "MadeUpOf", "tails": [" player's hand", " player's foot", " player's arm"]}
-{"head": "player", "relation": "HasProperty", "tails": [" played by", " player", " good"]}
-{"head": "player", "relation": "Desires", "tails": [" have fun", " play game", " play"]}
-{"head": "player", "relation": "NotDesires", "tails": [" lose game", " play game", " lose"]}
-{"head": "player", "relation": "AtLocation", "tails": [" baseball game", " soccer game", " sports game"]}
-{"head": "great basketball player", "relation": "ObjectUse", "tails": [" play in the NBA", " play in a team", " play basketball with"]}
-{"head": "great basketball player", "relation": "CapableOf", "tails": [" play basketball game", " play basketball", " play basketball games"]}
-{"head": "great basketball player", "relation": "MadeUpOf", "tails": [" basketball ball", " basketball game", " basketball shoes"]}
-{"head": "great basketball player", "relation": "HasProperty", "tails": [" good at basketball", " good at sports", " very good"]}
-{"head": "great basketball player", "relation": "Desires", "tails": [" to be the best", " to be a professional", " to play basketball"]}
 {"head": "great basketball player", "relation": "NotDesires", "tails": [" good at basketball", " good at sports", " good at shooting"]}
 {"head": "great basketball player", "relation": "AtLocation", "tails": [" basketball game", " basketball court", " basketball team"]}
-{"head": "to become", "relation": "Causes", "tails": [" to become a leader", " to become a doctor", " to become successful"]}
-{"head": "to become", "relation": "HinderedBy", "tails": [" to become a doctor", " to become", " to become  "]}
-{"head": "to become", "relation": "xReason", "tails": [" to become a doctor", " to become a leader", " to be successful"]}
-{"head": "to become", "relation": "isAfter", "tails": [" to get a job", " to become a doctor", " to get a degree"]}
-{"head": "to become", "relation": "isBefore", "tails": [" to become a doctor", " to become a teacher", " to become a lawyer"]}
-{"head": "to become", "relation": "HasSubEvent", "tails": [" to become ", " get a job", " to become"]}
-{"head": "to become", "relation": "isFilledBy", "tails": [" to become", " train", " car"]}
-{"head": "become player", "relation": "Causes", "tails": [" have fun", " play game", " play"]}
-{"head": "become player", "relation": "HinderedBy", "tails": [" become a player", " become a coach", " become a professional"]}
-{"head": "become player", "relation": "xReason", "tails": [" have fun", " play game", " play"]}
 {"head": "become player", "relation": "isAfter", "tails": [" play game", " become coach", " play with"]}
-{"head": "become player", "relation": "isBefore", "tails": [" play game", " become coach", " play with"]}
+{"head": "player", "relation": "ObjectUse", "tails": [" play a game", " play the game", " play with"]}
+{"head": "to become", "relation": "isAfter", "tails": [" to get a job", " to become a doctor", " to get a degree"]}
 {"head": "become player", "relation": "HasSubEvent", "tails": [" play game", " get better", " play with"]}
+{"head": "basketball", "relation": "Desires", "tails": [" have fun", " play basketball", " play with"]}
+{"head": "to become", "relation": "HasSubEvent", "tails": [" to become ", " get a job", " to become"]}
+{"head": "PersonX becomes a great basketball player", "relation": "isAfter", "tails": [" PersonX practices every day", " PersonX plays basketball", " PersonX practices basketball"]}
+{"head": "basketball", "relation": "CapableOf", "tails": [" play basketball", " play game", " play with"]}
+{"head": "player", "relation": "Desires", "tails": [" have fun", " play game", " play"]}
+{"head": "become player", "relation": "Causes", "tails": [" have fun", " play game", " play"]}
+{"head": "basketball", "relation": "MadeUpOf", "tails": [" basketball", " basket", " ball"]}
+{"head": "PersonX becomes a great basketball player", "relation": "HasSubEvent", "tails": [" PersonX wins the game", " PersonX wins the championship", " PersonX gets a scholarship"]}
+{"head": "become player", "relation": "isBefore", "tails": [" play game", " become coach", " play with"]}
+{"head": "player", "relation": "CapableOf", "tails": [" play game", " win game", " play football"]}
+{"head": "player", "relation": "MadeUpOf", "tails": [" player's hand", " player's foot", " player's arm"]}
+{"head": "to become", "relation": "Causes", "tails": [" to become a leader", " to become a doctor", " to become successful"]}
+{"head": "basketball", "relation": "HasProperty", "tails": [" played on court", " found in gym", " basketball"]}
+{"head": "PersonX becomes a great basketball player", "relation": "xEffect", "tails": [" PersonX wins the game", " PersonX wins the championship", " PersonX gets a scholarship"]}
+{"head": "great basketball player", "relation": "ObjectUse", "tails": [" play in the NBA", " play in a team", " play basketball with"]}
+{"head": "to become", "relation": "isBefore", "tails": [" to become a doctor", " to become a teacher", " to become a lawyer"]}
+{"head": "PersonX becomes a great basketball player", "relation": "Causes", "tails": [" PersonX practices every day.", " PersonX plays basketball every day", " PersonX practices every day"]}
+{"head": "player", "relation": "HasProperty", "tails": [" played by", " player", " good"]}
+{"head": "become player", "relation": "HinderedBy", "tails": [" become a player", " become a coach", " become a professional"]}
+{"head": "PersonX becomes a great basketball player", "relation": "isBefore", "tails": [" PersonX wins the championship", " PersonX gets a scholarship", " PersonX wins a championship"]}
+{"head": "basketball", "relation": "NotDesires", "tails": [" dribble", " play basketball", " basketball game"]}
+{"head": "PersonX becomes a great basketball player", "relation": "xWant", "tails": [" to win a championship", " to win the game", " to win the championship"]}
+{"head": "to become", "relation": "HinderedBy", "tails": [" to become a doctor", " to become", " to become  "]}
+{"head": "basketball", "relation": "AtLocation", "tails": [" basketball game", " basketball court", " basketball"]}
+{"head": "PersonX becomes a great basketball player", "relation": "xAttr", "tails": [" athletic", " talented", " skilled"]}
+{"head": "great basketball player", "relation": "Desires", "tails": [" to be the best", " to be a professional", " to play basketball"]}
+{"head": "PersonX becomes a great basketball player", "relation": "xReact", "tails": [" accomplished", " proud", " happy"]}
+{"head": "PersonX becomes a great basketball player", "relation": "HinderedBy", "tails": [" PersonX's coach won't let him play.", " PersonX is not athletic enough to play basketball.", " PersonX is not athletic enough."]}
+{"head": "player", "relation": "NotDesires", "tails": [" lose game", " play game", " lose"]}
+{"head": "great basketball player", "relation": "CapableOf", "tails": [" play basketball game", " play basketball", " play basketball games"]}
+{"head": "player", "relation": "AtLocation", "tails": [" baseball game", " soccer game", " sports game"]}
+{"head": "PersonX becomes a great basketball player", "relation": "oWant", "tails": [" to watch PersonX play", " to play with PersonX", " to win the game"]}
+{"head": "PersonX becomes a great basketball player", "relation": "oReact", "tails": [" none", " happy", " proud"]}
+{"head": "great basketball player", "relation": "MadeUpOf", "tails": [" basketball ball", " basketball game", " basketball shoes"]}
+{"head": "become player", "relation": "xReason", "tails": [" have fun", " play game", " play"]}
+{"head": "to become", "relation": "xReason", "tails": [" to become a doctor", " to become a leader", " to be successful"]}
+{"head": "great basketball player", "relation": "HasProperty", "tails": [" good at basketball", " good at sports", " very good"]}
 {"head": "become player", "relation": "isFilledBy", "tails": [" soccer", " basketball", " baseball"]}
+{"head": "to become", "relation": "isFilledBy", "tails": [" to become", " train", " car"]}

@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kogito"
-version = "0.2.0"
+version = "0.2.2"
 description = "A Python NLP Commonsense Reasoning library"
 authors = ["Mete Ismayil <mahammad.ismayilzada@epfl.ch>", "Antoine Bosselut <antoine.bosselut@epfl.ch>"]
 license = "Apache License 2.0"
