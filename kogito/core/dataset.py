@@ -3,14 +3,10 @@ from pathlib import Path
 from typing import Dict
 import warnings
 import torch
-import logging
 from torch.utils.data import Dataset
 
 from kogito.core.knowledge import GEN_TOKEN, EOS_TOKEN
 from kogito.core.utils import encode_line, trim_batch, SortishSampler
-
-logger = logging.getLogger("gpt2-comet")
-logging.basicConfig(level=logging.DEBUG)
 
 
 class KnowledgeDataset(Dataset):
@@ -76,13 +72,6 @@ class KnowledgeDataset(Dataset):
                     truncation=True,
                 )
                 target = source
-        if index < 5:
-            logger.info(
-                "Source: {}".format(self.tokenizer.batch_decode(source["input_ids"]))
-            )
-            logger.info(
-                "Target: {}".format(self.tokenizer.batch_decode(target["input_ids"]))
-            )
 
         source_ids = source["input_ids"].squeeze()
         source_mask = source["attention_mask"].squeeze()

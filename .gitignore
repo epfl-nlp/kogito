@@ -136,6 +136,7 @@ experiments/relation_modeling/output
 experiments/relation_modeling/models
 experiments/relation_modeling/hmodels
 experiments/relation_modeling/data
+examples/models
 wandb
 .vector_cache/
 lightning_logs/

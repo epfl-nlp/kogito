@@ -44,7 +44,7 @@ from kogito.core.dataset import Seq2SeqDataset, MBartDataset
 from kogito.models.bart.config import COMETBARTConfig
 from kogito.core.callbacks import LoggingCallback
 
-logger = logging.getLogger(__name__).setLevel(logging.WARNING)
+logger = logging.getLogger(__name__)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 

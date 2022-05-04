@@ -1,5 +1,4 @@
 import glob
-import logging
 import os
 from pathlib import Path
 from dataclasses import asdict
@@ -26,7 +25,6 @@ from kogito.models.bart.utils import (
     use_task_specific_params,
 )
 
-logger = logging.getLogger(__name__).setLevel(logging.WARNING)
 device = "cuda" if torch.cuda.is_available() else "cpu"
 
 

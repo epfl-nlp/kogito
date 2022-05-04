@@ -4,7 +4,6 @@ import itertools
 import json
 import os
 import pickle
-from logging import getLogger
 from typing import Callable, Dict, Iterable, List
 import uuid
 
@@ -16,8 +15,6 @@ from torch import nn
 from torch.utils.data import Sampler
 
 from transformers import BartTokenizer
-
-logger = getLogger(__name__)
 
 IGNORE_WORDS = set(["PersonX", "PersonY", "PersonZ", "_", "'", "-"])
 ROUGE_KEYS = ["rouge1", "rouge2", "rougeL"]

@@ -1,24 +1,5 @@
-import csv
-from kogito.core.knowledge import Knowledge, KnowledgeGraph
+from kogito.core.knowledge import KnowledgeGraph
 from kogito.models.bart.comet import COMETBART, COMETBARTConfig
-
-
-def kg_graph_from_tsv(filepath):
-    with open(filepath) as file:
-        reader = csv.DictReader(
-            file,
-            delimiter="\t",
-            fieldnames=["head", "relation", "tail", "id1", "id2", "score"],
-        )
-        graph = []
-        for row in reader:
-            graph.append(
-                Knowledge(
-                    head=row["head"], relation=row["relation"], tails=[row["tail"]]
-                )
-            )
-
-        return KnowledgeGraph(graph)
 
 
 config = COMETBARTConfig(
@@ -31,7 +12,7 @@ config = COMETBARTConfig(
     pretrained_model="facebook/bart-large",
 )
 model = COMETBART(config)
-train_graph = kg_graph_from_tsv("data/atomic2020/sample_train.tsv")
-val_graph = kg_graph_from_tsv("data/atomic2020/sample_dev.tsv")
-test_graph = kg_graph_from_tsv("data/atomic2020/sample_test.tsv")
+train_graph = KnowledgeGraph.from_csv("data/atomic2020/sample_train.tsv", header=None, sep="\t")
+val_graph = KnowledgeGraph.from_csv("data/atomic2020/sample_dev.tsv", header=None, sep="\t")
+test_graph = KnowledgeGraph.from_csv("data/atomic2020/sample_test.tsv", header=None, sep="\t")
 model.train(train_graph=train_graph, val_graph=val_graph, test_graph=test_graph)

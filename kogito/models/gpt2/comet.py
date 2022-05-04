@@ -5,16 +5,12 @@ from torch import cuda
 from torch.utils.data import DataLoader
 from transformers import GPT2LMHeadModel, GPT2Tokenizer
 import wandb
-import logging
 
 from kogito.models.modeling import train, beam_generations
 from kogito.core.dataset import KnowledgeDataset
 from kogito.core.model import KnowledgeModel
 from kogito.core.knowledge import KnowledgeGraph, GEN_TOKEN, EOS_TOKEN, PAD_TOKEN
 from kogito.core.relation import KG_RELATIONS
-
-logger = logging.getLogger("gpt2-comet")
-logging.basicConfig(level=logging.DEBUG)
 
 device = "cuda" if cuda.is_available() else "cpu"
 
@@ -128,11 +124,9 @@ class COMETGPT2(KnowledgeModel):
                 log_wandb=log_wandb,
                 output_dir=output_dir,
             )
-            if output_dir:
-                self.model.save_pretrained("{}/checkpoint_{}".format(output_dir, epoch))
-                self.tokenizer.save_pretrained(
-                    "{}/checkpoint_{}".format(output_dir, epoch)
-                )
+            self.save_pretrained(f"{output_dir}/checkpoint_{epoch}")
+
+        self.save_pretrained(f"{output_dir}/final")
 
         return self.model
 
@@ -181,8 +175,9 @@ class COMETGPT2(KnowledgeModel):
         Args:
             save_path (str): Directory to save model to
         """
-        self.model.save_pretrained(save_path)
-        self.tokenizer.save_pretrained(save_path)
+        if save_path:
+            self.model.save_pretrained(save_path)
+            self.tokenizer.save_pretrained(save_path)
 
     @classmethod
     def from_pretrained(cls, model_name_or_path: str) -> KnowledgeModel:
