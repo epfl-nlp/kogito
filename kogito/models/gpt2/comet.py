@@ -3,10 +3,10 @@ import numpy as np
 import torch
 from torch import cuda
 from torch.utils.data import DataLoader
-from transformers import GPT2LMHeadModel, GPT2Tokenizer
+from transformers import GPT2LMHeadModel, GPT2Tokenizer, TrainingArguments
 import wandb
 
-from kogito.models.modeling import train, beam_generations
+from kogito.models.modeling import beam_generations, TransformerTrainer, train
 from kogito.core.dataset import KnowledgeDataset
 from kogito.core.model import KnowledgeModel
 from kogito.core.knowledge import KnowledgeGraph, GEN_TOKEN, EOS_TOKEN, PAD_TOKEN
@@ -89,15 +89,31 @@ class COMETGPT2(KnowledgeModel):
             model="gpt2",
             is_eval=True,
         )
-        train_params = {"batch_size": batch_size, "shuffle": True, "num_workers": 0}
-        val_params = {"batch_size": 1, "shuffle": False, "num_workers": 0}
 
-        train_loader = DataLoader(train_dataset, **train_params, drop_last=True)
-        val_loader = DataLoader(val_dataset, **val_params, drop_last=True)
+        self.model.resize_token_embeddings(len(self.tokenizer))
 
         optimizer = torch.optim.Adam(params=self.model.parameters(), lr=lr_rate)
 
-        self.model.resize_token_embeddings(len(self.tokenizer))
+        trainer_args = TrainingArguments(output_dir=output_dir,
+                                         evaluation_strategy="epoch",
+                                         per_device_train_batch_size=batch_size,
+                                         per_device_eval_batch_size=batch_size,
+                                         learning_rate=lr_rate,
+                                         num_train_epochs=epochs,
+                                         dataloader_drop_last=True,
+                                         report_to=None,
+                                         gradient_checkpointing=True)
+        trainer = TransformerTrainer(model=self.model,
+                                     args=trainer_args,
+                                     train_dataset=train_dataset,
+                                     eval_dataset=val_dataset,
+                                     optimizers=(optimizer, None))
+        trainer.train()
+        # train_params = {"batch_size": batch_size, "shuffle": True, "num_workers": 0}
+        # val_params = {"batch_size": 1, "shuffle": False, "num_workers": 0}
+
+        # train_loader = DataLoader(train_dataset, **train_params, drop_last=True)
+        # val_loader = DataLoader(val_dataset, **val_params, drop_last=True)
 
         if log_wandb:
             config = {
@@ -111,20 +127,19 @@ class COMETGPT2(KnowledgeModel):
             }
             wandb.init(project="kogito_comet_gpt2", config=config)
 
-        for epoch in range(epochs):
-            train(
-                epoch,
-                self.tokenizer,
-                self.model,
-                device,
-                train_loader,
-                optimizer,
-                val_loader,
-                model_class="gpt2",
-                log_wandb=log_wandb,
-                output_dir=output_dir,
-            )
-            self.save_pretrained(f"{output_dir}/checkpoint_{epoch}")
+        # for epoch in range(epochs):
+        #     train(
+        #         epoch,
+        #         self.tokenizer,
+        #         self.model,
+        #         device,
+        #         train_loader,
+        #         optimizer,
+        #         val_loader,
+        #         log_wandb=log_wandb,
+        #         output_dir=output_dir,
+        #     )
+        #     self.save_pretrained(f"{output_dir}/checkpoint_{epoch}")
 
         self.save_pretrained(f"{output_dir}/final")
 

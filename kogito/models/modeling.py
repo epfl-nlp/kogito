@@ -3,9 +3,27 @@ import os
 import wandb
 import logging
 from tqdm import tqdm
+from transformers import Trainer
 
 logger = logging.getLogger("modeling")
 
+
+class TransformerTrainer(Trainer):
+    def training_step(self, model, data):
+        print('in training step')
+        ids = data["source_ids"].long()
+        mask = data["source_mask"].long()
+        outputs = model(input_ids=ids, attention_mask=mask, labels=ids)
+        loss = outputs[0]
+        return loss.mean()
+    
+    def prediction_step(self, model, data):
+        print("in prediction step")
+        ids = data["source_ids"].long()
+        mask = data["source_mask"].long()
+        outputs = model(input_ids=ids, attention_mask=mask, labels=ids)
+        loss = outputs[0]
+        return loss.mean()
 
 def train(
     epoch,
@@ -15,7 +33,6 @@ def train(
     loader,
     optimizer,
     val_loader=None,
-    model_class="t5",
     output_dir=None,
     log_wandb=False,
 ):
@@ -23,22 +40,10 @@ def train(
     batch_count = len(loader)
 
     for iteration, data in tqdm(enumerate(loader, 0)):
-        y = data["target_ids"].to(device, dtype=torch.long)
-        y_ids = y[:, :-1].contiguous()
-        lm_labels = y[:, 1:].clone().detach()
-        lm_labels[y[:, 1:] == tokenizer.pad_token_id] = -100
-        ids = data["source_ids"].to(device, dtype=torch.long)
-        mask = data["source_mask"].to(device, dtype=torch.long)
-
-        if model_class == "t5":
-            outputs = model(
-                input_ids=ids,
-                attention_mask=mask,
-                decoder_input_ids=y_ids,
-                lm_labels=lm_labels,
-            )
-        else:
-            outputs = model(input_ids=ids, attention_mask=mask, labels=ids)
+        target_ids = data["target_ids"].to(device, dtype=torch.long)
+        input_ids = data["source_ids"].to(device, dtype=torch.long)
+        input_mask = data["source_mask"].to(device, dtype=torch.long)
+        outputs = model(input_ids=input_ids, attention_mask=input_mask, labels=target_ids)
         loss = outputs[0]
 
         if iteration % 100 == 0:
@@ -60,7 +65,7 @@ def train(
                 f"\nEpoch: {epoch}, Loss:  {loss.item()}, BatchesLeft: {batches_left}"
             )
 
-        if iteration % 5000 == 0 and output_dir:
+        if (iteration+1) % 5000 == 0 and output_dir:
             model.save_pretrained(output_dir + "/iter_{}_model".format(iteration))
             tokenizer.save_pretrained(
                 output_dir + "/iter_{}_tokenizer".format(iteration)
@@ -77,7 +82,6 @@ def train(
                 model,
                 device,
                 val_loader,
-                model_class=model_class,
                 log_wandb=log_wandb,
             )
             model.train()
@@ -90,7 +94,6 @@ def log_eval(
     device,
     loader,
     sample_limit=5000,
-    model_class="t5",
     log_wandb=False,
 ):
     model.eval()
@@ -99,21 +102,11 @@ def log_eval(
 
     with torch.no_grad():
         for _, data in enumerate(loader, 0):
-            y = data["target_ids"].to(device, dtype=torch.long)
-            y_ids = y[:, :-1].contiguous()
-            lm_labels = y[:, 1:].clone().detach()
-            lm_labels[y[:, 1:] == tokenizer.pad_token_id] = -100
-            ids = data["source_ids"].to(device, dtype=torch.long)
-            mask = data["source_mask"].to(device, dtype=torch.long)
-            if model_class == "t5":
-                outputs = model(
-                    input_ids=ids,
-                    attention_mask=mask,
-                    decoder_input_ids=y_ids,
-                    lm_labels=lm_labels,
-                )
-            else:
-                outputs = model(input_ids=ids, attention_mask=mask, labels=ids)
+            target_ids = data["target_ids"].to(device, dtype=torch.long)
+            input_ids = data["source_ids"].to(device, dtype=torch.long)
+            input_mask = data["source_mask"].to(device, dtype=torch.long)
+
+            outputs = model(input_ids=input_ids, attention_mask=input_mask, labels=target_ids)
 
             loss = outputs[0]
             total_loss += loss.item()
