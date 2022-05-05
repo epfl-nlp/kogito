@@ -3,7 +3,7 @@ from kogito.models.bart.comet import COMETBART, COMETBARTConfig
 
 
 config = COMETBARTConfig(
-    output_dir="bart",
+    output_dir="models/bart",
     num_workers=2,
     learning_rate=1e-5,
     gpus=1,

@@ -168,7 +168,7 @@ class BaseTransformer(pl.LightningModule):
     def test_epoch_end(self, outputs):
         return self.validation_end(outputs)
 
-    def setup(self, step):
+    def setup(self, stage=None):
         train_batch_size = self.config.train_batch_size
         dataloader = self.get_dataloader("train", train_batch_size)
         self.train_loader = dataloader
@@ -210,7 +210,6 @@ class BaseTransformer(pl.LightningModule):
 def generic_train(
     model: BaseTransformer,
     config: COMETBARTConfig,
-    early_stopping_callback=False,
     logger=True,  # can pass WandbLogger() here
     extra_callbacks=[],
     checkpoint_callback=None,
@@ -257,7 +256,6 @@ def generic_train(
         callbacks=[logging_callback] + extra_callbacks,
         logger=logger,
         checkpoint_callback=checkpoint_callback,
-        early_stop_callback=early_stopping_callback,
         **train_params,
     )
 
