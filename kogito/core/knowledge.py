@@ -38,8 +38,8 @@ class Knowledge:
             else KnowledgeRelation.from_text(relation)
         )
         self.tails = tails or []
-        if isinstance(self.tails, str):
-            self.tails = [self.tails]
+        if not isinstance(self.tails, (list, tuple)):
+            self.tails = [str(self.tails)]
 
     def __repr__(self) -> str:
         return f'Knowledge(head="{str(self.head)}", relation="{str(self.relation)}", tails={self.tails})'

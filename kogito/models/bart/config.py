@@ -22,7 +22,7 @@ class COMETBARTConfig:
     freeze_embeds: bool = False
     sortish_sampler: bool = True
     n_train: int = -1
-    n_val: int = 100
+    n_val: int = 500
     n_test: int = -1
     task: str = "summarization"
     src_lang: str = ""
@@ -42,7 +42,7 @@ class COMETBARTConfig:
     eval_batch_size: int = 32
     gpus: int = 1
     decoder_start_token_id: Optional[int] = None
-    num_train_epochs: int = 1
+    num_train_epochs: int = 3
 
     def __dict__(self):
         return asdict(self)
