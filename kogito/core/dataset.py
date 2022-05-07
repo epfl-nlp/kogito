@@ -10,9 +10,7 @@ from kogito.core.utils import encode_line, trim_batch, SortishSampler
 
 
 class KnowledgeDataset(Dataset):
-    def __init__(
-        self, kg_graph, tokenizer, source_len, summ_len, is_eval=False
-    ):
+    def __init__(self, kg_graph, tokenizer, source_len, summ_len, is_eval=False):
         self.tokenizer = tokenizer
         self.data = kg_graph.to_dataframe()
         self.source_len = source_len

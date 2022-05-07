@@ -73,13 +73,45 @@ class KnowledgeModel(ABC):
         """
         raise NotImplementedError
 
-    def evaluate(self, input_graph: KnowledgeGraph, metrics: List[str] = ["bleu", "meteor", "rouge", "cider", "bert-score"], top_k: int = 1, *args, **kwargs) -> dict:
+    def evaluate(
+        self,
+        input_graph: KnowledgeGraph,
+        metrics: List[str] = ["bleu", "meteor", "rouge", "cider", "bert-score"],
+        top_k: int = 1,
+        *args,
+        **kwargs,
+    ) -> dict:
+        """Evaluate model on various metrics.
+        Input graph should contain the reference tails, so that it can be used to score the model generations
+        on the same input graph. Any arguments provided aside from the ones accepted by this method will be
+        passed onto the ``KnowledgeModel.generate`` method.
+
+        Args:
+            input_graph (KnowledgeGraph): Input graph to evaluate. Should contain the ground truth tails.
+            metrics (List[str], optional): Metrics to compute.
+                Defaults to ["bleu", "meteor", "rouge", "cider", "bert-score"].
+            top_k (int, optional): Top k generations to evaluate. Defaults to 1.
+            *args (optional): Extra arguments for `KnowledgeModel.generate` method.
+            **kwargs (optional): Extra keyword arguments for ``KnowledgeModel.generate`` method.
+
+        Returns:
+            dict: Dictionary of scores
+        """
         return evaluate(self, input_graph, metrics, top_k=top_k, *args, **kwargs)
 
 
-def evaluate(model: KnowledgeModel, input_graph: KnowledgeGraph, metrics: List[str] = ["bleu", "meteor", "rouge", "cider", "bert-score"], top_k: int = 1 , *args, **kwargs):
+def evaluate(
+    model: KnowledgeModel,
+    input_graph: KnowledgeGraph,
+    metrics: List[str] = ["bleu", "meteor", "rouge", "cider", "bert-score"],
+    top_k: int = 1,
+    *args,
+    **kwargs,
+):
     if not set(metrics).issubset(set(METRIC_MAP.keys())):
-        raise ValueError(f"Invalid evaluation metrics found: {set(metrics) - set(METRIC_MAP.keys())}")
+        raise ValueError(
+            f"Invalid evaluation metrics found: {set(metrics) - set(METRIC_MAP.keys())}"
+        )
 
     output_graph = model.generate(input_graph=input_graph, *args, **kwargs)
     evaluation_data = []
@@ -87,7 +119,8 @@ def evaluate(model: KnowledgeModel, input_graph: KnowledgeGraph, metrics: List[s
     for input_kg, output_kg in zip(input_graph, output_graph):
         assert input_kg.head == output_kg.head
         assert input_kg.relation == output_kg.relation
+        assert len(input_kg.tails) > 0
 
         evaluation_data.append((output_kg, input_kg.tails))
-    
+
     return topk_eval(evaluation_data, metrics, k=top_k)

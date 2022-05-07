@@ -158,7 +158,10 @@ class SWEMRelationMatcher(ModelBasedRelationMatcher):
     """Relation matcher based on Simple Word Embeddings (GloVes)"""
 
     def __init__(self, name: str, lang: Optional[Language] = None) -> None:
-        vocab = np.load(BytesIO(pkgutil.get_data(__name__, "data/vocab_glove_100d.npy")), allow_pickle=True).item()
+        vocab = np.load(
+            BytesIO(pkgutil.get_data(__name__, "data/vocab_glove_100d.npy")),
+            allow_pickle=True,
+        ).item()
         dataset_class = partial(SWEMHeadDataset, vocab=vocab, lang=lang)
         model_class = SWEMClassifier
         model_path = "mismayil/kogito-rc-swem"

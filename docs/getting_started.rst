@@ -17,6 +17,9 @@ It requires a minimum ``python`` version of ``3.8``.
 
 Setup
 =====
+
+Inference
+*********
 **kogito** uses `spacy <https://spacy.io>`__ under the hood for various text processing purposes, so, a `spacy <https://spacy.io>`__ language package has to be installed before running the inference module.
 
 .. code-block:: shell
@@ -24,6 +27,19 @@ Setup
    python -m spacy download en_core_web_sm
 
 By default, ``CommonsenseInference`` module uses ``en_core_web_sm`` to initialize `spacy <https://spacy.io>`__ pipeline, but a different language pipeline can be specified as well.
+
+Evaluation
+**********
+If you also would like evaluate knowledge models using `METEOR <https://en.wikipedia.org/wiki/METEOR>`_ score, then you need to download the following `nltk <https://www.nltk.org/>`_ libraries:
+
+.. code-block:: python
+
+   import nltk
+
+   nltk.download("punkt")
+   nltk.download("wordnet")
+   nltk.download("omw-1.4")
+
 
 Quickstart
 ===========

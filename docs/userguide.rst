@@ -107,13 +107,13 @@ we can instantiate knowledge graphs as below:
 
 .. code-block:: python
 
-   kgraph1.to_jsonl("sample_graph3.jsonl")
+   kgraph1.to_jsonl("sample_graph1.jsonl")
 
 
 Knowledge Model
 ***************
 Base knowledge model in **kogito** is represented by the :class:`kogito.core.model.KnowledgeModel` class and provides an abstract interface to be implemented by concrete model instances.
-More specifically, 4 abstract methods, namely, ``train``, ``generate``, ``from_pretrained`` and ``save_pretrained`` are defined and allow for training, querying (generating inferences from),
+More specifically, these following methods, namely, ``train``, ``evaluate``, ``generate``, ``from_pretrained`` and ``save_pretrained`` are defined and allow for training, evaluating, querying (generating inferences from),
 loading and saving models respectively. For inference generation, these models take an instance of ``KnowledgeGraph`` (generally this graph will be incomplete i.e. each knowledge instance in its collection will be missing **tails** since we want to predict those)
 and output a complete version of the input graph (**tails** filled in).
 For more information on specific models available as part of **kogito**, please refer to the `Models`_ section.
@@ -415,7 +415,7 @@ Models
 - ``GPT2Zeroshot`` (:class:`kogito.models.gpt2.zeroshot.GPT2Zeroshot`)
 - ``GPT3Zeroshot`` (:class:`kogito.models.gpt3.zeroshot.GPT3Zeroshot`)
 
-All of these models implement the ``KnowledgeModel`` interface which provides 4 main methods to interact with these models: ``train``, ``generate``, ``save_pretrained`` and ``from_pretrained``.
+All of these models implement the ``KnowledgeModel`` interface which provides these main methods to interact with these models: ``train``, ``generate``, ``evaluate``, ``save_pretrained`` and ``from_pretrained``.
 
 Inference
 *********
@@ -512,3 +512,32 @@ For example, here is a sample code to train a  ``COMETBART`` model:
    # Save as a pretrained model
    model.save_pretrained("comet-bart/v1")
 
+
+Evaluation
+**********
+Knowledge models can also be evaluated on various metrics. ``KnowledgeModel.evaluate`` method takes an input knowledge graph (complete with reference tails), runs a generation on it and then
+computes various scores based on the reference and generation tails and outputs a dictionary of these scores. You can also specify how many generations to consider for evaluation and 
+pass any extra arguments required for model generation.
+
+Following metrics are available and enabled by default: 
+
+- `BLEU <https://en.wikipedia.org/wiki/BLEU>`_ (``"bleu"``)
+- `ROUGE <https://en.wikipedia.org/wiki/ROUGE_(metric)>`_ (``"rouge"``)
+- `CIDEr <https://arxiv.org/abs/1411.5726>`_ (``"cider"``)
+- `METEOR <https://en.wikipedia.org/wiki/METEOR>`_ (``"meteor"``)
+- `BERTScore <https://arxiv.org/abs/1904.09675>`_ (``"bert-score"``)
+
+Here is an example of evaluating ``COMETBART`` model with some metrics:
+
+.. code-block:: python
+
+   from kogito.core.knowledge import KnowledgeGraph
+   from kogito.models.bart.comet import COMETBART
+
+   input_graph = KnowledgeGraph.from_jsonl("test_atomic2020_sample.json")
+
+   model = COMETBART.from_pretrained("mismayil/comet-bart-ai2")
+   # Here batch_size is an extra parameter for model generation
+   scores: dict = model.evaluate(input_graph, metrics=["bleu", "rouge"], top_k=2, batch_size=256)
+
+   print(scores)

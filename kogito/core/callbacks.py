@@ -105,7 +105,7 @@ def get_checkpoint_callback(output_dir, metric):
         filename=exp,
         monitor=f"val_{metric}",
         mode="max",
-        save_top_k=1
+        save_top_k=1,
     )
     return checkpoint_callback
 

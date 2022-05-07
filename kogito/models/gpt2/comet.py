@@ -6,7 +6,7 @@ from torch.utils.data import DataLoader
 from transformers import GPT2LMHeadModel, GPT2Tokenizer, TrainingArguments
 import wandb
 
-from kogito.models.modeling import beam_generations, TransformerTrainer, train
+from kogito.models.modeling import beam_generations, TransformerTrainer
 from kogito.core.dataset import KnowledgeDataset
 from kogito.core.model import KnowledgeModel
 from kogito.core.knowledge import KnowledgeGraph, GEN_TOKEN, EOS_TOKEN, PAD_TOKEN
@@ -78,7 +78,7 @@ class COMETGPT2(KnowledgeModel):
             train_graph,
             tokenizer=self.tokenizer,
             source_len=out_len,
-            summ_len=summary_len
+            summ_len=summary_len,
         )
         val_dataset = KnowledgeDataset(
             val_graph,
@@ -92,21 +92,25 @@ class COMETGPT2(KnowledgeModel):
 
         optimizer = torch.optim.Adam(params=self.model.parameters(), lr=lr_rate)
 
-        trainer_args = TrainingArguments(output_dir=output_dir,
-                                         evaluation_strategy="epoch",
-                                         per_device_train_batch_size=batch_size,
-                                         per_device_eval_batch_size=batch_size,
-                                         learning_rate=lr_rate,
-                                         num_train_epochs=epochs,
-                                         dataloader_drop_last=True,
-                                         report_to=None,
-                                         gradient_checkpointing=True,
-                                         gradient_accumulation_steps=2)
-        trainer = TransformerTrainer(model=self.model,
-                                     args=trainer_args,
-                                     train_dataset=train_dataset,
-                                     eval_dataset=val_dataset,
-                                     optimizers=(optimizer, None))
+        trainer_args = TrainingArguments(
+            output_dir=output_dir,
+            evaluation_strategy="epoch",
+            per_device_train_batch_size=batch_size,
+            per_device_eval_batch_size=batch_size,
+            learning_rate=lr_rate,
+            num_train_epochs=epochs,
+            dataloader_drop_last=True,
+            report_to=None,
+            gradient_checkpointing=True,
+            gradient_accumulation_steps=2,
+        )
+        trainer = TransformerTrainer(
+            model=self.model,
+            args=trainer_args,
+            train_dataset=train_dataset,
+            eval_dataset=val_dataset,
+            optimizers=(optimizer, None),
+        )
         trainer.train()
         # train_params = {"batch_size": batch_size, "shuffle": True, "num_workers": 0}
         # val_params = {"batch_size": 1, "shuffle": False, "num_workers": 0}

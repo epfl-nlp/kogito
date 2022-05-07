@@ -31,6 +31,7 @@ nltk.download("punkt")
 nltk.download("wordnet")
 nltk.download("omw-1.4")
 ```
+
 ## Quickstart
 **kogito** provides an easy interface to interact with commonsense reasoning models such as [COMET](https://arxiv.org/abs/2010.05953) to generate inferences from a text input.
 Here is a sample usage of the library where you can initialize an inference module, a custom commonsense reasoning model, and generate a knowledge graph from text on the fly.

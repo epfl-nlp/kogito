@@ -6,17 +6,18 @@ from multiprocessing import Pool
 from functools import partial
 from tqdm.auto import tqdm
 
-__all__ = ['bert_types']
+__all__ = ["bert_types"]
 
 bert_types = [
-    'bert-base-uncased',
-    'bert-large-uncased',
-    'bert-base-cased',
-    'bert-large-cased',
-    'bert-base-multilingual-uncased',
-    'bert-base-multilingual-cased',
-    'bert-base-chinese',
+    "bert-base-uncased",
+    "bert-large-uncased",
+    "bert-base-cased",
+    "bert-large-cased",
+    "bert-base-multilingual-uncased",
+    "bert-base-multilingual-cased",
+    "bert-base-chinese",
 ]
+
 
 def padding(arr, pad_token, dtype=torch.long):
     lens = torch.LongTensor([len(a) for a in arr])
@@ -24,8 +25,8 @@ def padding(arr, pad_token, dtype=torch.long):
     padded = torch.ones(len(arr), max_len, dtype=dtype) * pad_token
     mask = torch.zeros(len(arr), max_len, dtype=torch.long)
     for i, a in enumerate(arr):
-        padded[i, :lens[i]] = torch.tensor(a, dtype=dtype)
-        mask[i, :lens[i]] = 1
+        padded[i, : lens[i]] = torch.tensor(a, dtype=dtype)
+        mask[i, : lens[i]] = 1
     return padded, lens, mask
 
 
@@ -37,8 +38,8 @@ def bert_encode(model, x, attention_mask):
 
 
 def process(a, tokenizer=None):
-    if not tokenizer is None:
-        a = ["[CLS]"]+tokenizer.tokenize(a)+["[SEP]"]
+    if tokenizer is not None:
+        a = ["[CLS]"] + tokenizer.tokenize(a) + ["[SEP]"]
         a = tokenizer.convert_tokens_to_ids(a)
     return set(a)
 
@@ -59,13 +60,14 @@ def get_idf_dict(arr, tokenizer, nthreads=4):
     with Pool(nthreads) as p:
         idf_count.update(chain.from_iterable(p.map(process_partial, arr)))
 
-    idf_dict = defaultdict(lambda : log((num_docs+1)/(1)))
-    idf_dict.update({idx:log((num_docs+1)/(c+1)) for (idx, c) in idf_count.items()})
+    idf_dict = defaultdict(lambda: log((num_docs + 1) / (1)))
+    idf_dict.update(
+        {idx: log((num_docs + 1) / (c + 1)) for (idx, c) in idf_count.items()}
+    )
     return idf_dict
 
 
-def collate_idf(arr, tokenize, numericalize, idf_dict,
-                pad="[PAD]", device='cuda:0'):
+def collate_idf(arr, tokenize, numericalize, idf_dict, pad="[PAD]", device="cuda:0"):
     """
     Helper function that pads a list of sentences to hvae the same length and
     loads idf score for words in the sentences.
@@ -80,7 +82,7 @@ def collate_idf(arr, tokenize, numericalize, idf_dict,
         - :param: `pad` (str): the padding token.
         - :param: `device` (str): device to use, e.g. 'cpu' or 'cuda'
     """
-    arr = [["[CLS]"]+tokenize(a)+["[SEP]"] for a in arr]
+    arr = [["[CLS]"] + tokenize(a) + ["[SEP]"] for a in arr]
     arr = [numericalize(a) for a in arr]
 
     idf_weights = [[idf_dict[i] for i in a] for a in arr]
@@ -96,8 +98,9 @@ def collate_idf(arr, tokenize, numericalize, idf_dict,
     return padded, padded_idf, lens, mask
 
 
-def get_bert_embedding(all_sens, model, tokenizer, idf_dict,
-                       batch_size=-1, device='cuda:0'):
+def get_bert_embedding(
+    all_sens, model, tokenizer, idf_dict, batch_size=-1, device="cuda:0"
+):
     """
     Compute BERT embedding in batches.
     Args:
@@ -109,18 +112,25 @@ def get_bert_embedding(all_sens, model, tokenizer, idf_dict,
         - :param: `device` (str): device to use, e.g. 'cpu' or 'cuda'
     """
 
-    padded_sens, padded_idf, lens, mask = collate_idf(all_sens,
-                                                      tokenizer.tokenize, tokenizer.convert_tokens_to_ids,
-                                                      idf_dict,
-                                                      device=device)
+    padded_sens, padded_idf, lens, mask = collate_idf(
+        all_sens,
+        tokenizer.tokenize,
+        tokenizer.convert_tokens_to_ids,
+        idf_dict,
+        device=device,
+    )
 
-    if batch_size == -1: batch_size = len(all_sens)
+    if batch_size == -1:
+        batch_size = len(all_sens)
 
     embeddings = []
     with torch.no_grad():
         for i in range(0, len(all_sens), batch_size):
-            batch_embedding = bert_encode(model, padded_sens[i:i+batch_size],
-                                          attention_mask=mask[i:i+batch_size])
+            batch_embedding = bert_encode(
+                model,
+                padded_sens[i : i + batch_size],
+                attention_mask=mask[i : i + batch_size],
+            )
             # batch_embedding = torch.stack(batch_embedding)
             embeddings.append(batch_embedding)
             del batch_embedding
@@ -130,8 +140,16 @@ def get_bert_embedding(all_sens, model, tokenizer, idf_dict,
     return total_embedding, lens, mask, padded_idf
 
 
-def greedy_cos_idf(ref_embedding, ref_lens, ref_masks, ref_idf,
-                   hyp_embedding, hyp_lens, hyp_masks, hyp_idf):
+def greedy_cos_idf(
+    ref_embedding,
+    ref_lens,
+    ref_masks,
+    ref_idf,
+    hyp_embedding,
+    hyp_lens,
+    hyp_masks,
+    hyp_idf,
+):
     """
     Compute greedy matching based on cosine similarity.
     Args:
@@ -160,8 +178,9 @@ def greedy_cos_idf(ref_embedding, ref_lens, ref_masks, ref_idf,
 
     sim = torch.bmm(hyp_embedding, ref_embedding.transpose(1, 2))
     masks = torch.bmm(hyp_masks.unsqueeze(2).float(), ref_masks.unsqueeze(1).float())
-    masks = masks.expand(batch_size, masks.size(1), masks.size(2))\
-                              .contiguous().view_as(sim)
+    masks = (
+        masks.expand(batch_size, masks.size(1), masks.size(2)).contiguous().view_as(sim)
+    )
 
     masks = masks.float().to(sim.device)
     sim = sim * masks
@@ -175,12 +194,21 @@ def greedy_cos_idf(ref_embedding, ref_lens, ref_masks, ref_idf,
     recall_scale = ref_idf.to(word_recall.device)
     P = (word_precision * precision_scale).sum(dim=1)
     R = (word_recall * recall_scale).sum(dim=1)
-    
+
     F = 2 * P * R / (P + R)
     return P, R, F
 
-def bert_cos_score_idf(model, refs, hyps, tokenizer, idf_dict,
-                       verbose=False, batch_size=64, device='cuda:0'):
+
+def bert_cos_score_idf(
+    model,
+    refs,
+    hyps,
+    tokenizer,
+    idf_dict,
+    verbose=False,
+    batch_size=64,
+    device="cuda:0",
+):
     """
     Compute BERTScore.
     Args:
@@ -196,14 +224,17 @@ def bert_cos_score_idf(model, refs, hyps, tokenizer, idf_dict,
     """
     preds = []
     iter_range = range(0, len(refs), batch_size)
-    if verbose: iter_range = tqdm(iter_range)
+    if verbose:
+        iter_range = tqdm(iter_range)
     for batch_start in iter_range:
-        batch_refs = refs[batch_start:batch_start+batch_size]
-        batch_hyps = hyps[batch_start:batch_start+batch_size]
-        ref_stats = get_bert_embedding(batch_refs, model, tokenizer, idf_dict,
-                                       device=device)
-        hyp_stats = get_bert_embedding(batch_hyps, model, tokenizer, idf_dict,
-                                       device=device)
+        batch_refs = refs[batch_start : batch_start + batch_size]
+        batch_hyps = hyps[batch_start : batch_start + batch_size]
+        ref_stats = get_bert_embedding(
+            batch_refs, model, tokenizer, idf_dict, device=device
+        )
+        hyp_stats = get_bert_embedding(
+            batch_hyps, model, tokenizer, idf_dict, device=device
+        )
 
         P, R, F1 = greedy_cos_idf(*ref_stats, *hyp_stats)
         preds.append(torch.stack((P, R, F1), dim=1).cpu())

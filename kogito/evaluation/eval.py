@@ -10,11 +10,12 @@ from kogito.core.knowledge import Knowledge
 
 METRIC_MAP = {
     "bleu": (Bleu(4), ["Bleu_1", "Bleu_2", "Bleu_3", "Bleu_4"]),
-    "meteor": (Meteor(),"METEOR"),
+    "meteor": (Meteor(), "METEOR"),
     "rouge": (Rouge(), "ROUGE_L"),
     "cider": (Cider(), "CIDEr"),
-    "bert-score": (BertScore(), "Bert Score")
+    "bert-score": (BertScore(), "Bert Score"),
 }
+
 
 class Evaluator:
     def __init__(self, gts, res, metrics):
@@ -48,5 +49,5 @@ def topk_eval(data: List[Tuple[Knowledge, List[str]]], metrics, k=1):
 
     evaluator = Evaluator(topk_gts, topk_res, metrics)
     scores = evaluator.evaluate()
-    
+
     return scores

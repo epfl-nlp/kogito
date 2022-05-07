@@ -11,13 +11,13 @@ device = "cuda" if torch.cuda.is_available() else "cpu"
 
 class TransformerTrainer(Trainer):
     def training_step(self, model, data, *args, **kwargs):
-        print('in training step')
+        print("in training step")
         ids = data["source_ids"].to(device, dtype=torch.long)
         mask = data["source_mask"].to(device, dtype=torch.long)
         outputs = model(input_ids=ids, attention_mask=mask, labels=ids)
         loss = outputs[0]
         return loss.mean()
-    
+
     def prediction_step(self, model, data, *args, **kwargs):
         print("in prediction step")
         ids = data["source_ids"].to(device, dtype=torch.long)
@@ -25,6 +25,7 @@ class TransformerTrainer(Trainer):
         outputs = model(input_ids=ids, attention_mask=mask, labels=ids)
         loss = outputs[0]
         return (loss.mean().detach(), None, None)
+
 
 def train(
     epoch,
@@ -44,7 +45,9 @@ def train(
         target_ids = data["target_ids"].to(device, dtype=torch.long)
         input_ids = data["source_ids"].to(device, dtype=torch.long)
         input_mask = data["source_mask"].to(device, dtype=torch.long)
-        outputs = model(input_ids=input_ids, attention_mask=input_mask, labels=target_ids)
+        outputs = model(
+            input_ids=input_ids, attention_mask=input_mask, labels=target_ids
+        )
         loss = outputs[0]
 
         if iteration % 100 == 0:
@@ -66,7 +69,7 @@ def train(
                 f"\nEpoch: {epoch}, Loss:  {loss.item()}, BatchesLeft: {batches_left}"
             )
 
-        if (iteration+1) % 5000 == 0 and output_dir:
+        if (iteration + 1) % 5000 == 0 and output_dir:
             model.save_pretrained(output_dir + "/iter_{}_model".format(iteration))
             tokenizer.save_pretrained(
                 output_dir + "/iter_{}_tokenizer".format(iteration)
@@ -107,7 +110,9 @@ def log_eval(
             input_ids = data["source_ids"].to(device, dtype=torch.long)
             input_mask = data["source_mask"].to(device, dtype=torch.long)
 
-            outputs = model(input_ids=input_ids, attention_mask=input_mask, labels=target_ids)
+            outputs = model(
+                input_ids=input_ids, attention_mask=input_mask, labels=target_ids
+            )
 
             loss = outputs[0]
             total_loss += loss.item()
