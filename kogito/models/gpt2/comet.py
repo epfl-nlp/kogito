@@ -78,15 +78,13 @@ class COMETGPT2(KnowledgeModel):
             train_graph,
             tokenizer=self.tokenizer,
             source_len=out_len,
-            summ_len=summary_len,
-            model="gpt2",
+            summ_len=summary_len
         )
         val_dataset = KnowledgeDataset(
             val_graph,
             tokenizer=self.tokenizer,
             source_len=in_len,
             summ_len=out_len - in_len,
-            model="gpt2",
             is_eval=True,
         )
 
@@ -102,7 +100,8 @@ class COMETGPT2(KnowledgeModel):
                                          num_train_epochs=epochs,
                                          dataloader_drop_last=True,
                                          report_to=None,
-                                         gradient_checkpointing=True)
+                                         gradient_checkpointing=True,
+                                         gradient_accumulation_steps=2)
         trainer = TransformerTrainer(model=self.model,
                                      args=trainer_args,
                                      train_dataset=train_dataset,

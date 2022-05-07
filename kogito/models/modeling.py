@@ -6,24 +6,25 @@ from tqdm import tqdm
 from transformers import Trainer
 
 logger = logging.getLogger("modeling")
+device = "cuda" if torch.cuda.is_available() else "cpu"
 
 
 class TransformerTrainer(Trainer):
-    def training_step(self, model, data):
+    def training_step(self, model, data, *args, **kwargs):
         print('in training step')
-        ids = data["source_ids"].long()
-        mask = data["source_mask"].long()
+        ids = data["source_ids"].to(device, dtype=torch.long)
+        mask = data["source_mask"].to(device, dtype=torch.long)
         outputs = model(input_ids=ids, attention_mask=mask, labels=ids)
         loss = outputs[0]
         return loss.mean()
     
-    def prediction_step(self, model, data):
+    def prediction_step(self, model, data, *args, **kwargs):
         print("in prediction step")
-        ids = data["source_ids"].long()
-        mask = data["source_mask"].long()
+        ids = data["source_ids"].to(device, dtype=torch.long)
+        mask = data["source_mask"].to(device, dtype=torch.long)
         outputs = model(input_ids=ids, attention_mask=mask, labels=ids)
         loss = outputs[0]
-        return loss.mean()
+        return (loss.mean().detach(), None, None)
 
 def train(
     epoch,

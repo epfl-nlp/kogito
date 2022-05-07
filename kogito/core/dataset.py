@@ -11,7 +11,7 @@ from kogito.core.utils import encode_line, trim_batch, SortishSampler
 
 class KnowledgeDataset(Dataset):
     def __init__(
-        self, kg_graph, tokenizer, source_len, summ_len, model="t5", is_eval=False
+        self, kg_graph, tokenizer, source_len, summ_len, is_eval=False
     ):
         self.tokenizer = tokenizer
         self.data = kg_graph.to_dataframe()
@@ -19,7 +19,6 @@ class KnowledgeDataset(Dataset):
         self.summ_len = summ_len
         self.text = self.data["head"] + " " + self.data["relation"] + f" {GEN_TOKEN}"
         self.ctext = self.data["tails"] + f" {EOS_TOKEN}"
-        self.model = model
         self.is_eval = is_eval
 
     def __len__(self):
@@ -32,7 +31,7 @@ class KnowledgeDataset(Dataset):
         ctext = str(self.ctext[index])
         ctext = " ".join(ctext.split())
 
-        if self.model == "t5":
+        if self.is_eval:
             source = self.tokenizer.batch_encode_plus(
                 [text],
                 pad_to_max_length=True,
@@ -48,30 +47,14 @@ class KnowledgeDataset(Dataset):
                 truncation=True,
             )
         else:
-            if self.is_eval:
-                source = self.tokenizer.batch_encode_plus(
-                    [text],
-                    pad_to_max_length=False,
-                    max_length=self.source_len,
-                    return_tensors="pt",
-                    truncation=True,
-                )
-                target = self.tokenizer.batch_encode_plus(
-                    [ctext],
-                    pad_to_max_length=False,
-                    max_length=self.summ_len,
-                    return_tensors="pt",
-                    truncation=True,
-                )
-            else:
-                source = self.tokenizer.batch_encode_plus(
-                    [text + " " + ctext],
-                    pad_to_max_length=True,
-                    max_length=self.source_len + self.summ_len,
-                    return_tensors="pt",
-                    truncation=True,
-                )
-                target = source
+            source = self.tokenizer.batch_encode_plus(
+                [text + " " + ctext],
+                pad_to_max_length=True,
+                max_length=self.source_len + self.summ_len,
+                return_tensors="pt",
+                truncation=True,
+            )
+            target = source
 
         source_ids = source["input_ids"].squeeze()
         source_mask = source["attention_mask"].squeeze()
