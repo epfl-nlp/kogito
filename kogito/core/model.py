@@ -1,5 +1,6 @@
 from abc import ABC, abstractmethod, abstractclassmethod
 from kogito.core.knowledge import KnowledgeGraph
+from kogito.evaluation.eval import topk_eval
 
 
 class KnowledgeModel(ABC):
@@ -69,3 +70,19 @@ class KnowledgeModel(ABC):
             KnowledgeModel: Loaded knowledge model.
         """
         raise NotImplementedError
+
+    def evaluate(self, input_graph: KnowledgeGraph, top_k=1, *args, **kwargs):
+        return evaluate(self, input_graph, top_k=top_k, *args, **kwargs)
+
+
+def evaluate(model: KnowledgeModel, input_graph: KnowledgeGraph, top_k=1 , *args, **kwargs):
+    output_graph = model.generate(input_graph=input_graph, *args, **kwargs)
+    evaluation_data = []
+
+    for input_kg, output_kg in zip(input_graph, output_graph):
+        assert input_kg.head == output_kg.head
+        assert input_kg.relation == output_kg.relation
+
+        evaluation_data.append((output_kg, input_kg.tails))
+    
+    return topk_eval(evaluation_data, k=top_k)
