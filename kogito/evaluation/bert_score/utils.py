@@ -31,9 +31,8 @@ def padding(arr, pad_token, dtype=torch.long):
 
 def bert_encode(model, x, attention_mask):
     model.eval()
-    x_seg = torch.zeros_like(x, dtype=torch.long)
     with torch.no_grad():
-        x_encoded_layers, pooled_output = model(x, x_seg, attention_mask=attention_mask, output_all_encoded_layers=False)
+        x_encoded_layers, _ = model(x, attention_mask=attention_mask, return_dict=False)
     return x_encoded_layers
 
 

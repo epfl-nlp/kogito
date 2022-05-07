@@ -13,6 +13,8 @@ pip install kogito
 It requires a minimum ``python`` version of ``3.8``.
 
 ## Setup
+
+### Inference
 **kogito** uses [spacy](https://spacy.io) under the hood for various text processing purposes, so, a [spacy](https://spacy.io) language package has to be installed before running the inference module.
 
 ```sh
@@ -20,6 +22,15 @@ python -m spacy download en_core_web_sm
 ``` 
 By default, ``CommonsenseInference`` module uses ``en_core_web_sm`` to initialize ``spacy`` pipeline, but a different language pipeline can be specified as well.
 
+### Evaluation
+If you also would like evaluate knowledge models using `METEOR` score, then you need to download the following ``nltk`` libraries:
+```python
+import nltk
+
+nltk.download("punkt")
+nltk.download("wordnet")
+nltk.download("omw-1.4")
+```
 ## Quickstart
 **kogito** provides an easy interface to interact with commonsense reasoning models such as [COMET](https://arxiv.org/abs/2010.05953) to generate inferences from a text input.
 Here is a sample usage of the library where you can initialize an inference module, a custom commonsense reasoning model, and generate a knowledge graph from text on the fly.

@@ -1,6 +1,8 @@
+from typing import List
+
 from abc import ABC, abstractmethod, abstractclassmethod
 from kogito.core.knowledge import KnowledgeGraph
-from kogito.evaluation.eval import topk_eval
+from kogito.evaluation.eval import topk_eval, METRIC_MAP
 
 
 class KnowledgeModel(ABC):
@@ -71,11 +73,14 @@ class KnowledgeModel(ABC):
         """
         raise NotImplementedError
 
-    def evaluate(self, input_graph: KnowledgeGraph, top_k=1, *args, **kwargs):
-        return evaluate(self, input_graph, top_k=top_k, *args, **kwargs)
+    def evaluate(self, input_graph: KnowledgeGraph, metrics: List[str] = ["bleu", "meteor", "rouge", "cider", "bert-score"], top_k: int = 1, *args, **kwargs) -> dict:
+        return evaluate(self, input_graph, metrics, top_k=top_k, *args, **kwargs)
 
 
-def evaluate(model: KnowledgeModel, input_graph: KnowledgeGraph, top_k=1 , *args, **kwargs):
+def evaluate(model: KnowledgeModel, input_graph: KnowledgeGraph, metrics: List[str] = ["bleu", "meteor", "rouge", "cider", "bert-score"], top_k: int = 1 , *args, **kwargs):
+    if not set(metrics).issubset(set(METRIC_MAP.keys())):
+        raise ValueError(f"Invalid evaluation metrics found: {set(metrics) - set(METRIC_MAP.keys())}")
+
     output_graph = model.generate(input_graph=input_graph, *args, **kwargs)
     evaluation_data = []
 
@@ -85,4 +90,4 @@ def evaluate(model: KnowledgeModel, input_graph: KnowledgeGraph, top_k=1 , *args
 
         evaluation_data.append((output_kg, input_kg.tails))
     
-    return topk_eval(evaluation_data, k=top_k)
+    return topk_eval(evaluation_data, metrics, k=top_k)

@@ -2,12 +2,10 @@ import spacy
 import inflect
 import itertools
 import json
-import os
 import pickle
 from typing import Callable, Dict, Iterable, List
 import uuid
 
-import git
 import numpy as np
 from rouge_score import rouge_scorer, scoring
 from sacrebleu import corpus_bleu
@@ -146,12 +144,6 @@ def flatten_list(summary_ids: List[List]):
     return [x for x in itertools.chain.from_iterable(summary_ids)]
 
 
-def save_git_info(folder_path: str) -> None:
-    """Save git information to output_dir/git_log.json"""
-    repo_infos = get_git_info()
-    save_json(repo_infos, os.path.join(folder_path, "git_log.json"))
-
-
 def save_json(content, path):
     with open(path, "w") as f:
         json.dump(content, f, indent=4)
@@ -160,16 +152,6 @@ def save_json(content, path):
 def load_json(path):
     with open(path) as f:
         return json.load(f)
-
-
-def get_git_info():
-    repo = git.Repo(search_parent_directories=True)
-    repo_infos = {
-        "repo_id": str(repo),
-        "repo_sha": str(repo.head.object.hexsha),
-        "repo_branch": str(repo.active_branch),
-    }
-    return repo_infos
 
 
 def calculate_rouge(

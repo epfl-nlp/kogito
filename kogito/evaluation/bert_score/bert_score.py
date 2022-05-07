@@ -28,7 +28,7 @@ class BertScore:
             ref_input += ref
             same_indices.append(len(ref_input))
 
-        p, r, f_scores = score(hyp_input, ref_input, model_type="bert-base-uncased")
+        p, r, f_scores = score(hyp_input, ref_input)
  
         prev_idx = 0
         aggreg_f1_scores = []
