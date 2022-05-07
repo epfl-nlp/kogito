@@ -142,3 +142,4 @@ wandb
 lightning_logs/
 kogito-relation-matcher/
 *.bin
+__MACOSX
