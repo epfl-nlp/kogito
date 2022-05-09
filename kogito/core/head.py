@@ -60,6 +60,14 @@ class KnowledgeHead:
     def __repr__(self) -> str:
         return str(self.text)
 
+    def copy(self) -> "KnowledgeHead":
+        """Copy itself
+
+        Returns:
+            KnowledgeHead: Copied knowledge head
+        """
+        return KnowledgeHead(text=self.text, type=self.type, entity=self.entity, verbalizer=self.verbalizer)
+
 
 def head_verbalizer(head: str):
     return head

@@ -4,11 +4,16 @@ from kogito.models.bart.comet import COMETBART, COMETBARTConfig
 
 config = COMETBARTConfig(
     output_dir="models/comet-bart",
+    task="summarization",
+    n_val=100,
     num_workers=2,
     learning_rate=1e-5,
     gpus=1,
     sortish_sampler=True,
     atomic=True,
+    train_batch_size=32,
+    eval_batch_size=32,
+    num_train_epochs=1,
     pretrained_model="facebook/bart-large",
 )
 model = COMETBART(config)

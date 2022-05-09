@@ -97,7 +97,7 @@ class Knowledge:
         Returns:
             Knowledge: Copied knowledge
         """
-        return Knowledge(head=self.head, relation=self.relation, tails=self.tails)
+        return Knowledge(head=self.head.copy(), relation=self.relation.copy(), tails=self.tails.copy())
 
     def to_json(self, only_one_tail: bool = False) -> dict:
         """Convert knowledge to dictionary

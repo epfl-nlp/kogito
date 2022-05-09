@@ -101,6 +101,14 @@ class KnowledgeRelation:
     def __repr__(self) -> str:
         return str(self.text)
 
+    def copy(self) -> "KnowledgeRelation":
+        """Copy itself
+
+        Returns:
+            KnowledgeRelation: Copied knowledge relation
+        """
+        return KnowledgeRelation(text=self.text, type=self.type, verbalizer=self.verbalizer, prompt=self.prompt)
+
 
 # Verbalizers
 def at_location_verbalizer(head: str, **kwargs):

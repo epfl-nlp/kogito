@@ -105,7 +105,6 @@ class Rouge:
             assert len(ref) > 0
 
         average_score = np.mean(np.array(score))
-        print("len score:", len(score))
         return average_score, np.array(score)
 
     def method(self):
