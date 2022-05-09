@@ -75,4 +75,4 @@ Here is an excerpt from the result of the above code sample:
    {"head": "great basketball player", "relation": "HasProperty", "tails": [" good at basketball", " good at sports", " very good"]}
    {"head": "become player", "relation": "isAfter", "tails": [" play game", " become coach", " play with"]}
 
-This is just one way to generate commonsense inferences and **kogito** offers much more. For information on more use-cases and a complete API reference, you can check out the `User Guide </userguide.html>`_ and `API Reference <https://kogito.readthedocs.io/en/latest/api.html>`_ pages.
+This is just one way to generate commonsense inferences and **kogito** offers much more. For information on more use-cases and a complete API reference, you can check out the `User Guide <https://kogito.readthedocs.io/en/latest/userguide.html>`_ and `API Reference <https://kogito.readthedocs.io/en/latest/api.html>`_ pages.
