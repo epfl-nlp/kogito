@@ -13,7 +13,7 @@ config = COMETBARTConfig(
     atomic=True,
     train_batch_size=32,
     eval_batch_size=32,
-    num_train_epochs=1,
+    max_epochs=1,
     pretrained_model="facebook/bart-large",
 )
 model = COMETBART(config)

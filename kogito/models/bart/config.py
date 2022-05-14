@@ -42,7 +42,6 @@ class COMETBARTConfig:
     eval_batch_size: int = 32
     gpus: int = 1
     decoder_start_token_id: Optional[int] = None
-    num_train_epochs: int = 3
 
     def __dict__(self):
         return asdict(self)

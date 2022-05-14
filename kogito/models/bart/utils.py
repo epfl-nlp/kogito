@@ -175,7 +175,7 @@ class BaseTransformer(pl.LightningModule):
         self.total_steps = (
             (len(dataloader.dataset) // (train_batch_size * max(1, self.config.gpus)))
             // self.config.accumulate_grad_batches
-            * float(self.config.num_train_epochs)
+            * float(self.config.max_epochs)
         )
 
     def train_dataloader(self):
@@ -365,10 +365,13 @@ class SummarizationModule(BaseTransformer):
     def training_step(self, batch, batch_idx) -> Dict:
         loss_tensors = self._step(batch)
         logs = {name: loss for name, loss in zip(self.loss_names, loss_tensors)}
+        self.log("train_loss", loss_tensors[0], on_epoch=True)
         return {"loss": loss_tensors[0], "log": logs}
 
     def validation_step(self, batch, batch_idx) -> Dict:
-        return self._generative_step(batch)
+        result = self._generative_step(batch)
+        self.log("val_loss", result["loss"], on_epoch=True)
+        return result
 
     def validation_epoch_end(self, outputs, prefix="val") -> Dict:
         self.step_count += 1
@@ -476,7 +479,7 @@ class SummarizationModule(BaseTransformer):
                 // (self.config.train_batch_size * max(1, self.config.gpus))
             )
             // self.config.accumulate_grad_batches
-            * float(self.config.num_train_epochs)
+            * float(self.config.max_epochs)
         )
         scheduler = get_linear_schedule_with_warmup(
             self.opt,
