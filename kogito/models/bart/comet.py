@@ -22,7 +22,6 @@ from kogito.models.bart.utils import (
     generic_train,
     SummarizationModule,
     TranslationModule,
-    use_task_specific_params,
 )
 
 device = "cuda" if torch.cuda.is_available() else "cpu"
@@ -134,17 +133,21 @@ class COMETBART(KnowledgeModel):
     def generate(
         self,
         input_graph: KnowledgeGraph,
-        decode_method: str = "beam",
+        decode_method: str = "greedy",
         num_generate: int = 3,
         batch_size: int = 64,
+        max_length: int = 24,
+        min_length: int = 1
     ) -> KnowledgeGraph:
         """Generate inferences from the model
 
         Args:
             input_graph (KnowledgeGraph): Input dataset
-            decode_method (str, optional): Decoding method. Accepts ["beam", "greedy"]. Defaults to "beam".
+            decode_method (str, optional): Decoding method. Accepts ["beam", "greedy"]. Defaults to "greedy".
             num_generate (int, optional): Number of inferences to generate. Defaults to 3.
             batch_size (int, optional): Batch size to use. Defaults to 64.
+            max_length (int, optional): Maximum output length. Defaults to 24.
+            min_length (int, optional): Minimum output length. Defaults to 1.
 
         Returns:
             KnowledgeGraph: Complete knowledge graph
@@ -168,6 +171,8 @@ class COMETBART(KnowledgeModel):
                     decoder_start_token_id=self.config.decoder_start_token_id,
                     num_beams=num_generate,
                     num_return_sequences=num_generate,
+                    max_length=max_length,
+                    min_length=min_length
                 )
 
                 output = self.tokenizer.batch_decode(
@@ -202,7 +207,6 @@ class COMETBART(KnowledgeModel):
         comet_bart = cls(config)
         model = AutoModelForSeq2SeqLM.from_pretrained(model_name_or_path)
         tokenizer = AutoTokenizer.from_pretrained(model_name_or_path)
-        use_task_specific_params(model, task)
         comet_bart.model = model
         comet_bart.tokenizer = tokenizer
         model.to(device)
