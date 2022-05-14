@@ -66,7 +66,12 @@ class KnowledgeHead:
         Returns:
             KnowledgeHead: Copied knowledge head
         """
-        return KnowledgeHead(text=self.text, type=self.type, entity=self.entity, verbalizer=self.verbalizer)
+        return KnowledgeHead(
+            text=self.text,
+            type=self.type,
+            entity=self.entity,
+            verbalizer=self.verbalizer,
+        )
 
 
 def head_verbalizer(head: str):
