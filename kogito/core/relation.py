@@ -107,7 +107,12 @@ class KnowledgeRelation:
         Returns:
             KnowledgeRelation: Copied knowledge relation
         """
-        return KnowledgeRelation(text=self.text, type=self.type, verbalizer=self.verbalizer, prompt=self.prompt)
+        return KnowledgeRelation(
+            text=self.text,
+            type=self.type,
+            verbalizer=self.verbalizer,
+            prompt=self.prompt,
+        )
 
 
 # Verbalizers
