@@ -137,7 +137,7 @@ class COMETBART(KnowledgeModel):
         num_generate: int = 3,
         batch_size: int = 64,
         max_length: int = 24,
-        min_length: int = 1
+        min_length: int = 1,
     ) -> KnowledgeGraph:
         """Generate inferences from the model
 
@@ -172,7 +172,7 @@ class COMETBART(KnowledgeModel):
                     num_beams=num_generate,
                     num_return_sequences=num_generate,
                     max_length=max_length,
-                    min_length=min_length
+                    min_length=min_length,
                 )
 
                 output = self.tokenizer.batch_decode(
