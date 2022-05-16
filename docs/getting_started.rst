@@ -43,7 +43,7 @@ If you also would like evaluate knowledge models using `METEOR <https://en.wikip
 
 Quickstart
 ===========
-**kogito** provides an easy interface to interact with commonsense reasoning models such as `COMET <https://arxiv.org/abs/2010.05953>`__ to generate inferences from a text input.
+**kogito** provides an easy interface to interact with knowledge inference or commonsense reasoning models such as `COMET <https://arxiv.org/abs/2010.05953>`__ to generate inferences from a text input.
 Here is a sample usage of the library where you can initialize an inference module, a custom commonsense reasoning model, and generate a knowledge graph from text on the fly.
 
 .. code-block:: python

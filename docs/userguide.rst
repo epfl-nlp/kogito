@@ -10,7 +10,7 @@ Basics
 
 Introduction
 ************
-This library provides an easy and extensible interface to perform **commonsense reasoning** in natural language.
+This library provides an easy and extensible interface to perform **knowledge inference** such as **commonsense reasoning** in natural language.
 
 Wikipedia defines commonsense reasoning as *a human-like ability to make presumptions about the type and essence of ordinary situations humans encounter every day*.
 It operates on commonsense knowledge which is often implicit and includes judgments about the nature of physical objects, taxonomic properties and people's intentions.

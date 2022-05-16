@@ -1,5 +1,5 @@
-# <span style="background-color:#dce755">k</span>ogito
-A Python NLP Commonsense Reasoning library
+# kogito
+A Python NLP Knowledge Inference Tool
 
 ## Installation
 
@@ -33,7 +33,7 @@ nltk.download("omw-1.4")
 ```
 
 ## Quickstart
-**kogito** provides an easy interface to interact with commonsense reasoning models such as [COMET](https://arxiv.org/abs/2010.05953) to generate inferences from a text input.
+**kogito** provides an easy interface to interact with knowledge inference or commonsense reasoning models such as [COMET](https://arxiv.org/abs/2010.05953) to generate inferences from a text input.
 Here is a sample usage of the library where you can initialize an inference module, a custom commonsense reasoning model, and generate a knowledge graph from text on the fly.
 
 ```python
