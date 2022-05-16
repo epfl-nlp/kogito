@@ -17,7 +17,7 @@ RUN apt-get update && apt-get install -y --allow-downgrades --allow-change-held-
 WORKDIR ${HOME}
 
 # Cluster setup
-RUN wget https://repo.anaconda.com/archive/Anaconda3-2021.11-Linux-x86_64.sh -O anaconda.sh
+RUN wget https://repo.anaconda.com/miniconda/Miniconda3-py38_4.11.0-Linux-x86_64.sh -O anaconda.sh
 RUN bash anaconda.sh -b -p ${CONDA_PREFIX}
 RUN ${CONDA} config --set auto_activate_base false
 RUN ${CONDA} init bash
@@ -37,12 +37,12 @@ RUN ${CONDA} run -n kogito ${POETRY} install
 RUN ${CONDA} install -n kogito pytorch cudatoolkit=11.3 -c pytorch
 
 # Install training data
-WORKDIR ${KOGITO_DIR}/examples/data
+ENV KOGITO_DATA_DIR=${KOGITO_DIR}/data
+RUN mkdir ${KOGITO_DATA_DIR}
 RUN wget https://ai2-atomic.s3-us-west-2.amazonaws.com/data/atomic2020_data-feb2021.zip
-RUN unzip atomic2020_data-feb2021.zip
+RUN unzip atomic2020_data-feb2021.zip -d ${KOGITO_DATA_DIR}
 
-WORKDIR ${KOGITO_DIR}/examples
-
+COPY ./train.py .
 COPY ./entrypoint.sh .
 
 ENTRYPOINT ["./entrypoint.sh"]
