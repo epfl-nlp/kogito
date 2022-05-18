@@ -130,6 +130,7 @@ class COMETGPT2(KnowledgeModel):
     def generate(
         self,
         input_graph: KnowledgeGraph,
+        batch_size: int = 2,
         in_len: int = 16,
         out_len: int = 34,
         top_k: int = 1,
@@ -143,6 +144,7 @@ class COMETGPT2(KnowledgeModel):
 
         Args:
             input_graph (KnowledgeGraph): Input dataset
+            batch_size (int, optional): Batch size
             in_len (int, optional): Input length. Defaults to 16.
             out_len (int, optional): Output length. Defaults to 34.
             top_k (int, optional): Top k inferences to consider. Defaults to 1.
@@ -155,7 +157,7 @@ class COMETGPT2(KnowledgeModel):
         Returns:
             KnowledgeGraph: Completed knowledge graph
         """
-        params = {"batch_size": 1, "shuffle": False, "num_workers": 0}
+        params = {"batch_size": batch_size, "shuffle": False, "num_workers": 0}
         dataset = KnowledgeDataset(
             input_graph,
             tokenizer=self.tokenizer,
