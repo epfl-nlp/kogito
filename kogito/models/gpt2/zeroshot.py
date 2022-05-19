@@ -43,17 +43,21 @@ class GPT2Zeroshot(KnowledgeModel):
         num_sequences: int = 10,
         num_beams: int = 10,
         stop_token: str = ".",
+        temperature: float = 1.0,
+        repetition_penalty: float = 1.0,
     ) -> KnowledgeGraph:
         """Generate inferences from GPT2 model
 
         Args:
             input_graph (KnowledgeGraph): Input dataset
             seed (int, optional): Random seed. Defaults to 42.
-            top_k (int, optional): Top k. Defaults to 1.
-            top_p (float, optional): Top p. Defaults to 0.9.
+            top_k (int, optional): GPT-2 top k parameter. Defaults to 1.
+            top_p (float, optional): GPT2 top p parameter. Defaults to 0.9.
             num_sequences (int, optional): Number of sequences. Defaults to 10.
             num_beams (int, optional): Number of beams. Defaults to 10.
             stop_token (str, optional): Stop token. Defaults to ".".
+            temperature (float, optional): GPT-2 temperature parameter. Defaults to 1.0.
+            repetition_penalty (float, optional): GPT-2 repetition_penalty parameter. Defaults to 1.0.
 
         Returns:
             KnowledgeGraph: Completed knowledge graph
@@ -71,10 +75,10 @@ class GPT2Zeroshot(KnowledgeModel):
             generations = self.model.generate(
                 input_ids=input_ids.to(device),
                 max_length=input_ids.size(1) + 10,
-                temperature=1.0,
+                temperature=temperature,
                 top_k=top_k,
                 top_p=top_p,
-                repetition_penalty=1.0,
+                repetition_penalty=repetition_penalty,
                 do_sample=True,
                 num_return_sequences=num_sequences,
                 num_beams=num_beams,

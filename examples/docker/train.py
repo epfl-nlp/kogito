@@ -9,8 +9,9 @@ val_graph = KnowledgeGraph.from_csv(f"{data_dir}/atomic2020_data-feb2021/dev.tsv
 model.train(
     train_graph=train_graph,
     val_graph=val_graph,
-    batch_size=4,
+    batch_size=16,
     output_dir="/scratch/mete/models/comet-gpt2",
     log_wandb=True,
-    epochs=3
+    lr=5e-5,
+    epochs=1
 )

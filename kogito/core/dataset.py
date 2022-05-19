@@ -10,11 +10,11 @@ from kogito.core.utils import encode_line, trim_batch, SortishSampler
 
 
 class KnowledgeDataset(Dataset):
-    def __init__(self, kg_graph, tokenizer, source_len, summ_len, is_eval=False):
+    def __init__(self, kg_graph, tokenizer, source_len, target_len, is_eval=False):
         self.tokenizer = tokenizer
         self.data = kg_graph.to_dataframe()
         self.source_len = source_len
-        self.summ_len = summ_len
+        self.target_len = target_len
         self.text = self.data["head"] + " " + self.data["relation"] + f" {GEN_TOKEN}"
         self.ctext = self.data["tails"] + f" {EOS_TOKEN}"
         self.is_eval = is_eval
@@ -40,7 +40,7 @@ class KnowledgeDataset(Dataset):
             target = self.tokenizer.batch_encode_plus(
                 [ctext],
                 pad_to_max_length=True,
-                max_length=self.summ_len,
+                max_length=self.target_len,
                 return_tensors="pt",
                 truncation=True,
             )
@@ -48,7 +48,7 @@ class KnowledgeDataset(Dataset):
             source = self.tokenizer.batch_encode_plus(
                 [text + " " + ctext],
                 pad_to_max_length=True,
-                max_length=self.source_len + self.summ_len,
+                max_length=self.source_len + self.target_len,
                 return_tensors="pt",
                 truncation=True,
             )
