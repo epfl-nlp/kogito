@@ -7,7 +7,7 @@ from transformers import GPT2LMHeadModel, GPT2Tokenizer
 from pytorch_lightning.loggers import WandbLogger
 import pytorch_lightning as pl
 
-from kogito.models.gpt2.utils import beam_generations, GPT2Finetuner
+from kogito.models.gpt2.utils import GPT2Finetuner
 from kogito.core.dataset import KnowledgeDataset
 from kogito.core.model import KnowledgeModel
 from kogito.core.knowledge import KnowledgeGraph, GEN_TOKEN, EOS_TOKEN, PAD_TOKEN
@@ -33,12 +33,12 @@ class COMETGPT2(KnowledgeModel):
         self,
         train_graph: KnowledgeGraph,
         val_graph: KnowledgeGraph,
-        batch_size: int = 2,
+        batch_size: int = 8,
         in_len: int = 16,
         out_len: int = 34,
         summary_len: int = 0,
-        epochs: int = 3,
-        lr: float = 1e-5,
+        epochs: int = 1,
+        lr: float = 5e-5,
         seed: int = 42,
         log_wandb: bool = False,
         output_dir: Optional[str] = None,
@@ -79,13 +79,13 @@ class COMETGPT2(KnowledgeModel):
             train_graph,
             tokenizer=self.tokenizer,
             source_len=out_len,
-            summ_len=summary_len,
+            target_len=summary_len,
         )
         val_dataset = KnowledgeDataset(
             val_graph,
             tokenizer=self.tokenizer,
             source_len=in_len,
-            summ_len=out_len - in_len,
+            target_len=out_len - in_len,
             is_eval=True,
         )
 
@@ -130,7 +130,7 @@ class COMETGPT2(KnowledgeModel):
     def generate(
         self,
         input_graph: KnowledgeGraph,
-        batch_size: int = 2,
+        max_length: int = 34,
         in_len: int = 16,
         out_len: int = 34,
         top_k: int = 1,
@@ -144,7 +144,7 @@ class COMETGPT2(KnowledgeModel):
 
         Args:
             input_graph (KnowledgeGraph): Input dataset
-            batch_size (int, optional): Batch size
+            max_length (int, optional): Maximum output length. Defaults to 34.
             in_len (int, optional): Input length. Defaults to 16.
             out_len (int, optional): Output length. Defaults to 34.
             top_k (int, optional): Top k inferences to consider. Defaults to 1.
@@ -157,31 +157,46 @@ class COMETGPT2(KnowledgeModel):
         Returns:
             KnowledgeGraph: Completed knowledge graph
         """
-        params = {"batch_size": batch_size, "shuffle": False, "num_workers": 0}
+        params = {"batch_size": 1, "shuffle": False, "num_workers": 0}
         dataset = KnowledgeDataset(
             input_graph,
             tokenizer=self.tokenizer,
             source_len=in_len,
-            summ_len=out_len - in_len,
+            target_len=out_len - in_len,
             is_eval=True,
         )
         loader = DataLoader(dataset, **params, drop_last=False)
-        generations = beam_generations(
-            self.tokenizer,
-            self.model,
-            device,
-            loader,
-            top_k=top_k,
-            temperature=temperature,
-            top_p=top_p,
-            repetition_penalty=repetition_penalty,
-            num_beams=num_beams,
-            num_return_sequences=num_return_sequences,
-        )
+
+        self.model.eval()
+
+        with torch.no_grad():
+            for _, data in enumerate(loader, 0):
+                ids = data["source_ids"].to(device)
+                mask = data["source_mask"].to(device)
+
+                generated_ids = self.model.generate(
+                    input_ids=ids,
+                    attention_mask=mask,
+                    temperature=temperature,
+                    do_sample=False,
+                    max_length=max_length,
+                    top_p=top_p,
+                    top_k=top_k,
+                    repetition_penalty=repetition_penalty,
+                    num_return_sequences=num_return_sequences if top_k > 1 else 1,
+                    num_beams=num_beams,
+                )
+
+                generations = [
+                    self.tokenizer.decode(g, clean_up_tokenization_spaces=True)
+                    for g in generated_ids
+                ]
+
         outputs = []
+
         for input_kg, gen in zip(input_graph, generations):
             output_kg = input_kg.copy()
-            output_kg.tails = gen["generations"]
+            output_kg.tails = gen
             outputs.append(output_kg)
 
         return KnowledgeGraph(outputs)
