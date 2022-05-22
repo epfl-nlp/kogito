@@ -169,8 +169,10 @@ class COMETGPT2(KnowledgeModel):
 
         self.model.eval()
 
+        outputs = []
+
         with torch.no_grad():
-            for _, data in enumerate(loader, 0):
+            for input_kg, data in zip(input_graph, loader):
                 ids = data["source_ids"].to(device)
                 mask = data["source_mask"].to(device)
 
@@ -192,12 +194,9 @@ class COMETGPT2(KnowledgeModel):
                     for g in generated_ids
                 ]
 
-        outputs = []
-
-        for input_kg, gen in zip(input_graph, generations):
-            output_kg = input_kg.copy()
-            output_kg.tails = gen
-            outputs.append(output_kg)
+                output_kg = input_kg.copy()
+                output_kg.tails = generations
+                outputs.append(output_kg)
 
         return KnowledgeGraph(outputs)
 
