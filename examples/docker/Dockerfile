@@ -12,7 +12,7 @@ ENV POETRY=${HOME}/.local/bin/poetry
 SHELL ["/bin/bash", "-cu"]
 
 # Install dependencies
-RUN apt-get update && apt-get install -y --allow-downgrades --allow-change-held-packages --no-install-recommends vim wget unzip
+RUN apt-get update && apt-get install -y --allow-downgrades --allow-change-held-packages --no-install-recommends vim wget unzip tmux
 
 WORKDIR ${HOME}
 
@@ -37,6 +37,7 @@ WORKDIR ${KOGITO_DIR}
 
 # Setup kogito dependencies
 RUN ${CONDA} run -n kogito ${POETRY} install
+RUN ${CONDA} run -n kogito python -c "import nltk;nltk.download('punkt');nltk.download('wordnet');nltk.download('omw-1.4')"
 
 # Install training data
 ENV KOGITO_DATA_DIR=${KOGITO_DIR}/data

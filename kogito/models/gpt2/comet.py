@@ -194,6 +194,8 @@ class COMETGPT2(KnowledgeModel):
                     for g in generated_ids
                 ]
 
+                generations = [g[g.find(GEN_TOKEN)+len(GEN_TOKEN):g.find(EOS_TOKEN)].strip() for g in generations]
+
                 output_kg = input_kg.copy()
                 output_kg.tails = generations
                 outputs.append(output_kg)
