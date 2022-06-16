@@ -1,0 +1,2 @@
+{"source": "PersonX buys lunch", "rel": "xNeed", "tails": ["bring a wallet"]}
+{"source": "Throwing a party", "rel": "Causes", "tails": ["have fun"]}

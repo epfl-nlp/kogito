@@ -1,4 +1,4 @@
-{"head": "PersonX sees PersonY's point", "relation": "xNeed", "tails": [" to hear PersonY's opinion"]}
-{"head": "PersonX makes a huge mistake", "relation": "xNeed", "tails": ["\n\nPersonX makes a huge mistake. Before, PersonX needs to to"]}
-{"head": "PersonX makes a huge mistake", "relation": "xWant2", "tails": [" to learn from the mistake and not repeat it"]}
-{"head": "PersonX sees PersonY's point", "relation": "xWant2", "tails": [" to concede"]}
+{"head": "PersonX sees PersonY's point", "relation": "xNeed", "tails": [" to listen to PersonY"]}
+{"head": "PersonX makes a huge mistake", "relation": "xNeed", "tails": [""]}
+{"head": "PersonX sees PersonY's point", "relation": "xWishes", "tails": [" to apologize"]}
+{"head": "PersonX makes a huge mistake", "relation": "xWishes", "tails": [" to fix it"]}

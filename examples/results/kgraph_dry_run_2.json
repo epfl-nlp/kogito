@@ -1,53 +1,57 @@
-{"head": "I wanted to feed him.", "relation": "oWant", "tails": []}
-{"head": "I wanted to feed him.", "relation": "oReact", "tails": []}
-{"head": "he didnt listen to me", "relation": "Causes", "tails": []}
-{"head": "he didnt listen to me", "relation": "xEffect", "tails": []}
-{"head": "I", "relation": "HasProperty", "tails": []}
-{"head": "he didnt listen to me", "relation": "isBefore", "tails": []}
+{"head": "he didnt listen to me", "relation": "xReason", "tails": []}
+{"head": "he didnt listen to me", "relation": "HinderedBy", "tails": []}
+{"head": "to want", "relation": "xNeed", "tails": []}
+{"head": "he didnt listen to me", "relation": "xNeed", "tails": []}
+{"head": "to listen", "relation": "HinderedBy", "tails": []}
+{"head": "I wanted to feed him.", "relation": "oEffect", "tails": []}
+{"head": "I wanted to feed him.", "relation": "xIntent", "tails": []}
 {"head": "to listen", "relation": "xReason", "tails": []}
+{"head": "I wanted to feed him.", "relation": "isAfter", "tails": []}
+{"head": "I", "relation": "HasProperty", "tails": []}
+{"head": "to listen", "relation": "xNeed", "tails": []}
+{"head": "I wanted to feed him.", "relation": "oReact", "tails": []}
+{"head": "he didnt listen to me", "relation": "oEffect", "tails": []}
+{"head": "I", "relation": "MadeUpOf", "tails": []}
+{"head": "I", "relation": "ObjectUse", "tails": []}
+{"head": "I", "relation": "NotDesires", "tails": []}
+{"head": "to want", "relation": "isAfter", "tails": []}
+{"head": "he didnt listen to me", "relation": "xIntent", "tails": []}
+{"head": "I wanted to feed him.", "relation": "HasSubEvent", "tails": []}
+{"head": "I wanted to feed him.", "relation": "xEffect", "tails": []}
+{"head": "I wanted to feed him.", "relation": "isFilledBy", "tails": []}
+{"head": "he didnt listen to me", "relation": "isAfter", "tails": []}
+{"head": "he didnt listen to me", "relation": "oReact", "tails": []}
+{"head": "I", "relation": "CapableOf", "tails": []}
+{"head": "I", "relation": "Desires", "tails": []}
+{"head": "to listen", "relation": "isAfter", "tails": []}
+{"head": "to want", "relation": "HasSubEvent", "tails": []}
+{"head": "he didnt listen to me", "relation": "xEffect", "tails": []}
+{"head": "to want", "relation": "isFilledBy", "tails": []}
+{"head": "I wanted to feed him.", "relation": "isBefore", "tails": []}
+{"head": "he didnt listen to me", "relation": "HasSubEvent", "tails": []}
+{"head": "he didnt listen to me", "relation": "isFilledBy", "tails": []}
+{"head": "I", "relation": "AtLocation", "tails": []}
+{"head": "to want", "relation": "isBefore", "tails": []}
+{"head": "I wanted to feed him.", "relation": "xReact", "tails": []}
+{"head": "to listen", "relation": "HasSubEvent", "tails": []}
+{"head": "to listen", "relation": "isFilledBy", "tails": []}
+{"head": "I", "relation": "Causes", "tails": []}
+{"head": "he didnt listen to me", "relation": "isBefore", "tails": []}
+{"head": "I wanted to feed him.", "relation": "oWant", "tails": []}
+{"head": "I wanted to feed him.", "relation": "Causes", "tails": []}
+{"head": "to listen", "relation": "isBefore", "tails": []}
+{"head": "I wanted to feed him.", "relation": "xAttr", "tails": []}
+{"head": "I wanted to feed him.", "relation": "xWant", "tails": []}
+{"head": "he didnt listen to me", "relation": "xReact", "tails": []}
+{"head": "to want", "relation": "Causes", "tails": []}
+{"head": "he didnt listen to me", "relation": "oWant", "tails": []}
+{"head": "he didnt listen to me", "relation": "Causes", "tails": []}
+{"head": "I wanted to feed him.", "relation": "xReason", "tails": []}
+{"head": "I wanted to feed him.", "relation": "HinderedBy", "tails": []}
+{"head": "I", "relation": "xNeed", "tails": []}
+{"head": "he didnt listen to me", "relation": "xAttr", "tails": []}
+{"head": "to listen", "relation": "Causes", "tails": []}
 {"head": "he didnt listen to me", "relation": "xWant", "tails": []}
 {"head": "to want", "relation": "xReason", "tails": []}
-{"head": "I wanted to feed him.", "relation": "xReason", "tails": []}
-{"head": "he didnt listen to me", "relation": "xAttr", "tails": []}
-{"head": "to listen", "relation": "isFilledBy", "tails": []}
-{"head": "I wanted to feed him.", "relation": "xNeed", "tails": []}
-{"head": "to want", "relation": "isFilledBy", "tails": []}
-{"head": "he didnt listen to me", "relation": "HinderedBy", "tails": []}
-{"head": "I", "relation": "NotDesires", "tails": []}
-{"head": "I wanted to feed him.", "relation": "oEffect", "tails": []}
-{"head": "I wanted to feed him.", "relation": "isFilledBy", "tails": []}
-{"head": "I wanted to feed him.", "relation": "xIntent", "tails": []}
-{"head": "he didnt listen to me", "relation": "xReact", "tails": []}
-{"head": "I", "relation": "AtLocation", "tails": []}
-{"head": "to listen", "relation": "isAfter", "tails": []}
-{"head": "he didnt listen to me", "relation": "oWant", "tails": []}
-{"head": "he didnt listen to me", "relation": "oReact", "tails": []}
-{"head": "to want", "relation": "isAfter", "tails": []}
-{"head": "I wanted to feed him.", "relation": "isAfter", "tails": []}
-{"head": "to listen", "relation": "HasSubEvent", "tails": []}
-{"head": "he didnt listen to me", "relation": "xReason", "tails": []}
-{"head": "I wanted to feed him.", "relation": "HasSubEvent", "tails": []}
-{"head": "to want", "relation": "HasSubEvent", "tails": []}
-{"head": "he didnt listen to me", "relation": "xNeed", "tails": []}
-{"head": "he didnt listen to me", "relation": "isFilledBy", "tails": []}
-{"head": "he didnt listen to me", "relation": "oEffect", "tails": []}
-{"head": "to listen", "relation": "Causes", "tails": []}
-{"head": "I wanted to feed him.", "relation": "xEffect", "tails": []}
-{"head": "to listen", "relation": "isBefore", "tails": []}
-{"head": "he didnt listen to me", "relation": "xIntent", "tails": []}
-{"head": "I", "relation": "ObjectUse", "tails": []}
-{"head": "I wanted to feed him.", "relation": "Causes", "tails": []}
-{"head": "to want", "relation": "Causes", "tails": []}
-{"head": "I wanted to feed him.", "relation": "isBefore", "tails": []}
-{"head": "to want", "relation": "isBefore", "tails": []}
-{"head": "I wanted to feed him.", "relation": "xWant", "tails": []}
-{"head": "I wanted to feed him.", "relation": "xAttr", "tails": []}
-{"head": "he didnt listen to me", "relation": "isAfter", "tails": []}
-{"head": "to listen", "relation": "HinderedBy", "tails": []}
-{"head": "I", "relation": "Desires", "tails": []}
 {"head": "to want", "relation": "HinderedBy", "tails": []}
-{"head": "he didnt listen to me", "relation": "HasSubEvent", "tails": []}
-{"head": "I wanted to feed him.", "relation": "xReact", "tails": []}
-{"head": "I wanted to feed him.", "relation": "HinderedBy", "tails": []}
-{"head": "I", "relation": "CapableOf", "tails": []}
-{"head": "I", "relation": "MadeUpOf", "tails": []}
+{"head": "I wanted to feed him.", "relation": "xNeed", "tails": []}

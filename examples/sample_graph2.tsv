@@ -8,14 +8,14 @@ PersonX accidentally bumped	xNeed	run or drive fast
 PersonX accidentally fell	xNeed	to walk too fast
 PersonX accompanies PersonY far	xNeed	to walk with PersonY
 PersonX accomplishes PersonX's goal	xNeed	to make a goal
-PersonX is at a party	xWant2	to drink beer and dance
-PersonX bleeds a lot	xWant2	to see a doctor
-PersonX works as a cashier	xWant2	to be a store manager
-PersonX gets dirty	xWant2	to clean up
-PersonX stays up all night studying	xWant2	to sleep all day
-PersonX gets PersonY's autograph	xWant2	to have a relationship with PersonY
-PersonX ends a friendship	xWant2	to meet new people
-PersonX makes his own costume	xWant2	to go to a costume party
-PersonX calls PersonY	xWant2	to have a long chat
-PersonX tells PersonY a secret	xWant2	to get PersonY's advice
-PersonX mows the lawn	xWant2	to get a new lawnmower
+PersonX is at a party	xWishes	to drink beer and dance
+PersonX bleeds a lot	xWishes	to see a doctor
+PersonX works as a cashier	xWishes	to be a store manager
+PersonX gets dirty	xWishes	to clean up
+PersonX stays up all night studying	xWishes	to sleep all day
+PersonX gets PersonY's autograph	xWishes	to have a relationship with PersonY
+PersonX ends a friendship	xWishes	to meet new people
+PersonX makes his own costume	xWishes	to go to a costume party
+PersonX calls PersonY	xWishes	to have a long chat
+PersonX tells PersonY a secret	xWishes	to get PersonY's advice
+PersonX mows the lawn	xWishes	to get a new lawnmower

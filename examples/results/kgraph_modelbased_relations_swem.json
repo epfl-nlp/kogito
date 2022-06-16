@@ -1,39 +1,39 @@
-{"head": "Student gets a card", "relation": "HasSubEvent", "tails": []}
-{"head": "Student gets a card", "relation": "xWant", "tails": []}
-{"head": "banana", "relation": "CapableOf", "tails": []}
-{"head": "love another", "relation": "oEffect", "tails": []}
-{"head": "Student gets a card", "relation": "oReact", "tails": []}
-{"head": "love another", "relation": "isAfter", "tails": []}
-{"head": "love another", "relation": "HinderedBy", "tails": []}
-{"head": "love another", "relation": "xNeed", "tails": []}
-{"head": "love another", "relation": "xAttr", "tails": []}
-{"head": "love another", "relation": "HasSubEvent", "tails": []}
-{"head": "banana", "relation": "ObjectUse", "tails": []}
-{"head": "love another", "relation": "isBefore", "tails": []}
-{"head": "love another", "relation": "xWant", "tails": []}
-{"head": "Student gets a card", "relation": "xReact", "tails": []}
-{"head": "banana", "relation": "MadeUpOf", "tails": []}
 {"head": "Student gets a card", "relation": "oWant", "tails": []}
-{"head": "Student gets a card", "relation": "xReason", "tails": []}
-{"head": "Student gets a card", "relation": "isFilledBy", "tails": []}
-{"head": "Student gets a card", "relation": "xIntent", "tails": []}
 {"head": "Student gets a card", "relation": "Causes", "tails": []}
-{"head": "love another", "relation": "oReact", "tails": []}
-{"head": "Student gets a card", "relation": "xEffect", "tails": []}
-{"head": "banana", "relation": "NotDesires", "tails": []}
-{"head": "Student gets a card", "relation": "oEffect", "tails": []}
-{"head": "love another", "relation": "xReact", "tails": []}
-{"head": "banana", "relation": "Desires", "tails": []}
-{"head": "Student gets a card", "relation": "isAfter", "tails": []}
-{"head": "love another", "relation": "oWant", "tails": []}
-{"head": "love another", "relation": "xReason", "tails": []}
-{"head": "Student gets a card", "relation": "HinderedBy", "tails": []}
-{"head": "love another", "relation": "isFilledBy", "tails": []}
-{"head": "Student gets a card", "relation": "xNeed", "tails": []}
-{"head": "Student gets a card", "relation": "xAttr", "tails": []}
-{"head": "love another", "relation": "Causes", "tails": []}
-{"head": "banana", "relation": "AtLocation", "tails": []}
-{"head": "banana", "relation": "HasProperty", "tails": []}
+{"head": "love another", "relation": "oEffect", "tails": []}
 {"head": "love another", "relation": "xIntent", "tails": []}
+{"head": "Student gets a card", "relation": "xAttr", "tails": []}
+{"head": "banana", "relation": "ObjectUse", "tails": []}
+{"head": "banana", "relation": "HasProperty", "tails": []}
+{"head": "Student gets a card", "relation": "xWant", "tails": []}
+{"head": "banana", "relation": "MadeUpOf", "tails": []}
+{"head": "love another", "relation": "isAfter", "tails": []}
+{"head": "banana", "relation": "NotDesires", "tails": []}
+{"head": "love another", "relation": "oReact", "tails": []}
+{"head": "Student gets a card", "relation": "xReason", "tails": []}
+{"head": "Student gets a card", "relation": "HinderedBy", "tails": []}
+{"head": "banana", "relation": "CapableOf", "tails": []}
+{"head": "Student gets a card", "relation": "xNeed", "tails": []}
 {"head": "love another", "relation": "xEffect", "tails": []}
+{"head": "banana", "relation": "Desires", "tails": []}
+{"head": "love another", "relation": "HasSubEvent", "tails": []}
+{"head": "love another", "relation": "isFilledBy", "tails": []}
+{"head": "Student gets a card", "relation": "oEffect", "tails": []}
+{"head": "Student gets a card", "relation": "xIntent", "tails": []}
+{"head": "love another", "relation": "isBefore", "tails": []}
+{"head": "banana", "relation": "AtLocation", "tails": []}
+{"head": "Student gets a card", "relation": "isAfter", "tails": []}
+{"head": "love another", "relation": "xReact", "tails": []}
+{"head": "Student gets a card", "relation": "oReact", "tails": []}
+{"head": "love another", "relation": "oWant", "tails": []}
+{"head": "love another", "relation": "Causes", "tails": []}
+{"head": "Student gets a card", "relation": "xEffect", "tails": []}
+{"head": "love another", "relation": "xAttr", "tails": []}
+{"head": "Student gets a card", "relation": "HasSubEvent", "tails": []}
+{"head": "love another", "relation": "xWant", "tails": []}
+{"head": "Student gets a card", "relation": "isFilledBy", "tails": []}
+{"head": "love another", "relation": "xReason", "tails": []}
+{"head": "love another", "relation": "HinderedBy", "tails": []}
 {"head": "Student gets a card", "relation": "isBefore", "tails": []}
+{"head": "love another", "relation": "xNeed", "tails": []}
+{"head": "Student gets a card", "relation": "xReact", "tails": []}

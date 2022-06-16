@@ -350,7 +350,7 @@ as an instruction (these are required to interact with the GPT-3 model). Let's d
       # so that we can enumerate samples which helps with inference
       index = kwargs.get("index")
       index_txt = f"{index}" if index is not None else ""
-      return f"Situation {index_txt}: {head}\Wishes: As a result, PersonX wishes"
+      return f"Situation {index_txt}: {head}\nWishes: As a result, PersonX wishes"
 
    X_WISHES = KnowledgeRelation("xWishes",
                                 verbalizer=x_wishes_verbalizer,

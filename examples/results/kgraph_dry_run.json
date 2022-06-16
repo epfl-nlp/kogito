@@ -1,51 +1,59 @@
-{"head": "Gabby", "relation": "HasProperty", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "xNeed", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "isFilledBy", "tails": []}
-{"head": "cookies", "relation": "ObjectUse", "tails": []}
-{"head": "bring cookies", "relation": "HinderedBy", "tails": []}
 {"head": "to bring", "relation": "Causes", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "oEffect", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "xIntent", "tails": []}
-{"head": "to bring", "relation": "isBefore", "tails": []}
-{"head": "Gabby", "relation": "NotDesires", "tails": []}
-{"head": "Gabby", "relation": "AtLocation", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "isAfter", "tails": []}
-{"head": "cookies", "relation": "Desires", "tails": []}
+{"head": "school", "relation": "CapableOf", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "xReact", "tails": []}
+{"head": "school", "relation": "Desires", "tails": []}
+{"head": "cookies", "relation": "AtLocation", "tails": []}
+{"head": "cookies", "relation": "Causes", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "oWant", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "Causes", "tails": []}
+{"head": "bring cookies", "relation": "isAfter", "tails": []}
 {"head": "to bring", "relation": "HinderedBy", "tails": []}
-{"head": "cookies", "relation": "CapableOf", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "xAttr", "tails": []}
+{"head": "Gabby", "relation": "ObjectUse", "tails": []}
+{"head": "Gabby", "relation": "HasProperty", "tails": []}
+{"head": "Gabby", "relation": "NotDesires", "tails": []}
+{"head": "to bring", "relation": "xReason", "tails": []}
+{"head": "Gabby", "relation": "MadeUpOf", "tails": []}
+{"head": "school", "relation": "AtLocation", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "xWant", "tails": []}
+{"head": "school", "relation": "Causes", "tails": []}
+{"head": "bring cookies", "relation": "HasSubEvent", "tails": []}
+{"head": "to bring", "relation": "xNeed", "tails": []}
+{"head": "bring cookies", "relation": "isFilledBy", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "HinderedBy", "tails": []}
+{"head": "Gabby", "relation": "CapableOf", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "xReason", "tails": []}
+{"head": "cookies", "relation": "xNeed", "tails": []}
+{"head": "Gabby", "relation": "Desires", "tails": []}
+{"head": "bring cookies", "relation": "isBefore", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "xNeed", "tails": []}
+{"head": "to bring", "relation": "isAfter", "tails": []}
+{"head": "Gabby", "relation": "AtLocation", "tails": []}
+{"head": "school", "relation": "xNeed", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "oEffect", "tails": []}
+{"head": "Gabby", "relation": "Causes", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "xIntent", "tails": []}
+{"head": "bring cookies", "relation": "Causes", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "isAfter", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "oReact", "tails": []}
+{"head": "cookies", "relation": "ObjectUse", "tails": []}
+{"head": "cookies", "relation": "HasProperty", "tails": []}
+{"head": "to bring", "relation": "isFilledBy", "tails": []}
+{"head": "cookies", "relation": "MadeUpOf", "tails": []}
+{"head": "to bring", "relation": "HasSubEvent", "tails": []}
+{"head": "cookies", "relation": "NotDesires", "tails": []}
+{"head": "bring cookies", "relation": "xReason", "tails": []}
+{"head": "bring cookies", "relation": "HinderedBy", "tails": []}
+{"head": "to bring", "relation": "isBefore", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "xEffect", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "isFilledBy", "tails": []}
+{"head": "Gabby", "relation": "xNeed", "tails": []}
+{"head": "bring cookies", "relation": "xNeed", "tails": []}
 {"head": "Gabby always brought cookies to school.", "relation": "HasSubEvent", "tails": []}
 {"head": "school", "relation": "ObjectUse", "tails": []}
-{"head": "bring cookies", "relation": "xReason", "tails": []}
-{"head": "cookies", "relation": "MadeUpOf", "tails": []}
-{"head": "bring cookies", "relation": "isFilledBy", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "Causes", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "xEffect", "tails": []}
-{"head": "cookies", "relation": "HasProperty", "tails": []}
-{"head": "school", "relation": "Desires", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "isBefore", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "xWant", "tails": []}
-{"head": "to bring", "relation": "xReason", "tails": []}
-{"head": "Gabby", "relation": "ObjectUse", "tails": []}
-{"head": "school", "relation": "CapableOf", "tails": []}
-{"head": "bring cookies", "relation": "isAfter", "tails": []}
-{"head": "school", "relation": "MadeUpOf", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "xAttr", "tails": []}
-{"head": "cookies", "relation": "NotDesires", "tails": []}
-{"head": "to bring", "relation": "isFilledBy", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "HinderedBy", "tails": []}
-{"head": "cookies", "relation": "AtLocation", "tails": []}
-{"head": "bring cookies", "relation": "HasSubEvent", "tails": []}
 {"head": "school", "relation": "HasProperty", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "xReact", "tails": []}
-{"head": "Gabby", "relation": "Desires", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "oWant", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "oReact", "tails": []}
-{"head": "to bring", "relation": "isAfter", "tails": []}
-{"head": "bring cookies", "relation": "Causes", "tails": []}
-{"head": "bring cookies", "relation": "isBefore", "tails": []}
-{"head": "Gabby", "relation": "CapableOf", "tails": []}
+{"head": "cookies", "relation": "CapableOf", "tails": []}
+{"head": "cookies", "relation": "Desires", "tails": []}
+{"head": "school", "relation": "MadeUpOf", "tails": []}
 {"head": "school", "relation": "NotDesires", "tails": []}
-{"head": "Gabby", "relation": "MadeUpOf", "tails": []}
-{"head": "to bring", "relation": "HasSubEvent", "tails": []}
-{"head": "Gabby always brought cookies to school.", "relation": "xReason", "tails": []}
-{"head": "school", "relation": "AtLocation", "tails": []}
+{"head": "Gabby always brought cookies to school.", "relation": "isBefore", "tails": []}
