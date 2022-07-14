@@ -1,0 +1,35 @@
+.logo {
+    padding-top: 50px;
+    font-size: 64px;
+    font-family: 'Economica', sans-serif;
+}
+
+.logo-k {
+    background-color: #dce755;
+    font-weight: bold;
+}
+
+.description {
+    /* font-size: 20px; */
+}
+
+.cntr-label {
+    padding-bottom: 5px;
+}
+
+.cntr {
+    margin-top: 24px;
+    margin-bottom: 48px;
+}
+
+.cntr-head {
+    margin-top: 10px;
+}
+
+.ui.button.kbtn {
+    background: #dce755;
+}
+
+.ui.button.kbtn:hover {
+    background: #dce755;
+}

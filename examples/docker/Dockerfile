@@ -38,6 +38,7 @@ WORKDIR ${KOGITO_DIR}
 # Setup kogito dependencies
 RUN ${CONDA} run -n kogito ${POETRY} install
 RUN ${CONDA} run -n kogito python -c "import nltk;nltk.download('punkt');nltk.download('wordnet');nltk.download('omw-1.4')"
+RUN ${CONDA} run -n kogito python -m spacy download en_core_web_sm
 
 # Install training data
 ENV KOGITO_DATA_DIR=${KOGITO_DIR}/data

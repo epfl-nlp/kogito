@@ -1,0 +1,3 @@
+Flask
+kogito
+flask-cors
