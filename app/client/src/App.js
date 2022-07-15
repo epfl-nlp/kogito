@@ -1,6 +1,7 @@
 import React, { useState } from 'react'
-import { Grid, Form, TextArea, Dropdown, Button, Container, Message, Label, Input, Icon } from 'semantic-ui-react'
+import { Grid, Form, TextArea, Dropdown, Button, Container, Message, Label, Input, Icon, Radio, Tab, Table, Accordion } from 'semantic-ui-react'
 import api from './api'
+import RELATIONS from './relations'
 import _ from 'lodash'
 
 import './App.css'
@@ -16,25 +17,103 @@ function App() {
       key: 'comet-bart',
       text: 'COMET-BART',
       value: 'comet-bart'
+    },
+    {
+      key: 'gpt2',
+      text: 'GPT-2',
+      value: 'gpt2'
     }
+  ]
+
+  const relationOptions = _.map(RELATIONS, rel => {
+    return {key: rel, text: rel, value: rel}
+  })
+
+  const headProcOptions = [
+    {
+      key: 'sentence_extractor',
+      text: 'Sentence Extractor',
+      value: 'sentence_extractor'
+    },
+    {
+      key: 'noun_phrase_extractor',
+      text: 'Noun Phrase Extractor',
+      value: 'noun_phrase_extractor'
+    },
+    {
+      key: 'verb_phrase_extractor',
+      text: 'Verb Phrase Extractor',
+      value: 'verb_phrase_extractor'
+    }
+  ]
+
+  const relProcOptions = [
+    {
+      key: 'simple_relation_matcher',
+      text: 'Heuristic Matcher',
+      value: 'simple_relation_matcher'
+    },
+    {
+      key: 'swem_relation_matcher',
+      text: 'GloVe-based Matcher',
+      value: 'swem_relation_matcher'
+    },
+    {
+      key: 'distilbert_relation_matcher',
+      text: 'DistilBERT-based Matcher',
+      value: 'distilbert_relation_matcher'
+    },
+    {
+      key: 'bert_relation_matcher',
+      text: 'BERT-based Matcher',
+      value: 'bert_relation_matcher'
+    },
   ]
 
   const [text, setText] = useState('')
   const [model, setModel] = useState('comet-bart')
   const [results, setResults] = useState('')
   const [heads, setHeads] = useState([])
+  const [relations, setRelations] = useState([])
+  const [extractHeads, setExtractHeads] = useState(true)
+  const [matchRelations, setMatchRelations] = useState(true)
+  const [dryRun, setDryRun] = useState(false)
+  const [generating, setGenerating] = useState(false)
+  const [showError, setShowError] = useState(false)
+  const [errorMsg, setErrorMsg] = useState(null)
+  const [headProcs, setHeadProcs] = useState(['sentence_extractor', 'noun_phrase_extractor', 'verb_phrase_extractor'])
+  const [relProcs, setRelProcs] = useState(['simple_relation_matcher'])
+  const [activeHead, setActiveHead] = useState(null)
+
+  let resultMap = {}
+
+  for (let res of results) {
+    if (!_.has(resultMap, res['head'])) {
+      resultMap[res['head']] = []
+    }
+    resultMap[res['head']].push({relation: res['relation'], tails: res['tails']})
+  }
 
   const generate = () => {
-    console.log(text)
-    console.log(model)
+    setGenerating(true)
     api.inference
-    .generate({text: text, model: model})
+    .generate({text: text,
+               model: model,
+               heads: heads,
+               relations: relations,
+               extractHeads: extractHeads,
+               matchRelations: matchRelations,
+               dryRun: dryRun,
+               headProcs: headProcs,
+               relProcs: relProcs})
     .then(response => {
-      console.log(response.data)
-      setResults(JSON.stringify(response.data))
+      setResults(response.data)
+      setGenerating(false)
     })
     .catch(error => {
-
+      setGenerating(false)
+      setErrorMsg(error.response.data)
+      setShowError(true)
     })
   }
 
@@ -74,81 +153,237 @@ function App() {
       </Container>
   }
 
-  return (
-    <Grid container>
-      <Grid.Row>
-        <Grid.Column>
-          <p className='logo'><span className='logo-k'>K</span>ogito</p>
-        </Grid.Column>
-      </Grid.Row>
-      <Grid.Row>
-        <Grid.Column>
-          <Message color='grey'>
-            <Message.Header>Knowledge Inference Tool</Message.Header>
-            <p className='description'>Infer knowledge from text</p>
-          </Message>
-        </Grid.Column>
-      </Grid.Row>
-      <Grid.Row>
-        <Grid columns={2}>
-          <Grid.Column>
-            <Container className='cntr'>
-              <Form>
-                <Container className='cntr-label'>
-                  <Label color='teal'>Text</Label>
-                </Container>
-                <TextArea 
-                  placeholder='PersonX becomes a great basketball player'
-                  onChange={e => setText(e.target.value)}
-                  value={text}
-                  label='Text'
-                />
-              </Form>
-            </Container>
-            <Container className='cntr'>
-              <Form>
-                <Container className='cntr-label'>
-                  <Label color='teal'>Heads</Label>
-                </Container>
-                <Button icon basic labelPosition='left' onClick={addHead}>
-                  <Icon name='plus' />
-                  Add Head
-                </Button>
-                {getHeadsJSX()}
-              </Form>
-            </Container>
-            <Container className='cntr'>
-              <Button onClick={generate} fluid className='kbtn'>Generate</Button>
-            </Container>
-            <Container className='cntr'>
-              <Form>
-                <Container className='cntr-label'>
-                  <Label color='black'>Results</Label>
-                </Container>
-                <TextArea
-                  placeholder='Results'
-                  value={results}
-                  disabled/>
-              </Form>
-            </Container>
-          </Grid.Column>
-          <Grid.Column>
-            <Container className='cntr'>
-              <Container className='cntr-label'>
-                <Label color='teal'>Model</Label>
-              </Container>
-              <Dropdown
-                placeholder='Model'
-                fluid
-                selection
-                options={modelOptions}
-                value={model}
-                onChange={e => setModel(e.target.value)}
-              />
-            </Container>
-          </Grid.Column>
+  const resultJSONPane = (
+    <Form>
+      <TextArea
+        placeholder='Results'
+        value={_.isEmpty(results) ? '' : JSON.stringify(results, null, 4)}
+        rows={30}
+        disabled/>
+    </Form>
+  )
+
+  const handleActiveHeadChange = (e, data) => {
+    if (activeHead === data.index) {
+      return setActiveHead(null)
+    }
+    return setActiveHead(data.index)
+  }
+
+  const resultTablePane = () => {
+    return _.map(resultMap, (headResults, head) => {
+      return (
+        <Grid key={head}>
+          <Grid.Row>
+            <Grid.Column>
+              <Accordion styled fluid>
+                <Accordion.Title active={activeHead === head} index={head} onClick={(e, data) => handleActiveHeadChange(e, data)}>
+                  <Icon name='dropdown' />
+                  {head}
+                </Accordion.Title>
+                <Accordion.Content active={activeHead === head}>
+                  <Table celled structured>
+                    <Table.Header>
+                      <Table.Row>
+                        <Table.HeaderCell>Relation</Table.HeaderCell>
+                        <Table.HeaderCell>Tails</Table.HeaderCell>
+                      </Table.Row>
+                    </Table.Header>
+                    <Table.Body>
+                      {_.map(headResults, (headResult, hrIndex) => {
+                        return (
+                          <React.Fragment>
+                            <Table.Row key={hrIndex}>
+                              <Table.Cell rowSpan={headResult['tails'].length > 0 ? headResult['tails'].length : 1} width={3}>{headResult['relation']}</Table.Cell>
+                              {headResult['tails'].length > 0 ? <Table.Cell>{_.head(headResult['tails'])}</Table.Cell> : null}
+                            </Table.Row>
+                            {_.map(_.slice(headResult['tails'], 1), (tail, tIndex) => {
+                                return (
+                                  <Table.Row key={tIndex}>
+                                    <Table.Cell key={tIndex}>{tail}</Table.Cell>
+                                  </Table.Row>
+                                )
+                            })}
+                          </React.Fragment>
+                        )
+                      })}
+                    </Table.Body>
+                  </Table>
+                </Accordion.Content>
+              </Accordion>
+            </Grid.Column>
+          </Grid.Row>
         </Grid>
-      </Grid.Row>
+      )
+    })
+  }
+
+  const resultPanes = [
+    {menuItem: 'Raw JSON', render: () => resultJSONPane},
+    {menuItem: 'Table', render: () => resultTablePane()},
+  ]
+
+  return (
+    <Grid celled="internally" columns={2}>
+
+      <Grid.Column>
+        <Grid container>
+          <Grid.Row>
+            <Grid.Column>
+              <p className='logo'><span className='logo-k'>K</span>ogito</p>
+            </Grid.Column>
+          </Grid.Row>
+          
+          <Grid.Row>
+            <Grid.Column>
+              <Message color='grey'>
+                <Message.Header>Knowledge Inference Tool</Message.Header>
+                <p className='description'>This is an interactive playground for <b>kogito</b>, the Python library that provides an intuitive interface to generate knowledge from text. 
+                This app is meant to be used for demo purposes and does not support all available features of the library.
+                Please, refer to <a href='https://kogito.readthedocs.io/'>kogito docs</a> for more information on how to use the library. Code for the tool and the library can be found <a href='https://github.com/epfl-nlp/kogito'>here</a>
+                </p>
+              </Message>
+            </Grid.Column>
+          </Grid.Row>
+
+          <Grid.Row>
+            <Grid.Column>
+              <Container className='cntr'>
+                <Form>
+                  <Container className='cntr-label'>
+                    <Label color='teal'>Text</Label>
+                  </Container>
+                  <TextArea 
+                    placeholder='PersonX becomes a great basketball player'
+                    onChange={e => setText(e.target.value)}
+                    value={text}
+                    label='Text'
+                    rows={2}
+                  />
+                </Form>
+              </Container>
+              <Container className='cntr'>
+                <Grid columns={4}>
+                  <Grid.Column width={3}>
+                    <Container className='cntr-label'>
+                      <Label color='teal'>Extract Heads</Label>
+                    </Container>
+                    <Radio toggle checked={extractHeads} onChange={(e, data) => setExtractHeads(data.checked)}/>
+                  </Grid.Column>
+                  <Grid.Column width={3}>
+                    <Container className='cntr-label'>
+                      <Label color='teal'>Match Relations</Label>
+                    </Container>
+                    <Radio toggle checked={matchRelations} onChange={(e, data) => setMatchRelations(data.checked)}/>
+                  </Grid.Column>
+                  <Grid.Column width={3}>
+                    <Container className='cntr-label'>
+                      <Label color='teal'>Dry Run</Label>
+                    </Container>
+                    <Radio toggle checked={dryRun} onChange={(e, data) => setDryRun(data.checked)}/>
+                  </Grid.Column>
+                  <Grid.Column width={7}>
+                    <Container className='cntr-label'>
+                      <Label color='teal'>Model</Label>
+                    </Container>
+                    <Dropdown
+                      placeholder='Select Model'
+                      selection
+                      options={modelOptions}
+                      value={model}
+                      onChange={e => setModel(e.target.value)}
+                    />
+                  </Grid.Column>
+                </Grid>
+              </Container>
+              <Container className='cntr'>
+                <Container className='cntr-label'>
+                  <Label color='teal'>Head Processors</Label>
+                </Container>
+                <Dropdown
+                  placeholder='Add Head Processor'
+                  selection
+                  search
+                  multiple
+                  options={headProcOptions}
+                  value={headProcs || []}
+                  onChange={(e, data) => setHeadProcs(data.value)}
+                />
+              </Container>
+              <Container className='cntr'>
+                <Container className='cntr-label'>
+                  <Label color='teal'>Relation Processors</Label>
+                </Container>
+                <Dropdown
+                  placeholder='Add Relation Processor'
+                  selection
+                  search
+                  multiple
+                  options={relProcOptions}
+                  value={relProcs || []}
+                  onChange={(e, data) => setRelProcs(data.value)}
+                />
+              </Container>
+              <Container className='cntr'>
+                <Form>
+                  <Container className='cntr-label'>
+                    <Label color='teal'>Heads</Label>
+                  </Container>
+                  <Button icon basic labelPosition='left' onClick={addHead}>
+                    <Icon name='plus' />
+                    Add Head
+                  </Button>
+                  {getHeadsJSX()}
+                </Form>
+              </Container>
+              <Container className='cntr'>
+                <Container className='cntr-label'>
+                  <Label color='teal'>Relations</Label>
+                </Container>
+                <Dropdown
+                  placeholder='All'
+                  selection
+                  search
+                  multiple
+                  options={relationOptions}
+                  value={relations || []}
+                  onChange={(e, data) => setRelations(data.value)}
+                />
+              </Container>
+            </Grid.Column>
+          </Grid.Row>
+        </Grid>
+      </Grid.Column>
+
+      <Grid.Column>
+        <Container className='cntr-label'>
+          <Label color='black'>Results</Label>
+        </Container>
+        <Container className='cntr'>
+          <Tab menu={{ secondary: true }} panes={resultPanes}/>
+        </Container>
+        {showError ? 
+              <Container>
+                <Message
+                  negative
+                  header='Error'
+                  content={errorMsg}
+                  onDismiss={() => setShowError(false)}
+                />
+              </Container> : null
+              }
+              <Container className='cntr'>
+                <Button
+                  onClick={generate}
+                  className='kbtn'
+                  loading={generating}
+                  disabled={generating || (_.isEmpty(text) && (_.isEmpty(heads) || _.every(heads, _.isEmpty)))}
+                >
+                  Generate
+                </Button>
+              </Container>
+      </Grid.Column>
+
     </Grid>
   )
 }

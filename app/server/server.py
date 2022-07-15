@@ -11,4 +11,8 @@ def heartbeat():
 
 @app.route("/inference", methods=["POST"])
 def inference():
-    return jsonify(infer(request.json))
+    try:
+        return jsonify(infer(request.json))
+    except Exception as e:
+        print(e)
+        return str(e), 500
