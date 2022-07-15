@@ -1,0 +1,17 @@
+version: '2'
+
+services:
+  server:
+    container_name: kogito-server
+    image: kogito-server
+    build: server
+    ports:
+      - 5000:5000
+  client:
+    container_name: kogito-client
+    image: kogito-client
+    build: client
+    ports:
+      - 3000:3000
+    depends_on:
+      - server

@@ -6,8 +6,8 @@ from kogito.core.processors.relation import SWEMRelationMatcher, DistilBERTRelat
 
 MODEL_MAP = {
     "comet-bart": COMETBART.from_pretrained("mismayil/comet-bart-ai2"),
-    "comet-gpt2": COMETGPT2.from_pretrained("mismayil/comet-gpt2-ai2"),
-    "gpt2": GPT2Zeroshot()
+    # "comet-gpt2": COMETGPT2.from_pretrained("mismayil/comet-gpt2-ai2"),
+    # "gpt2": GPT2Zeroshot()
 }
 
 PROCESSOR_MAP = {
