@@ -155,7 +155,7 @@ class ModelBasedRelationMatcher(KnowledgeRelationMatcher):
 
 
 class SWEMRelationMatcher(ModelBasedRelationMatcher):
-    """Relation matcher based on Simple Word Embeddings (GloVes)"""
+    """Relation matcher based on Simple Word Embeddings (GloVe)"""
 
     def __init__(self, name: str, lang: Optional[Language] = None) -> None:
         vocab = np.load(

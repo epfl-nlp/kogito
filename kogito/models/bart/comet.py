@@ -1,3 +1,5 @@
+from typing import Optional
+
 import glob
 import os
 from pathlib import Path
@@ -45,7 +47,7 @@ class COMETBART(KnowledgeModel):
         self,
         train_graph: KnowledgeGraph,
         val_graph: KnowledgeGraph,
-        test_graph: KnowledgeGraph,
+        test_graph: Optional[KnowledgeGraph] = None,
         logger_name: str = "default",
     ) -> KnowledgeModel:
         """Train a COMET model
@@ -53,7 +55,7 @@ class COMETBART(KnowledgeModel):
         Args:
             train_graph (KnowledgeGraph): Training dataset
             val_graph (KnowledgeGraph): Validation dataset
-            test_graph (KnowledgeGraph): Test dataset
+            test_graph (KnowledgeGraph, optional): Test dataset. Defaults to None
             logger_name (str, optional): Logger name to use. Accepted values: ["wandb", "default"]
                                          Defaults to "default".
 
@@ -127,8 +129,9 @@ class COMETBART(KnowledgeModel):
             self.model.config.test_checkpoint = checkpoints[-1]
             trainer.resume_from_checkpoint = checkpoints[-1]
         trainer.logger.log_hyperparams(asdict(self.model.config))
-
-        trainer.test(self.model)
+        
+        if test_graph:
+            trainer.test(self.model)
 
     def generate(
         self,

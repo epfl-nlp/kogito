@@ -49,7 +49,7 @@ class Knowledge:
             isinstance(other, Knowledge)
             and self.head == other.head
             and self.relation == other.relation
-            and self.tails == other.tails
+            and set(self.tails) == set(other.tails)
         )
 
     def __ne__(self, other: object) -> bool:

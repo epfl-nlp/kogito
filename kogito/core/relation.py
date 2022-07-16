@@ -35,7 +35,7 @@ class KnowledgeRelation:
             text (str): Relation text.
             type (KnowledgeRelationType, optional): Relation type. Defaults to KnowledgeRelationType.ATOMIC.
             verbalizer (Optional[Callable], optional): Function to convert relation to natural text. Defaults to None.
-            prompt (Optional[str], optional): Prompt text to use. Defaults to None.
+            prompt (Optional[str], optional): Instructive text used to prompt NLG models. Defaults to None.
         """
         self.text = text
         self.type = type

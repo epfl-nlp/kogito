@@ -52,9 +52,9 @@ class GPT2Zeroshot(KnowledgeModel):
             input_graph (KnowledgeGraph): Input dataset
             seed (int, optional): Random seed. Defaults to 42.
             top_k (int, optional): GPT-2 top k parameter. Defaults to 1.
-            top_p (float, optional): GPT2 top p parameter. Defaults to 0.9.
-            num_sequences (int, optional): Number of sequences. Defaults to 10.
-            num_beams (int, optional): Number of beams. Defaults to 10.
+            top_p (float, optional): GPT-2 top p parameter. Defaults to 0.9.
+            num_sequences (int, optional): GPT-2 num_return_sequences parameter. Defaults to 10.
+            num_beams (int, optional): GPT-2 num_beams parameter. Defaults to 10.
             stop_token (str, optional): Stop token. Defaults to ".".
             temperature (float, optional): GPT-2 temperature parameter. Defaults to 1.0.
             repetition_penalty (float, optional): GPT-2 repetition_penalty parameter. Defaults to 1.0.

@@ -48,10 +48,10 @@ class GPT3Zeroshot(KnowledgeModel):
             input_graph (KnowledgeGraph): Input dataset
             num_samples (int, optional): Number of samples to use. Defaults to 10.
             max_tokens (int, optional): Max number of tokens. Defaults to 16.
-            temperature (float, optional): Temperature parameter. Defaults to 0.9.
-            top_p (float, optional): Top p parameter. Defaults to 1.
+            temperature (float, optional): GPT-3 temperature parameter. Defaults to 0.9.
+            top_p (float, optional): GPT-3 top_p parameter. Defaults to 1.
             n (int, optional): Number of generations. Defaults to 1.
-            logprobs (Optional[int], optional): Log probs to use. Defaults to None.
+            logprobs (Optional[int], optional): GPT-3 logprobs parameter. Defaults to None.
             stop (Optional[str], optional): Stop token to use. Defaults to None.
             include_task_prompt (bool, optional): Whether to include task prompt. Defaults to True.
             debug (bool, optional): Whether to enable debug mode. Defaults to False.

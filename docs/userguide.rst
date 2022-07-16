@@ -419,7 +419,7 @@ All of these models implement the ``KnowledgeModel`` interface which provides th
 
 Inference
 *********
-``generate`` method is used to make inferences with knowledge models. It takes an (incomplete i.e. without tails) input knowledge graph and outputs a (completed i.e. tails generated) knowledge graph.
+``generate`` (:meth:`kogito.core.model.KnowledgeModel.generate`) method is used to make inferences with knowledge models. It takes an (incomplete i.e. without tails) input knowledge graph and outputs a (completed i.e. tails generated) knowledge graph.
 
 Given an input graph in a *json* format like below:
 
@@ -482,10 +482,10 @@ COMET models have been trained based on the paper `COMET-ATOMIC2020: On Symbolic
    comet_bart = COMETBART.from_pretrained("mismayil/comet-bart-ai2")
    comet_gpt2 = COMETGPT2.from_pretrained("mismayil/comet-gpt2-ai2")
 
-However, if you wish to train these models on a new dataset and/or with different hyperparameters, you can do so using the provided ``train`` method. This method takes a training dataset as an instance of a ``KnowledgeGraph`` and additional hyperparameters depending on the model type.
+However, if you wish to train these models on a new dataset and/or with different hyperparameters, you can do so using the provided ``train`` method (:meth:`kogito.core.model.KnowledgeModel.train`). This method takes a training dataset as an instance of a ``KnowledgeGraph`` and additional hyperparameters depending on the model type.
 Please, refer to the `API Reference <https://kogito.readthedocs.io/en/latest/api.html>`_ for more details on specific parameters accepted by this method for each model.
 
-For example, here is a sample code to train a  ``COMETBART`` model:
+For example, here is a sample code to train a ``COMETBART`` model:
 
 .. code-block:: python
 
@@ -515,7 +515,7 @@ For example, here is a sample code to train a  ``COMETBART`` model:
 
 Evaluation
 **********
-Knowledge models can also be evaluated on various metrics. ``KnowledgeModel.evaluate`` method takes an input knowledge graph (complete with reference tails), runs a generation on it and then
+Knowledge models can also be evaluated on various metrics. ``evaluate`` method (:meth:`kogito.core.model.KnowledgeModel.evaluate`) takes an input knowledge graph (complete with reference tails), runs a generation on it and then
 computes various scores based on the reference and generation tails and outputs a dictionary of these scores. You can also specify how many generations to consider for evaluation and 
 pass any extra arguments required for model generation.
 
