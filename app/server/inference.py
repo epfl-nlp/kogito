@@ -2,6 +2,7 @@ from kogito.models.bart.comet import COMETBART
 from kogito.models.gpt2.comet import COMETGPT2
 from kogito.models.gpt2.zeroshot import GPT2Zeroshot
 from kogito.inference import CommonsenseInference
+from kogito.core.relation import KnowledgeRelation
 from kogito.core.processors.relation import SWEMRelationMatcher, DistilBERTRelationMatcher, BERTRelationMatcher
 
 MODEL_MAP = {
@@ -42,6 +43,10 @@ def infer(data):
 
     for proc in set(rel_procs).difference(set(csi_rel_procs)):
         csi.add_processor(PROCESSOR_MAP[proc])
+
+    if relations:
+        for i in range(len(relations)):
+            relations[i] = KnowledgeRelation.from_text(relations[i])
 
     output_graph = csi.infer(text=text,
                              model=model,

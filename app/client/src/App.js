@@ -226,7 +226,7 @@ function App() {
   return (
     <Grid celled="internally" columns={2}>
 
-      <Grid.Column>
+      <Grid.Column computer={8} mobile={16}>
         <Grid container>
           <Grid.Row>
             <Grid.Column>
@@ -248,11 +248,11 @@ function App() {
 
           <Grid.Row>
             <Grid.Column>
-              <Container className='cntr'>
+              <div className='cntr'>
                 <Form>
-                  <Container className='cntr-label'>
+                  <div className='cntr-label'>
                     <Label color='teal'>Text</Label>
-                  </Container>
+                  </div>
                   <TextArea 
                     placeholder='PersonX becomes a great basketball player'
                     onChange={e => setText(e.target.value)}
@@ -261,31 +261,31 @@ function App() {
                     rows={2}
                   />
                 </Form>
-              </Container>
-              <Container className='cntr'>
+              </div>
+              <div className='cntr'>
                 <Grid columns={4}>
-                  <Grid.Column width={3}>
-                    <Container className='cntr-label'>
+                  <Grid.Column computer={3} mobile={16}>
+                    <div className='cntr-label'>
                       <Label color='teal'>Extract Heads</Label>
-                    </Container>
+                    </div>
                     <Radio toggle checked={extractHeads} onChange={(e, data) => setExtractHeads(data.checked)}/>
                   </Grid.Column>
-                  <Grid.Column width={3}>
-                    <Container className='cntr-label'>
+                  <Grid.Column computer={3} mobile={16}>
+                    <div className='cntr-label'>
                       <Label color='teal'>Match Relations</Label>
-                    </Container>
+                    </div>
                     <Radio toggle checked={matchRelations} onChange={(e, data) => setMatchRelations(data.checked)}/>
                   </Grid.Column>
-                  <Grid.Column width={3}>
-                    <Container className='cntr-label'>
+                  <Grid.Column computer={3} mobile={16}>
+                    <div className='cntr-label'>
                       <Label color='teal'>Dry Run</Label>
-                    </Container>
+                    </div>
                     <Radio toggle checked={dryRun} onChange={(e, data) => setDryRun(data.checked)}/>
                   </Grid.Column>
-                  <Grid.Column width={7}>
-                    <Container className='cntr-label'>
+                  <Grid.Column computer={7} mobile={16}>
+                    <div className='cntr-label'>
                       <Label color='teal'>Model</Label>
-                    </Container>
+                    </div>
                     <Dropdown
                       placeholder='Select Model'
                       selection
@@ -295,11 +295,11 @@ function App() {
                     />
                   </Grid.Column>
                 </Grid>
-              </Container>
-              <Container className='cntr'>
-                <Container className='cntr-label'>
+              </div>
+              <div className='cntr'>
+                <div className='cntr-label'>
                   <Label color='teal'>Head Processors</Label>
-                </Container>
+                </div>
                 <Dropdown
                   placeholder='Add Head Processor'
                   selection
@@ -309,11 +309,11 @@ function App() {
                   value={headProcs || []}
                   onChange={(e, data) => setHeadProcs(data.value)}
                 />
-              </Container>
-              <Container className='cntr'>
-                <Container className='cntr-label'>
+              </div>
+              <div className='cntr'>
+                <div className='cntr-label'>
                   <Label color='teal'>Relation Processors</Label>
-                </Container>
+                </div>
                 <Dropdown
                   placeholder='Add Relation Processor'
                   selection
@@ -323,23 +323,23 @@ function App() {
                   value={relProcs || []}
                   onChange={(e, data) => setRelProcs(data.value)}
                 />
-              </Container>
-              <Container className='cntr'>
+              </div>
+              <div className='cntr'>
                 <Form>
-                  <Container className='cntr-label'>
+                  <div className='cntr-label'>
                     <Label color='teal'>Heads</Label>
-                  </Container>
+                  </div>
                   <Button icon basic labelPosition='left' onClick={addHead}>
                     <Icon name='plus' />
                     Add Head
                   </Button>
                   {getHeadsJSX()}
                 </Form>
-              </Container>
-              <Container className='cntr'>
-                <Container className='cntr-label'>
+              </div>
+              <div className='cntr'>
+                <div className='cntr-label'>
                   <Label color='teal'>Relations</Label>
-                </Container>
+                </div>
                 <Dropdown
                   placeholder='All'
                   selection
@@ -349,13 +349,13 @@ function App() {
                   value={relations || []}
                   onChange={(e, data) => setRelations(data.value)}
                 />
-              </Container>
+              </div>
             </Grid.Column>
           </Grid.Row>
         </Grid>
       </Grid.Column>
 
-      <Grid.Column>
+      <Grid.Column computer={8} mobile={16}>
         <Container className='cntr-label'>
           <Label color='black'>Results</Label>
         </Container>
