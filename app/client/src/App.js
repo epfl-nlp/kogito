@@ -1,5 +1,5 @@
 import React, { useState } from 'react'
-import { Grid, Form, TextArea, Dropdown, Button, Container, Message, Label, Input, Icon, Radio, Tab, Table, Accordion } from 'semantic-ui-react'
+import { Grid, Form, TextArea, Dropdown, Button, Container, Message, Label, Input, Icon, Radio, Tab, Table, Accordion, Popup } from 'semantic-ui-react'
 import api from './api'
 import RELATIONS from './relations'
 import _ from 'lodash'
@@ -251,7 +251,7 @@ function App() {
               <div className='cntr'>
                 <Form>
                   <div className='cntr-label'>
-                    <Label color='teal'>Text</Label>
+                    <Popup content='Main text input to extract heads from if enabled, otherwise used as is for knowledge generation' trigger={<Label color='teal'>Text</Label>}/>
                   </div>
                   <TextArea 
                     placeholder='PersonX becomes a great basketball player'
@@ -266,25 +266,25 @@ function App() {
                 <Grid columns={4}>
                   <Grid.Column computer={3} mobile={16}>
                     <div className='cntr-label'>
-                      <Label color='teal'>Extract Heads</Label>
+                      <Popup content='If enabled, knowledge heads will be extracted from given text using the head processors defined below' trigger={<Label color='teal'>Extract Heads</Label>}/>
                     </div>
                     <Radio toggle checked={extractHeads} onChange={(e, data) => setExtractHeads(data.checked)}/>
                   </Grid.Column>
                   <Grid.Column computer={3} mobile={16}>
                     <div className='cntr-label'>
-                      <Label color='teal'>Match Relations</Label>
+                      <Popup content='If enabled, relations will be matched with extracted heads using the relation processors defined below' trigger={<Label color='teal'>Match Relations</Label>}/>
                     </div>
                     <Radio toggle checked={matchRelations} onChange={(e, data) => setMatchRelations(data.checked)}/>
                   </Grid.Column>
                   <Grid.Column computer={3} mobile={16}>
                     <div className='cntr-label'>
-                      <Label color='teal'>Dry Run</Label>
+                      <Popup content="If enabled, actual knowledge generation through a model won't be run and final input graph to the model will be returned as a result" trigger={<Label color='teal'>Dry Run</Label>}/>
                     </div>
                     <Radio toggle checked={dryRun} onChange={(e, data) => setDryRun(data.checked)}/>
                   </Grid.Column>
                   <Grid.Column computer={7} mobile={16}>
                     <div className='cntr-label'>
-                      <Label color='teal'>Model</Label>
+                      <Popup content='Model to use for knowledge generation' trigger={<Label color='teal'>Model</Label>}/>
                     </div>
                     <Dropdown
                       placeholder='Select Model'
@@ -298,7 +298,7 @@ function App() {
               </div>
               <div className='cntr'>
                 <div className='cntr-label'>
-                  <Label color='teal'>Head Processors</Label>
+                  <Popup content='Strategies to use for extracting heads from given text if any' trigger={<Label color='teal'>Head Processors</Label>}/>
                 </div>
                 <Dropdown
                   placeholder='Add Head Processor'
@@ -312,10 +312,10 @@ function App() {
               </div>
               <div className='cntr'>
                 <div className='cntr-label'>
-                  <Label color='teal'>Relation Processors</Label>
+                  <Popup content='Strategy to use for matching relations with extracted heads if any' trigger={<Label color='teal'>Relation Processors</Label>}/>
                 </div>
                 <Dropdown
-                  placeholder='Add Relation Processor'
+                  placeholder='Select Relation Processor'
                   selection
                   search
                   multiple
@@ -327,7 +327,7 @@ function App() {
               <div className='cntr'>
                 <Form>
                   <div className='cntr-label'>
-                    <Label color='teal'>Heads</Label>
+                    <Popup content='Custom head inputs that will be processed as is' trigger={<Label color='teal'>Heads</Label>}/>
                   </div>
                   <Button icon basic labelPosition='left' onClick={addHead}>
                     <Icon name='plus' />
@@ -338,7 +338,7 @@ function App() {
               </div>
               <div className='cntr'>
                 <div className='cntr-label'>
-                  <Label color='teal'>Relations</Label>
+                  <Popup content='Subset of relations to match from. By default, all relations are eligible to be matched' trigger={<Label color='teal'>Relations</Label>}/>
                 </div>
                 <Dropdown
                   placeholder='All'
