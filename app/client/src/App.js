@@ -291,7 +291,7 @@ function App() {
                       selection
                       options={modelOptions}
                       value={model}
-                      onChange={e => setModel(e.target.value)}
+                      onChange={(e, data) => setModel(data.value)}
                     />
                   </Grid.Column>
                 </Grid>

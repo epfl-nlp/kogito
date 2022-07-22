@@ -1,4 +1,5 @@
 import os
+import traceback
 
 from flask import Flask, request, jsonify
 from flask_cors import CORS
@@ -16,7 +17,7 @@ def inference():
     try:
         return jsonify(infer(request.json))
     except Exception as e:
-        print(e)
+        traceback.print_exc(e)
         return str(e), 500
 
 if __name__ == "__main__":

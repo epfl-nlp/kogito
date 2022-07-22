@@ -112,10 +112,18 @@ class Knowledge:
         Returns:
             dict: Jsonified knowledge
         """
+        tails = self.tails
+
+        if only_one_tail:
+            if self.tails:
+                tails = self.tails[0]
+            else:
+                tails = ""
+
         return {
             "head": str(self.head),
             "relation": str(self.relation),
-            "tails": self.tails[0] if self.tails and only_one_tail else self.tails,
+            "tails": tails,
         }
 
 
