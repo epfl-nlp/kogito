@@ -6,6 +6,7 @@ import spacy
 
 from kogito.core.knowledge import Knowledge, KnowledgeGraph
 from kogito.core.head import KnowledgeHead
+from kogito.core.relation import KG_RELATIONS
 from kogito.core.processors.head import (
     KnowledgeHeadExtractor,
     SentenceHeadExtractor,
@@ -103,7 +104,7 @@ class CommonsenseInference:
                 Defaults to None.
 
         Raises:
-            ValueError: if no relation found to match or relations argument is not of type list
+            ValueError: if relations argument is not of type list
 
         Returns:
             KnowledgeGraph: Inferred knowledge graph.
@@ -152,7 +153,9 @@ class CommonsenseInference:
                 set(list(product(kg_heads, relations)))
             )
         else:
-            raise ValueError("No relation found to match")
+            head_relations = head_relations.union(
+                set(list(product(kg_heads, KG_RELATIONS)))
+            )
 
         kg_list = []
 

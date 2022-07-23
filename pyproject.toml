@@ -1,6 +1,6 @@
 [tool.poetry]
 name = "kogito"
-version = "0.3.3"
+version = "0.3.5"
 description = "A Python NLP Knowledge Inference Tool"
 authors = ["Mete Ismayil <mahammad.ismayilzada@epfl.ch>", "Antoine Bosselut <antoine.bosselut@epfl.ch>"]
 license = "Apache License 2.0"
