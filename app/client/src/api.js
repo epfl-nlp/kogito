@@ -1,6 +1,6 @@
 import axios from 'axios'
 
-const API_URI = process.env.REACT_APP_SERVER_URL
+const API_URI = process.env.REACT_APP_SERVER_URL || "http://localhost:8080"
 
 const api = {
     inference: {

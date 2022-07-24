@@ -33,3 +33,8 @@
 .ui.button.kbtn:hover {
     background: #dce755;
 }
+
+.home-results-json-segment {
+    padding: 0!important;
+    border: none!important;
+}

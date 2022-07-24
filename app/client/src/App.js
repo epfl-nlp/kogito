@@ -1,8 +1,10 @@
 import React, { useState } from 'react'
-import { Grid, Form, TextArea, Dropdown, Button, Container, Message, Label, Input, Icon, Radio, Tab, Table, Accordion, Popup } from 'semantic-ui-react'
+import { Grid, Form, TextArea, Dropdown, Button, Container, Message, Label, Input, Icon, Radio, Tab, Table, Accordion, Popup, Segment } from 'semantic-ui-react'
 import api from './api'
 import RELATIONS from './relations'
 import _ from 'lodash'
+import {CopyToClipboard} from 'react-copy-to-clipboard'
+import {saveAs} from 'file-saver'
 
 import './App.css'
 
@@ -84,6 +86,7 @@ function App() {
   const [headProcs, setHeadProcs] = useState(['sentence_extractor', 'noun_phrase_extractor', 'verb_phrase_extractor'])
   const [relProcs, setRelProcs] = useState(['simple_relation_matcher'])
   const [activeHead, setActiveHead] = useState(null)
+  const [copiedResults, setCopiedResults] = useState(false)
 
   let resultMap = {}
 
@@ -133,6 +136,29 @@ function App() {
     setHeads([...heads, ''])
   }
 
+  const clearResults = () => {
+    setResults('')
+  }
+
+  const saveResults = () => {
+    if (!_.isEmpty(results)) {
+      const resultsFile = new Blob([JSON.stringify(results, null, 4)], {type: "text/json;charset=utf-8"})
+      saveAs(
+        resultsFile,
+        "results.json"
+      )
+    }
+  }
+
+  const copyResults = () => {
+    if (!_.isEmpty(results)) {
+      setCopiedResults(true)
+      setTimeout(() => {
+        setCopiedResults(false)
+      }, 3000)
+    }
+  }
+
   const getHeadsJSX = () => {
     return _.isEmpty(heads) ? null :
       <Container>
@@ -154,13 +180,26 @@ function App() {
   }
 
   const resultJSONPane = (
-    <Form>
-      <TextArea
-        placeholder='Results'
-        value={_.isEmpty(results) ? '' : JSON.stringify(results, null, 4)}
-        rows={30}
-        disabled/>
-    </Form>
+    <div>
+      <Segment attached basic className='home-results-json-segment'>
+        <Form>
+          <TextArea
+            placeholder='Results'
+            value={_.isEmpty(results) ? '' : JSON.stringify(results, null, 4)}
+            rows={30}
+            disabled/>
+        </Form>
+      </Segment>
+      <Button.Group basic size='small' attached="bottom">
+        <Button icon='trash' onClick={clearResults}/>
+        <CopyToClipboard text={_.isEmpty(results) ? '' : JSON.stringify(results, null, 4)}
+          onCopy={copyResults}>
+          <Button icon='copy'/>
+        </CopyToClipboard>
+        <Button icon='download' onClick={saveResults}/>
+      </Button.Group>
+      <Message attached='bottom' success hidden={!copiedResults}>Copied!</Message>
+    </div>
   )
 
   const handleActiveHeadChange = (e, data) => {
@@ -272,7 +311,7 @@ function App() {
                   </Grid.Column>
                   <Grid.Column computer={3} mobile={16}>
                     <div className='cntr-label'>
-                      <Popup content='If enabled, relations will be matched with extracted heads using the relation processors defined below' trigger={<Label color='teal'>Match Relations</Label>}/>
+                      <Popup content='If enabled, (subset of) relations will be matched with extracted heads using the relation processors defined below, otherwise, heads will be matched to all relations given below' trigger={<Label color='teal'>Match Relations</Label>}/>
                     </div>
                     <Radio toggle checked={matchRelations} onChange={(e, data) => setMatchRelations(data.checked)}/>
                   </Grid.Column>
