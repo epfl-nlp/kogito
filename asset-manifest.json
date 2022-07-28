@@ -1,10 +1,10 @@
 {
   "files": {
-    "main.css": "/epflnlp/kogito/static/css/main.6046aa4f.css",
-    "main.js": "/epflnlp/kogito/static/js/main.1b12ac6e.js",
-    "index.html": "/epflnlp/kogito/index.html",
-    "main.6046aa4f.css.map": "/epflnlp/kogito/static/css/main.6046aa4f.css.map",
-    "main.1b12ac6e.js.map": "/epflnlp/kogito/static/js/main.1b12ac6e.js.map"
+    "main.css": "/kogito/static/css/main.6046aa4f.css",
+    "main.js": "/kogito/static/js/main.1b12ac6e.js",
+    "index.html": "/kogito/index.html",
+    "main.6046aa4f.css.map": "/kogito/static/css/main.6046aa4f.css.map",
+    "main.1b12ac6e.js.map": "/kogito/static/js/main.1b12ac6e.js.map"
   },
   "entrypoints": [
     "static/css/main.6046aa4f.css",
