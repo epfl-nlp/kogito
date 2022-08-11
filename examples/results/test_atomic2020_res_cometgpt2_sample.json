@@ -1,0 +1,10 @@
+{"head": "PersonX takes things for granted", "relation": "xNeed", "tails": ["none"]}
+{"head": "PersonX calls PersonY ambulance", "relation": "xNeed", "tails": ["to pick up the phone"]}
+{"head": "PersonX pleases ___ to make", "relation": "xWant", "tails": ["to celebrate"]}
+{"head": "PersonX shoves PersonY back", "relation": "xEffect", "tails": ["none"]}
+{"head": "PersonX dates for years", "relation": "xWant", "tails": ["to get married"]}
+{"head": "PersonX covers every aspect", "relation": "isAfter", "tails": ["PersonX is a lawyer"]}
+{"head": "PersonX wants to go", "relation": "isAfter", "tails": ["PersonX wants to go to a concert"]}
+{"head": "PersonX hits by lightning", "relation": "xEffect", "tails": ["screams in pain"]}
+{"head": "PersonX finally meet PersonY", "relation": "xNeed", "tails": ["none"]}
+{"head": "chain", "relation": "ObjectUse", "tails": ["fasten"]}

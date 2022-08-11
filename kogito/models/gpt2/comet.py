@@ -12,6 +12,7 @@ from kogito.core.dataset import KnowledgeDataset
 from kogito.core.model import KnowledgeModel
 from kogito.core.knowledge import KnowledgeGraph, GEN_TOKEN, EOS_TOKEN, PAD_TOKEN
 from kogito.core.relation import KG_RELATIONS
+from kogito.core.utils import chunks
 
 device = "cuda" if cuda.is_available() else "cpu"
 
@@ -134,11 +135,12 @@ class COMETGPT2(KnowledgeModel):
         in_len: int = 16,
         out_len: int = 34,
         top_k: int = 1,
-        temperature: float = 1.0,
+        temperature: float = 0.7,
         top_p: float = 0.9,
-        repetition_penalty: float = 1.0,
-        num_beams: int = 10,
-        num_return_sequences: int = 10,
+        repetition_penalty: float = 1.2,
+        num_beams: int = 3,
+        num_return_sequences: int = 3,
+        batch_size: int = 4
     ) -> KnowledgeGraph:
         """Generate inferences from knowledge model
 
@@ -148,16 +150,16 @@ class COMETGPT2(KnowledgeModel):
             in_len (int, optional): Input length. Defaults to 16.
             out_len (int, optional): Output length. Defaults to 34.
             top_k (int, optional): Top k inferences to consider. Defaults to 1.
-            temperature (float, optional): GPT-2 temperature parameter. Defaults to 1.0.
+            temperature (float, optional): GPT-2 temperature parameter. Defaults to 0.7.
             top_p (float, optional): GPT-2 top_p parameter. Defaults to 0.9.
-            repetition_penalty (float, optional): GPT-2 repetition_penalty parameter. Defaults to 1.0.
-            num_beams (int, optional): GPT-2 num_beams parameter. Defaults to 10.
-            num_return_sequences (int, optional): GPT-2 num_return_sequences parameter. Defaults to 10.
-
+            repetition_penalty (float, optional): GPT-2 repetition_penalty parameter. Defaults to 1.2.
+            num_beams (int, optional): GPT-2 num_beams parameter. Defaults to 3.
+            num_return_sequences (int, optional): GPT-2 num_return_sequences parameter. Defaults to 3.
+            batch_size (int, optional): Batch size to use. Defaults to 4.
         Returns:
             KnowledgeGraph: Completed knowledge graph
         """
-        params = {"batch_size": 1, "shuffle": False, "num_workers": 0}
+        params = {"batch_size": batch_size, "shuffle": False, "num_workers": 0}
         dataset = KnowledgeDataset(
             input_graph,
             tokenizer=self.tokenizer,
@@ -170,13 +172,15 @@ class COMETGPT2(KnowledgeModel):
         self.model.eval()
 
         outputs = []
+        num_generate = num_return_sequences if top_k > 1 else 1
 
         with torch.no_grad():
-            for input_kg, data in zip(input_graph, loader):
+            for input_batch, data in zip(chunks(input_graph, batch_size), loader):
                 ids = data["source_ids"].to(device)
                 mask = data["source_mask"].to(device)
-
-                generated_ids = self.model.generate(
+                print(ids)
+                print(mask)
+                output = self.model.generate(
                     input_ids=ids,
                     attention_mask=mask,
                     temperature=temperature,
@@ -184,21 +188,25 @@ class COMETGPT2(KnowledgeModel):
                     max_length=max_length,
                     top_p=top_p,
                     top_k=top_k,
+                    bos_token_id=self.tokenizer.convert_tokens_to_ids(GEN_TOKEN),
+                    eos_token_id=self.tokenizer.eos_token_id,
+                    pad_token_id=self.tokenizer.pad_token_id,
                     repetition_penalty=repetition_penalty,
-                    num_return_sequences=num_return_sequences if top_k > 1 else 1,
+                    num_return_sequences=num_generate,
                     num_beams=num_beams,
                 )
 
-                generations = [
-                    self.tokenizer.decode(g, clean_up_tokenization_spaces=True)
-                    for g in generated_ids
-                ]
+                generations = self.tokenizer.batch_decode(
+                    output,
+                    clean_up_tokenization_spaces=True,
+                )
 
-                generations = [g[g.find(GEN_TOKEN)+len(GEN_TOKEN):g.find(EOS_TOKEN)].strip() for g in generations]
+                print(generations)
 
-                output_kg = input_kg.copy()
-                output_kg.tails = generations
-                outputs.append(output_kg)
+                for input_kg, gens in zip(input_batch, list(chunks(generations, num_generate))):
+                    output_kg = input_kg.copy()
+                    output_kg.tails = [g[g.find(GEN_TOKEN)+len(GEN_TOKEN):g.find(EOS_TOKEN)].strip() for g in gens]
+                    outputs.append(output_kg)
 
         return KnowledgeGraph(outputs)
 
