@@ -15,6 +15,8 @@ class KnowledgeDataset(Dataset):
         self.source_len = source_len
         self.target_len = target_len
         self.text = self.data["head"] + " " + self.data["relation"] + f" {GEN_TOKEN}"
+        if "context" in self.data.columns:
+            self.text = self.data["context"] + " " + self.text
         self.ctext = self.data["tails"] + f" {EOS_TOKEN}"
         self.is_eval = is_eval
 
@@ -94,7 +96,7 @@ class Seq2SeqDataset(Dataset):
             self.input_graph = self.test_graph
 
         self.src_lens = [
-            len(f"{kg.head} {kg.relation} {GEN_TOKEN}") for kg in self.input_graph
+            len(f"{kg.context+' ' if kg.context else ''}{kg.head} {kg.relation} {GEN_TOKEN}") for kg in self.input_graph
         ]
         self.max_source_length = max_source_length
         self.max_target_length = max_target_length
@@ -111,7 +113,7 @@ class Seq2SeqDataset(Dataset):
 
     def __getitem__(self, index) -> Dict[str, torch.Tensor]:
         kg = self.input_graph[index]
-        source_line = self.prefix + f"{kg.head} {kg.relation} {GEN_TOKEN}"
+        source_line = self.prefix + f"{kg.context+' ' if kg.context else ''}{kg.head} {kg.relation} {GEN_TOKEN}"
         tgt_line = kg.tails[0] if kg.tails else None
         assert source_line, f"empty source line for index {index}"
         assert tgt_line, f"empty tgt line for index {index}"
@@ -170,7 +172,7 @@ class MBartDataset(Seq2SeqDataset):
 
     def __getitem__(self, index) -> Dict[str, str]:
         kg = self.input_graph[index]
-        source_line = self.prefix + f"{kg.head} {kg.relation} {GEN_TOKEN}"
+        source_line = self.prefix + f"{kg.context+' ' if kg.context else ''}{kg.head} {kg.relation} {GEN_TOKEN}"
         tgt_line = kg.tails[0] if kg.tails else None
         assert source_line, f"empty source line for index {index}"
         assert tgt_line, f"empty tgt line for index {index}"
