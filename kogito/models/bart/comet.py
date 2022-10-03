@@ -65,7 +65,7 @@ class COMETBART(KnowledgeModel):
         Returns:
             KnowledgeModel: Trained knowledge model
         """
-        Path(self.config.output_dir).mkdir(exist_ok=True)
+        Path(self.config.output_dir).mkdir(exist_ok=True, parents=True)
 
         if self.config.task == "summarization":
             self.model: SummarizationModule = SummarizationModule(

@@ -13,11 +13,11 @@ config = COMETBARTConfig(
     atomic=True,
     train_batch_size=32,
     eval_batch_size=32,
-    max_epochs=1,
+    max_epochs=5,
     pretrained_model="facebook/bart-large",
 )
 model = COMETBART(config)
 train_graph = KnowledgeGraph.from_jsonl("data/persona/persona_atomic_train.jsonl", tails_attr="tail")
-val_graph = KnowledgeGraph.from_csv("data/persona/persona_atomic_val.jsonl", tails_attr="tail")
-test_graph = KnowledgeGraph.from_csv("data/persona/persona_atomic_test.tsv", tails_attr="tail")
+val_graph = KnowledgeGraph.from_jsonl("data/persona/persona_atomic_val.jsonl", tails_attr="tail")
+test_graph = KnowledgeGraph.from_jsonl("data/persona/persona_atomic_test.jsonl", tails_attr="tail")
 model.train(train_graph=train_graph, val_graph=val_graph, test_graph=test_graph, logger_name="wandb")

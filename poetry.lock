@@ -104,7 +104,7 @@ pandas = ">=1.0.1"
 requests = "*"
 torch = ">=1.0.0"
 tqdm = ">=4.31.1"
-transformers = ">=3.0.0numpy"
+transformers = ">=3.0.0"
 
 [[package]]
 name = "black"
