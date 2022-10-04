@@ -45,7 +45,7 @@ class Knowledge:
         self.context = context
 
     def __repr__(self) -> str:
-        return f'Knowledge(head="{str(self.head)}", relation="{str(self.relation)}", tails={self.tails}), context={self.context}'
+        return f'Knowledge(head="{str(self.head)}", relation="{str(self.relation)}", tails={self.tails}), context="{self.context}"'
 
     def __eq__(self, other: object) -> bool:
         return (
